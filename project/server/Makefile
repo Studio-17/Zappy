@@ -5,7 +5,7 @@
 ## Makefile
 ##
 
-CXX	=	g++
+CC	=	gcc
 
 COPY	=	cp -f
 COPY_FILE	=	$(COPY)
@@ -15,26 +15,25 @@ DELETE	=	rm -f
 DELETE_FILE	=	$(DELETE)
 DELETE_DIR	=	$(DELETE) -r
 
-MAIN_SOURCE	=	Source/main.cpp			\
+MAIN_SOURCE	=	source/main.c			\
 
-SOURCE	=	Source/Errors/Errors.cpp	\
+SOURCE	=	\
 
-MAIN_OBJ	=	$(MAIN_SOURCE:.cpp=.o)
+MAIN_OBJ	=	$(MAIN_SOURCE:.c=.o)
 
 OBJ	=	$(SOURCE:.cpp=.o)
 
-INCLUDE_DIRS	=	-I Source/Errors/
+INCLUDE_DIRS	=	-I source/errors/
 
-CXXFLAGS	+=	-W -Wall -Wextra
-CXXFLAGS	+=	$(INCLUDE_DIRS)
-CXXFLAGS	+=	-std=c++2a
+CFLAGS	+=	-W -Wall -Wextra
+CFLAGS	+=	$(INCLUDE_DIRS)
 
-NAME	=	project
+NAME	=	zappy_server
 
 all: $(NAME)
 
 $(NAME): $(MAIN_OBJ) $(OBJ)
-	@$(CXX) -o $(NAME) $(MAIN_OBJ) $(OBJ) $(CXXFLAGS)
+	@$(CC) -o $(NAME) $(MAIN_OBJ) $(OBJ) $(CFLAGS)
 
 clean:
 	@$(DELETE_FILE) $(MAIN_OBJ)

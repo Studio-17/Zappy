@@ -1,8 +1,8 @@
-## Template
+## Zappy
+
 Epitech Project
 
-![CI Epitech Project - Octopus](https://github.com/MyEpitech/B-EPI-000-PAR-0-0-template-user.email/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/MyEpitech/B-EPI-000-PAR-0-0-template-user.email/actions/workflows/main.yml)
-
+![CI Epitech Project - Zappy](https://github.com/MyEpitech/B-YEP-410-PAR-4-1-zappy-martin.vanaud/actions/workflows/main.yml/badge.svg?branch=master)
 #
 
 > Setup
@@ -10,10 +10,24 @@ Epitech Project
 bash .github/scripts/setup.sh
 ```
 
-> Execute
+> Build & Execute
 ```
-make -C project/
-./project
+cd build
+cmake ..
+cmake --build .
+cd ..
+
+./build/IndieStudio
+```
+
+> Generate Doxygen
+```
+cb build
+cmake -DDOXYGEN=ON .. # this is the step
+cmake --build .
+cd ..
+
+./build/IndieStudio
 ```
 
 > Usage
@@ -25,4 +39,14 @@ If you are heving an issue please submit it on this github : )
 
 Made by :
 
-John DOE <john.doe@epitech.eu>
+Clement FERNANDES <clement.fernandes@epitech.eu>
+
+Gurvan LE LETTY <gurvan.le-letty@epitech.eu>
+
+Martin VANAUD <martin.vanaud@epitech.eu>
+
+Maxime CARABINA <maxime.carabina@epitech.eu>
+
+Valentin DURIEUX <valentin.durieux@epitech.eu>
+
+Victor PALLE <victor.palle@epitech.eu>

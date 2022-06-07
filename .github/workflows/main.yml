@@ -6,10 +6,10 @@ name: CI Epitech Project
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
-  # push:
-  #   branches: [ master ]
-  # pull_request:
-  #   branches: [ master ]
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -25,25 +25,24 @@ jobs:
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    # container:
-    #   image: epitechcontent/epitest-docker:latest
+    container: epitechcontent/epitest-docker:latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      # Runs a set of commands using the runners shell
-      - name: make
-        run: make -C 'project/'
-      - name: make re
-        run: make re -C 'project/'
+      # Runs a bash file that builds the projet using CMake
+      - name: CMake IndieStudio
+        run: |
+          bash .github/scripts/build.sh
 
   # This workflow contains a job called "EpitechPromo2025"
   EpitechPromo2025:
     # This job requires GithubPrerequisites AND AnsiblePlaybook successful run to push
     needs:
       - DockerEpitech
+      # - VisualStudio2022
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -63,7 +62,7 @@ jobs:
         with:
           source-directory: 'project/'
           destination-github-username: 'EpitechPromo2025'
-          destination-repository-name: 'fill-with-your-epitech-repository-https'
+          destination-repository-name: 'B-YEP-410-PAR-4-1-zappy-martin.vanaud'
           user-email: ${{ secrets.USER_EMAIL_GITHUB }}
           commit-message: See ORIGIN_COMMIT from $GITHUB_REF
           target-branch: master

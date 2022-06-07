@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/casimir/Epitech/MyEpitech/B-YEP-410-PAR-4-1-zappy-martin.vanaud'
+make: Leaving directory '/home/casimir/Epitech/MyEpitech/B-YEP-410-PAR-4-1-zappy-martin.vanaud'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+
