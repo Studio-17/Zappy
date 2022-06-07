@@ -17,13 +17,19 @@ DELETE_DIR	=	$(DELETE) -r
 
 MAIN_SOURCE	=	source/main.c			\
 
-SOURCE	=	\
+SOURCE	=	source/options/options.c	\
+			source/options/usage.c		\
+			source/errors/errors.c		\
+			source/tools/tools.c		\
 
 MAIN_OBJ	=	$(MAIN_SOURCE:.c=.o)
 
-OBJ	=	$(SOURCE:.cpp=.o)
+OBJ	=	$(SOURCE:.c=.o)
 
-INCLUDE_DIRS	=	-I source/errors/
+INCLUDE_DIRS	+=	-I include/
+INCLUDE_DIRS	+=	-I include/errors/
+INCLUDE_DIRS	+=	-I include/options/
+INCLUDE_DIRS	+=	-I include/tools/
 
 CFLAGS	+=	-W -Wall -Wextra
 CFLAGS	+=	$(INCLUDE_DIRS)

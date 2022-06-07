@@ -2,11 +2,12 @@
 ** EPITECH PROJECT, 2022
 ** B-YEP-410-PAR-4-1-zappy-martin.vanaud
 ** File description:
-** errors
+** tools
 */
 
-#ifndef ERRORS_H_
-#define ERRORS_H_
+#ifndef TOOLS_H_
+    #define TOOLS_H_
 
+int my_atoi(char *str);
 
-#endif /* !ERRORS_H_ */
+#endif /* !TOOLS_H_ */

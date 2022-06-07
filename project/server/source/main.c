@@ -6,10 +6,22 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#include "options/options.h"
 
 int main(int ac, char **av)
 {
-    printf("hello world !");
+    options_t *options = malloc(sizeof(options_t));
 
-    return (0);
+    setup_options(options);
+
+    get_options(ac, av, options);
+
+    debug_options(options);
+
+    free_options(options);
+
+    return (EXIT_SUCCESS);
 }
