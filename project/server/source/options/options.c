@@ -20,7 +20,7 @@ void setup_options(options_t *options)
     options->freq = -1;
 }
 
-void get_options(int ac, char **av, options_t *options)
+int get_options(int ac, char **av, options_t *options)
 {
     int opt = 0;
 
@@ -41,7 +41,7 @@ void get_options(int ac, char **av, options_t *options)
         switch (opt)
         {
         case 'h':
-            print_usage();
+            print_usage(OPTIONS_ERROR_NONE);
             break;
         case 'p':
             options->port = my_atoi(optarg);
@@ -62,10 +62,23 @@ void get_options(int ac, char **av, options_t *options)
             options->freq = my_atoi(optarg);
             break;
         default:
-            print_usage();
-            exit(EXIT_FAILURE);
+            print_usage(INVALID_OPTION);
+            return (EXIT_FAILURE);
         }
     }
+    return (EXIT_SUCCESS);
+}
+
+int handle_options(options_t *options)
+{
+    if (options->port == -1 || options->width == -1 ||
+        options->height == -1 || options->names == NULL ||
+        options->clientsNb == -1 || options->freq == -1)
+    {
+        print_usage(MISSING_OPTION);
+        return (EXIT_FAILURE);
+    }
+    return (EXIT_SUCCESS);
 }
 
 void debug_options(options_t *options)

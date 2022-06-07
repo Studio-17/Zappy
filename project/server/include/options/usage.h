@@ -19,6 +19,6 @@ USAGE: ./zappy_server -p port -x width -y height -n name1 name2 ... -c clientsNb
     clientsNb is the number of authorized clients per team\n \
     freq is the reciprocal of time unit for execution of actions\n"
 
-void print_usage();
+void print_usage(int error_code);
 
 #endif /* !USAGE_H_ */
