@@ -10,30 +10,22 @@ Epitech Project
 bash .github/scripts/setup.sh
 ```
 
-> Build & Execute
+> Build & Execute (server)
 ```
-cd build
-cmake ..
-cmake --build .
-cd ..
+make -C server/
 
-./build/IndieStudio
+./server/zappy_server --help
 ```
 
-> Generate Doxygen
+> Build & Execute (ia)
 ```
-cb build
-cmake -DDOXYGEN=ON .. # this is the step
-cmake --build .
-cd ..
-
-./build/IndieStudio
+python3 ia/zappy_ia
 ```
 
 > Usage
 ```
-This repository is intended for epitech students for want to access github actions and other features
-If you are heving an issue please submit it on this github : )
+This repository is intended for epitech students who want to access github actions and other git features
+If you are have an issue please submit it on this github : )
 ```
 #
 
@@ -46,7 +38,5 @@ Gurvan LE LETTY <gurvan.le-letty@epitech.eu>
 Martin VANAUD <martin.vanaud@epitech.eu>
 
 Maxime CARABINA <maxime.carabina@epitech.eu>
-
-Valentin DURIEUX <valentin.durieux@epitech.eu>
 
 Victor PALLE <victor.palle@epitech.eu>
