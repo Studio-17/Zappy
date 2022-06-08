@@ -17,7 +17,7 @@ void setup_options(options_t *options)
     options->height = -1;
     options->names = NULL;
     options->clientsNb = -1;
-    options->freq = -1;
+    options->freq = 100;
 }
 
 int get_options(int ac, char **av, options_t *options)
@@ -31,7 +31,7 @@ int get_options(int ac, char **av, options_t *options)
         {"heigth", required_argument, 0, 'y'},
         {"nameX", required_argument, 0, 'n'},
         {"clientsNb", required_argument, 0, 'c'},
-        {"freq", required_argument, 0, 'f'},
+        {"freq", optional_argument, 0, 'f'},
         {0, 0, 0, 0}};
 
     int long_index = 0;
@@ -42,7 +42,7 @@ int get_options(int ac, char **av, options_t *options)
         {
         case 'h':
             print_usage(OPTIONS_ERROR_NONE);
-            break;
+            return (EXIT_FAILURE);
         case 'p':
             options->port = my_atoi(optarg);
             break;
@@ -73,9 +73,16 @@ int handle_options(options_t *options)
 {
     if (options->port == -1 || options->width == -1 ||
         options->height == -1 || options->names == NULL ||
-        options->clientsNb == -1 || options->freq == -1)
+        options->clientsNb == -1)
     {
         print_usage(MISSING_OPTION);
+        return (EXIT_FAILURE);
+    }
+    if (options->port == 0 || options->width == 0 ||
+        options->height == 0 || options->names == NULL ||
+        options->clientsNb == 0)
+    {
+        print_usage(INVALID_OPTION);
         return (EXIT_FAILURE);
     }
     return (EXIT_SUCCESS);
@@ -93,6 +100,5 @@ void debug_options(options_t *options)
 
 void free_options(options_t *options)
 {
-    free(options->names);
     free(options);
 }

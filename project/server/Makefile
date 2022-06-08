@@ -17,10 +17,14 @@ DELETE_DIR	=	$(DELETE) -r
 
 MAIN_SOURCE	=	source/main.c			\
 
-SOURCE	=	source/options/options.c	\
-			source/options/usage.c		\
-			source/errors/errors.c		\
-			source/tools/tools.c		\
+SOURCE	=	source/options/options.c							\
+			source/options/usage.c								\
+			source/errors/errors.c								\
+			source/server/communication/request/request.c		\
+			source/server/communication/response/response.c		\
+			source/zappy/map/map.c								\
+			source/zappy/map/resources.c						\
+			source/tools/tools.c								\
 
 MAIN_OBJ	=	$(MAIN_SOURCE:.c=.o)
 
@@ -29,10 +33,15 @@ OBJ	=	$(SOURCE:.c=.o)
 INCLUDE_DIRS	+=	-I include/
 INCLUDE_DIRS	+=	-I include/errors/
 INCLUDE_DIRS	+=	-I include/options/
+INCLUDE_DIRS	+=	-I include/server/communication/
+INCLUDE_DIRS	+=	-I include/server/communication/request/
+INCLUDE_DIRS	+=	-I include/server/communication/response/
+INCLUDE_DIRS	+=	-I include/zappy/map/
 INCLUDE_DIRS	+=	-I include/tools/
 
 CFLAGS	+=	-W -Wall -Wextra
 CFLAGS	+=	$(INCLUDE_DIRS)
+CFLAGS	+=	-g3
 
 NAME	=	zappy_server
 

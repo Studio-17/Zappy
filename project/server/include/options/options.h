@@ -14,9 +14,9 @@
     #include <getopt.h>
 
 enum OPTIONS_ERROR {
-    OPTIONS_ERROR_NONE = -1,
-    MISSING_OPTION,
-    INVALID_OPTION,
+    MISSING_OPTION = -1,
+    INVALID_OPTION = 0,
+    OPTIONS_ERROR_NONE = 1,
 };
 
 typedef struct options_error_s {
@@ -24,7 +24,7 @@ typedef struct options_error_s {
     char *error_message;
 } options_error_t;
 
-static const options_error_t OPTIONS_ERROR_MESSAGES[] = {
+static const options_error_t options_error_messages[] = {
     {MISSING_OPTION, "ERROR ./zappy_server - missing option"},
     {INVALID_OPTION, "ERROR ./zappy_server - invalid option"},
 };

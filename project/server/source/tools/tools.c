@@ -5,16 +5,21 @@
 ** tools
 */
 
+#include <string.h>
+
 int my_atoi(char *string)
 {
     int result = 0;
 
     for (int index = 0; string[index] != '\0'; index += 1) {
-        if (string[index] < '9' && string[index] > '0')
+        if (string[index] <= '9' && string[index] >= '0')
             result = result * 10 + string[index] - '0';
         else
             continue;
     }
+
+    if (result < 1)
+        return (0);
 
     return (result);
 }

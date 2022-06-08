@@ -10,6 +10,7 @@
 
 void print_usage(int error_code)
 {
-    printf("%s\n", OPTIONS_ERROR_MESSAGES[error_code].error_message);
+    if (error_code != OPTIONS_ERROR_NONE)
+        printf("%s\n", options_error_messages[error_code].error_message);
     printf("%s\n", USAGE_MESSAGE);
 }
