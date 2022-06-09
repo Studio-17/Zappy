@@ -11,18 +11,21 @@
     #include <stdio.h>
     #include <stdlib.h>
 
+    #include <math.h>
+
     #include "zappy/map/resources.h"
 
 typedef struct tile_s {
     int width;
     int heigth;
-    resources_t resources;
+    resources_t *resources;
 } tile_t;
 
 typedef struct map_s {
     int width;
     int height;
-    int size;
+    float size;
+    float ratio;
     tile_t **tiles;
 } map_t;
 
@@ -30,7 +33,7 @@ void create_map(map_t *map, int width, int height);
 
 void fill_map(map_t *map, resources_t *resource);
 
-void debug_map(map_t *map);
+void debug_map(map_t *map, resources_t *resources_list);
 void free_map(map_t *map);
 
 #endif /* !MAP_H_ */

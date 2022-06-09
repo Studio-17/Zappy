@@ -37,6 +37,12 @@ int main(int ac, char **av)
 
     resources_t resource[] = {
         {
+            .name = "food",
+            .resources = FOOD,
+            .density = 0.5,
+            .quantity = 0,
+        },
+        {
             .name = "linemate",
             .resources = LINEMATE,
             .density = 0.3,
@@ -74,11 +80,17 @@ int main(int ac, char **av)
         },
     };
 
-    setup_resources(resource, options->width, options->height);
+    setup_resources(resource, map->width, map->height);
+
+    float number_of_resources = 0.0f;
+    for (int index = 0; index < NB_ITEMS ; index += 1)
+        number_of_resources += resource[index].quantity;
+
+    map->ratio = number_of_resources / map->size;
 
     fill_map(map, resource);
 
-    debug_map(map);
+    debug_map(map, resource);
 
     debug_resources(resource);
 

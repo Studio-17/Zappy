@@ -11,13 +11,14 @@
     #define RESSOURCE_QUANTITY(width, height, density) (width * height * density)
 
 enum ITEM {
+    FOOD,
     LINEMATE,
     DERAUMERE,
     SIBUR,
     MENDIANE,
     PHIRAS,
     THYSTAME,
-    NB_ITEMS = 6,
+    NB_ITEMS,
 };
 
 typedef struct resources_s {
@@ -28,6 +29,7 @@ typedef struct resources_s {
 } resources_t;
 
 void setup_resources(resources_t *resource, int width, int height);
+
 
 void debug_resources(resources_t *resource);
 void free_resources(resources_t *resources);

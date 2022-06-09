@@ -41,7 +41,7 @@ INCLUDE_DIRS	+=	-I include/tools/
 
 CFLAGS	+=	-W -Wall -Wextra
 CFLAGS	+=	$(INCLUDE_DIRS)
-CFLAGS	+=	-g3
+CFLAGS	+=	-lm
 
 NAME	=	zappy_server
 
