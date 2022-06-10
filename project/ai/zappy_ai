@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+##
+## EPITECH PROJECT, 2022
+## B-YEP-410-PAR-4-1-zappy-martin.vanaud
+## File description:
+## main
+##
+
+import socket
+import argparse
+
+from dataclasses import dataclass
+
+@dataclass
+class options:
+    port: int
+    name: list
+    machine: str
+
+def handle_arguments():
+    parser = argparse.ArgumentParser(description='./zappy_ai --help')
+    parser.add_argument('-p', '--port', dest='port', type=int,
+                        help='is the port number', default=8888, required=True)
+    parser.add_argument('-n', '--name', dest='name', type=str,
+                        help='is the name of the team', required=True)
+    parser.add_argument('-m', '--machine', dest='machine', type=str,
+                        help='is the name of the machine; localhost by default', default='localhost', required=True)
+
+    args = parser.parse_args()
+    return (args)
+
+def connect_to_server():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        sock.connect((opt.machine, opt.port))
+    except Exception as e:
+        print("Cannot connect to the server:", e)
+    print("Connected")
+    socket.sendall("map")
+    data = socket.recv(1024)
+    print(f"Received {data!r}")
+
+if __name__ == "__main__":
+    arguments = handle_arguments()
+    opt = options(arguments.port, arguments.name, arguments.machine)
+    print(opt.name)
+    connect_to_server()
