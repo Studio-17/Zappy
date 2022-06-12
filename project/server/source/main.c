@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <time.h>
 
+#include "server/server.h"
+
 #include "zappy/map/map.h"
 
 #include "options/options.h"
@@ -90,9 +92,11 @@ int main(int ac, char **av)
 
     fill_map(map, resource);
 
-    debug_map(map, resource);
+    server_t *server = malloc(sizeof(server_t));
 
-    debug_resources(resource);
+    int server_status = create_server(server);
+    if (server_status == EXIT_FAILURE)
+        return (EXIT_FAILURE);
 
     free_options(options);
 

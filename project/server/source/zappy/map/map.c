@@ -24,7 +24,7 @@ void fill_map(map_t *map, resources_t *resources_list)
     int ceilling = ceil(map->ratio);
 
     int resource = 0;
-    int resource_count = 0;
+    // int resource_count = 0;
 
     int count = 0;
 
@@ -35,8 +35,8 @@ void fill_map(map_t *map, resources_t *resources_list)
 
             map->tiles[map_width][map_height].resources = malloc(sizeof(resources_t) * ceilling);
 
-            resource_count = (rand() % ceilling);
-            for (int index = 0; index <= resource_count; index += 1) {
+            // resource_count = (rand() % ceilling);
+            for (int index = 0; index < ceilling; index += 1) {
                 resource = (rand() % NB_ITEMS);
                 if (resources_list[resource].quantity != 0) {
                     count += 1;
@@ -46,8 +46,6 @@ void fill_map(map_t *map, resources_t *resources_list)
             }
         }
     }
-
-    printf("total count: %d\n", count);
 }
 
 void debug_map(map_t *map, resources_t *resources_list)
