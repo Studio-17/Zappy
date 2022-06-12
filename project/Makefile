@@ -18,14 +18,12 @@ zappy_ai:
 	chmod +x ai/zappy_ai
 
 clean:
-	make clean -C ./src/core
-	make clean -C ./src/graphics/sdl2
-	make clean -C ./src/graphics/ncurses
+	make clean -C server/
+	make clean -C gui/
 
 fclean:	clean
-	make fclean -C ./src/core
-	make fclean -C ./src/graphics/sdl2
-	make fclean -C ./src/graphics/ncurses
+	make fclean -C server/
+	make fclean -C gui/
 
 re:	fclean all
 

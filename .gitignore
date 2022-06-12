@@ -50,3 +50,11 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# IDE Config files
+*.vscode
+*.idea
+
+# Zappy Files
+zappy_server
+zappy_gui
