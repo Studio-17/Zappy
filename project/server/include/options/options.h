@@ -34,7 +34,7 @@ typedef struct options_s {
     int width;
     int height;
     char *names;
-    int clientsNb;
+    int clients_nb;
     int freq;
 } options_t;
 

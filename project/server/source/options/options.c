@@ -16,7 +16,7 @@ void setup_options(options_t *options)
     options->width = -1;
     options->height = -1;
     options->names = NULL;
-    options->clientsNb = -1;
+    options->clients_nb = -1;
     options->freq = 100;
 }
 
@@ -30,7 +30,7 @@ int get_options(int ac, char **av, options_t *options)
         {"width", required_argument, 0, 'x'},
         {"heigth", required_argument, 0, 'y'},
         {"nameX", required_argument, 0, 'n'},
-        {"clientsNb", required_argument, 0, 'c'},
+        {"clients_nb", required_argument, 0, 'c'},
         {"freq", optional_argument, 0, 'f'},
         {0, 0, 0, 0}};
 
@@ -56,7 +56,7 @@ int get_options(int ac, char **av, options_t *options)
             options->names = optarg;
             break;
         case 'c':
-            options->clientsNb = my_atoi(optarg);
+            options->clients_nb = my_atoi(optarg);
             break;
         case 'f':
             options->freq = my_atoi(optarg);
@@ -73,14 +73,14 @@ int handle_options(options_t *options)
 {
     if (options->port == -1 || options->width == -1 ||
         options->height == -1 || options->names == NULL ||
-        options->clientsNb == -1)
+        options->clients_nb == -1)
     {
         print_usage(MISSING_OPTION);
         return (EXIT_FAILURE);
     }
     if (options->port == 0 || options->width == 0 ||
         options->height == 0 || options->names == NULL ||
-        options->clientsNb == 0)
+        options->clients_nb == 0)
     {
         print_usage(INVALID_OPTION);
         return (EXIT_FAILURE);
@@ -90,12 +90,12 @@ int handle_options(options_t *options)
 
 void debug_options(options_t *options)
 {
-    printf("port: %d\n", options->port);
-    printf("width: %d\n", options->width);
-    printf("height: %d\n", options->height);
-    printf("names: %s\n", options->names);
-    printf("clientsNb: %d\n", options->clientsNb);
-    printf("freq: %d\n", options->freq);
+    printf("[DEBUG] options->port: %d\n", options->port);
+    printf("[DEBUG] options->width: %d\n", options->width);
+    printf("[DEBUG] options->height: %d\n", options->height);
+    printf("[DEBUG] options->names: %s\n", options->names);
+    printf("[DEBUG] options->clients_nb: %d\n", options->clients_nb);
+    printf("[DEBUG] options->freq: %d\n", options->freq);
 }
 
 void free_options(options_t *options)

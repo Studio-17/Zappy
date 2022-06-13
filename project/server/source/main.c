@@ -94,13 +94,13 @@ int main(int ac, char **av)
 
     server_t *server = malloc(sizeof(server_t));
 
-    int server_status = create_server(server);
-    if (server_status == EXIT_FAILURE)
-        return (EXIT_FAILURE);
+    int server_status = old_server(server, options);
 
     free_options(options);
 
     free_map(map);
+
+    free(server);
 
     return (EXIT_SUCCESS);
 }

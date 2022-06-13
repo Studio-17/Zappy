@@ -8,6 +8,7 @@
 #ifndef REQUEST_H_
     #define REQUEST_H_
 
+    #include "server/server.h"
     #include "communication/response/response.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,19 +27,20 @@ enum COMMANDS_AI {
     CONNECT_NBR,
     FORK,
     EJECT,
-    DEATH,
+    // DEATH,
 
     TAKE_OBJECT,
     SET_OBJECT,
     INCANTATION,
+
+    NB_COMMANDS,
 };
 
 // REQUEST
 
 typedef struct request_ai_struct {
     enum COMMANDS_AI command;
-    char *received;
-    int (*func)();
+    char *request;
 } request_ai;
 
 int request_forward(void);
@@ -55,114 +57,13 @@ int request_take_object(void);
 int request_set_object(void);
 int request_incantation(void);
 
-static const request_ai request_ai_list[] = {
-    {FORWARD, "Forward", &request_forward},
-    {RIGHT, "Right", &request_right},
-    {LEFT, "Left", &request_left},
-    {LOOK, "Look", &request_look},
-    {INVENTORY, "Inventory", &request_inventory},
-    {BROADCAST_TEXT, "Broadcast", &request_broadcast_text},
-    {CONNECT_NBR, "Connect_nbr", &request_connect_nbr},
-    {FORK, "Fork", &request_fork},
-    {EJECT, "Eject", &request_eject},
-    {DEATH, "", &request_death},
-    {TAKE_OBJECT, "Take", &request_take_object},
-    {SET_OBJECT, "Set", &request_set_object},
-    {INCANTATION, "Incantation", &request_incantation},
-};
-
 // COMMANDS_AI
 
 typedef struct command_ai_struct {
     char *action;
-    request_ai command;
+    enum COMMANDS_AI command;
     float time_limit;
-    response_ai response;
 } command_ai;
-
-static const command_ai commands_ai[] = {
-    {
-        .action = "move up one tile",
-        .command = request_ai_list[FORWARD],
-        .time_limit = 7.0,
-        .response = response_ai_list[FORWARD],
-    },
-    {
-        .action = "turn 90° right",
-        .command = request_ai_list[RIGHT],
-        .time_limit = 7.0,
-        .response = response_ai_list[RIGHT],
-    },
-    {
-        .action = "turn 90° left",
-        .command = request_ai_list[LEFT],
-        .time_limit = 7.0,
-        .response = response_ai_list[LEFT],
-    },
-
-    {
-        .action = "look around",
-        .command = request_ai_list[LOOK],
-        .time_limit = 7.0,
-        .response = response_ai_list[LOOK],
-    },
-    {
-        .action = "invetory",
-        .command = request_ai_list[INVENTORY],
-        .time_limit = 1.0,
-        .response = response_ai_list[INVENTORY],
-    },
-    {
-        .action = "broadcast text",
-        .command = request_ai_list[BROADCAST_TEXT],
-        .time_limit = 7.0,
-        .response = response_ai_list[BROADCAST_TEXT],
-    },
-
-    {
-        .action = "number of team unused slots",
-        .command = request_ai_list[CONNECT_NBR],
-        .time_limit = 0.0,
-        .response = response_ai_list[CONNECT_NBR],
-    },
-    {
-        .action = "forks a player",
-        .command = request_ai_list[FORK],
-        .time_limit = 42.0,
-        .response = response_ai_list[FORK],
-    },
-    {
-        .action = "eject players from this tile",
-        .command = request_ai_list[EJECT],
-        .time_limit = 7.0,
-        .response = response_ai_list[EJECT],
-    },
-    {
-        .action = "death of a player",
-        .command = request_ai_list[DEATH],
-        .time_limit = 0.0,
-        .response = response_ai_list[DEATH],
-    },
-
-    {
-        .action = "take object",
-        .command = request_ai_list[TAKE_OBJECT],
-        .time_limit = 7.0,
-        .response = response_ai_list[TAKE_OBJECT],
-    },
-    {
-        .action = "set object down",
-        .command = request_ai_list[SET_OBJECT],
-        .time_limit = 7.0,
-        .response = response_ai_list[SET_OBJECT],
-    },
-    {
-        .action = "start incantation",
-        .command = request_ai_list[INCANTATION],
-        .time_limit = 300.0,
-        .response = response_ai_list[INCANTATION],
-    },
-};
 
 ////////////////////////////////////////////////////////////////////////////////
 // GUI
@@ -170,26 +71,70 @@ static const command_ai commands_ai[] = {
 
 enum COMMANDS_GUI {
     MAP_SIZE,
+    CONTENT_TILE,
+    CONTENT_MAP,
+    NAME_OF_TEAMS,
+    PLAYER_POSITION,
+    PLAYER_LEVEL,
+    PLAYER_INVENTORY,
+    TIME_UNIT,
+    TIME_UNIT_MODIFICATION,
 };
 
 // REQUEST GUI
-
-typedef struct request_gui_struct {
-    enum COMMANDS_GUI command;
-    char *received;
-    int (*func)();
-} request_gui;
 
 int request_map_size(void);
 
 // COMMANDS_AI
 
 typedef struct command_gui_struct {
+    enum COMMANDS_GUI command;
     char *action;
-    request_gui command;
-    float time_limit;
-    response_gui response;
+    char *received;
 } command_gui;
+
+static const command_gui commands_gui[] = {
+    {
+        .command = MAP_SIZE,
+        .action = "map size\n",
+        .received = "msz",
+    },
+    {
+        .command = CONTENT_TILE,
+        .action = "content of a file\n",
+        .received = "msz",
+    },
+    {
+        .command = CONTENT_MAP,
+        .action = "content of the map (all the tiles)\n",
+        .received = "bct",
+    },
+    {
+        .command = PLAYER_POSITION,
+        .action = "player's position\n",
+        .received = "ppo",
+    },
+    {
+        .command = PLAYER_LEVEL,
+        .action = "player's level\n",
+        .received = "plv",
+    },
+    {
+        .command = PLAYER_INVENTORY,
+        .action = "player's inventory\n",
+        .received = "pin",
+    },
+    {
+        .command = TIME_UNIT,
+        .action = "time unit request\n",
+        .received = "sgt",
+    },
+    {
+        .command = TIME_UNIT_MODIFICATION,
+        .action = "time unit modification\n",
+        .received = "sst",
+    },
+};
 
 void handle_request(server_t *server, char *command);
 

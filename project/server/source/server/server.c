@@ -8,7 +8,41 @@
 #include "server/server.h"
 #include "server/communication/request/request.h"
 
-int create_server(server_t *server)
+int create_server(server_t *server, options_t *options)
+{
+    server->sockfd = -1;
+
+    server->port = options->port;
+    server->max_clients = options->clients_nb;
+}
+
+void setup_server(server_t *server)
+{
+
+}
+
+void connect_server(server_t *server, char *team_name)
+{
+
+}
+
+int handle_server(server_t *server)
+{
+
+}
+
+void debug_server(server_t *server)
+{
+    printf("[DEBUG] server->port: %d\n", server->port);
+    printf("[DEBUG] server->max_clients: %d\n", server->max_clients);
+}
+
+void free_server(server_t *server)
+{
+    free(server);
+}
+
+int old_server(server_t *server)
 {
     int opt = 1;
     int master_socket, addrlen, new_socket, client_socket[30],
@@ -23,7 +57,7 @@ int create_server(server_t *server)
     fd_set readfds;
 
     // a message
-    char *message = "ECHO Daemon v1.0 \r\n";
+    char *message = "WELCOME\n";
 
     // initialise all client_socket[] to 0 so not checked
     for (i = 0; i < max_clients; i++)
@@ -50,7 +84,7 @@ int create_server(server_t *server)
     // type of socket created
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
+    address.sin_port = htons(8888);
 
     // bind the socket to localhost port 8888
     if (bind(master_socket, (struct sockaddr *)&address, sizeof(address)) < 0)
@@ -58,7 +92,7 @@ int create_server(server_t *server)
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
-    printf("Listener on port %d \n", PORT);
+    // printf("Listener on port %d \n", PORT);
 
     // try to specify maximum of 3 pending connections for the master socket
     if (listen(master_socket, 3) < 0)
@@ -69,7 +103,7 @@ int create_server(server_t *server)
 
     // accept the incoming connection
     addrlen = sizeof(address);
-    puts("Waiting for connections ...");
+    // puts("Waiting for connections ...");
 
     while (1)
     {
@@ -116,7 +150,7 @@ int create_server(server_t *server)
             }
 
             // inform user of socket number - used in send and receive commands
-            printf("New connection , socket fd is %d , ip is : %s , port : %d \n ", new_socket, inet_ntoa(address.sin_addr), ntohs(address.sin_port));
+            // printf("New connection , socket fd is %d , ip is : %s , port : %d \n ", new_socket, inet_ntoa(address.sin_addr), ntohs(address.sin_port));
 
             // send new connection greeting message
             if (send(new_socket, message, strlen(message), 0) != (ssize_t)strlen(message))
@@ -124,7 +158,7 @@ int create_server(server_t *server)
                 perror("send");
             }
 
-            puts("Welcome message sent successfully");
+            // puts("Welcome message sent successfully");
 
             // add new socket to array of sockets
             for (i = 0; i < max_clients; i++)
@@ -133,7 +167,7 @@ int create_server(server_t *server)
                 if (client_socket[i] == 0)
                 {
                     client_socket[i] = new_socket;
-                    printf("Adding to list of sockets as %d\n", i);
+                    // printf("Adding to list of sockets as %d\n", i);
 
                     break;
                 }
@@ -145,7 +179,7 @@ int create_server(server_t *server)
         {
             sd = client_socket[i];
 
-            server->port = PORT;
+            server->port = 8888;
             server->sockaddr = address;
             server->sockfd = sd;
 
@@ -159,8 +193,8 @@ int create_server(server_t *server)
                     // Somebody disconnected , get his details and print
                     getpeername(sd, (struct sockaddr *)&address,
                                 (socklen_t *)&addrlen);
-                    printf("Host disconnected , ip %s , port %d \n",
-                           inet_ntoa(address.sin_addr), ntohs(address.sin_port));
+                    // printf("Host disconnected , ip %s , port %d \n",
+                        // inet_ntoa(address.sin_addr), ntohs(address.sin_port));
 
                     // Close the socket and mark as 0 in list for reuse
                     close(sd);
@@ -170,27 +204,16 @@ int create_server(server_t *server)
                 // Echo back the message that came in
                 else
                 {
-                    // set the string terminating NULL byte on the end
-                    // of the data read
-                    // buffer[valread] = '\0';
+                    printf("team-name: %s\n", command);
+                    // send client id
+                    // send mapp length and width
 
-                    handle_request(server, command);
-
-                    // if (strncmp(buffer, "map\n", 3) == 0)
-                    // {
-                    //     printf("map command received\n");
-                    //     send(sd, "10x10\n", sizeof("10x10"), 0);
-                    // }
-
-                    // if (strncmp(buffer, "exit\n", 4) == 0) {
-                    //     send(sd, "exited\n", 5, 0);
-                    //     close(sd);
-                    //     client_socket[i] = 0;
-                    // }
+                    // handle_request(server, command);
                 }
             }
         }
     }
+
     free(server);
 
     return (0);

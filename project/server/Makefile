@@ -25,6 +25,7 @@ SOURCE	=	source/server/communication/request/request.c		\
 			source/options/usage.c								\
 			source/zappy/map/map.c								\
 			source/zappy/map/resources.c						\
+			source/tools/list.c									\
 			source/tools/tools.c								\
 
 MAIN_OBJ	=	$(MAIN_SOURCE:.c=.o)

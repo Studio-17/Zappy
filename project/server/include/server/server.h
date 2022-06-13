@@ -19,13 +19,12 @@
     #include <netinet/in.h>
     #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros
 
-
     #include "zappy/map/map.h"
 
-    #include "server/connection/client.h"
-    #include "server/communication/response/response.h"
+    #include "options/options.h"
 
-    #define PORT 8888
+    #include "server/connection/client.h"
+
     #define MAX_CLIENTS 10
 
 typedef struct informations_s {
@@ -38,17 +37,26 @@ typedef struct informations_s {
 typedef struct server_s {
     int sockfd;
     unsigned int port;
+    int max_clients;
     fd_set readfds;
     struct sockaddr_in sockaddr;
-    struct client_s clients[MAX_CLIENTS];
+    client_t *clients;
 } server_t;
 
-typedef struct server_request_s {
-    char *request;
-    enum CLIENT_TYPE type;
-    enum RESPONSE (*response)();
-} server_request_t;
+// typedef struct server_request_s {
+//     char *request;
+//     enum CLIENT_TYPE type;
+//     enum RESPONSE (*response)();
+// } server_request_t;
 
-int create_server(server_t *server);
+int create_server(server_t *server, options_t *options);
+
+void setup_server(server_t *server);
+void connect_server(server_t *server, char *team_name);
+
+int handle_server(server_t *server);
+
+void debug_server(server_t *server);
+void free_server(server_t *server);
 
 #endif /* !SERVER_H_ */

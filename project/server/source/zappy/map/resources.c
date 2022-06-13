@@ -16,9 +16,9 @@ void setup_resources(resources_t *resource, int width, int height)
 void debug_resources(resources_t *resource)
 {
     for (int index = 0; index < NB_ITEMS ; index += 1) {
-        printf("resource.name: %s\n", resource[index].name);
-        printf("resource.density: %f\n", resource[index].density);
-        printf("resource.quantity: %d\n", resource[index].quantity);
+        printf("[DEBUG] resource.name: %s\n", resource[index].name);
+        printf("[DEBUG] resource.density: %f\n", resource[index].density);
+        printf("[DEBUG] resource.quantity: %d\n", resource[index].quantity);
     }
 }
 

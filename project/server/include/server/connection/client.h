@@ -8,9 +8,10 @@
 #ifndef CLIENT_H_
     #define CLIENT_H_
 
+    #include "tools/list.h"
+
 enum CLIENT_TYPE {
     AI,
-    GRAPH,
     NB_TYPES,
 };
 
@@ -19,6 +20,7 @@ typedef struct client_s {
     int client_nb;
     enum CLIENT_TYPE type;
     // struct sockaddr_in addr;
+    list_t list;
 } client_t;
 
 #endif /* !CLIENT_H_ */

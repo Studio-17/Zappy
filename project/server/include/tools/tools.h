@@ -9,5 +9,6 @@
     #define TOOLS_H_
 
 int my_atoi(char *str);
+char *my_itoa(int num, char *str);
 
 #endif /* !TOOLS_H_ */

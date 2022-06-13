@@ -6,6 +6,7 @@
 */
 
 #include <string.h>
+#include <stdio.h>
 
 int my_atoi(char *string)
 {
@@ -22,4 +23,14 @@ int my_atoi(char *string)
         return (0);
 
     return (result);
+}
+
+char *my_itoa(int num, char *str)
+{
+        if(str == NULL)
+        {
+                return NULL;
+        }
+        sprintf(str, "%d", num);
+        return str;
 }

@@ -8,6 +8,8 @@
 #ifndef RESPONSE_H_
     #define RESPONSE_H_
 
+    #include <stdbool.h>
+
     #include "server/server.h"
 
 enum RESPONSE {
@@ -55,42 +57,36 @@ typedef struct response_ai_struct {
     int (*func)();
 } response_ai;
 
-int response_ok(void);
-int response_ko(void);
-int response_ok_ko(void);
-int response_tiles(void);
-int response_inventory(void);
-int response_value(void);
-int response_dead(void);
-int response_elevation_underway(void);
+void response_ok(server_t *server, void *data);
+void response_ko(server_t *server, void *data);
 
-static const response_ai response_ai_list[] = {
-    {OK, &response_ok},
-    {OK, &response_ok},
-    {OK, &response_ok},
-    {TILES_LIST, &response_tiles},
-    {INVENTORY_LIST, &response_inventory},
-    {OK, &response_ok},
-    {VALUE, &response_value},
-    {OK, &response_ok},
-    {OK_KO, &response_ok_ko},
-    {DEAD, &response_dead},
-    {OK_KO, &response_ok_ko},
-    {OK_KO, &response_ok_ko},
-    {ELEVATION_UNDERWAY, &response_elevation_underway},
-};
+void response_ok_ko(server_t *server, void *data);
+
+void response_tiles(server_t *server, void *data);
+void response_inventory(server_t *server, void *data);
+
+void response_value(server_t *server, void *data);
+
+void response_dead(server_t *server, void *data);
+
+typedef struct response_elevation_struct {
+    bool status;
+    int level;
+} response_elevation;
+
+void response_elevation_underway(server_t *server, void *data);
 
 // GUI_RESPONSE
 
-typedef struct response_gui_struct {
-    enum RESPONSE response;
-    int (*func)();
-} response_gui;
+// typedef struct response_gui_struct {
+//     enum RESPONSE response;
+//     int (*func)();
+// } response_gui;
 
-int response_ok(void);
+// int response_ok(void);
 
-static const response_gui response_gui_list[] = {
-    {OK, &response_ok},
-};
+// static const response_gui response_gui_list[] = {
+//     {OK, &response_ok},
+// };
 
 #endif /* !RESPONSE_H_ */
