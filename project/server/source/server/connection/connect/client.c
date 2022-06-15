@@ -6,22 +6,30 @@
 */
 
 #include "minilib.h"
+#include "netlib.h"
 
 #include "server/server.h"
 
-void get_request(int client_socket)
+void client_sent_request(server_t *server, int client_socket)
 {
-    char msg[24] = {0};
+    char *request = get_request(client_socket);
+    send_response(client_socket, "OUCOUC\n");
+}
 
-    bzero(msg, sizeof(msg));
-    recv(client_socket, msg, sizeof(msg), 0);
+static void handle_client(server_t *server)
+{
+    for (int index = 0; index < server->ss->max_client; index += 1) {
 
-    printf("[SERVER RECV] %s", msg);
+        server->sd->socket_descriptor = server->ss->client[index];
+
+        client_sent_request(server, server->ss->client[index]);
+    }
 }
 
 void connect_client(server_t *server)
 {
     int client_socket;
+
     if (FD_ISSET(server->ss->server, &server->sd->readfd))
     {
         if ((client_socket = accept(server->ss->server,
@@ -31,13 +39,16 @@ void connect_client(server_t *server)
             exit(EXIT_FAILURE);
         }
 
-        send_response(server, client_socket, "WELCOME\n");
-        get_request(client_socket);
-        send_response(server, client_socket, strcat(my_itoa(client_socket), "\n"));
-        send_response(server, client_socket, "10x10\n");
-
         add_client_to_server(server, client_socket);
+
+        printf("%s\n", get_request(client_socket));
+        send_response(client_socket, "WELCOME");
+
+        printf("%s\n", get_request(client_socket));
+        send_response(client_socket, strcat(my_itoa(client_socket), "\n10 10"));
     }
+
+    handle_client(server);
 }
 
 void clear_socket_set(server_t *server)
@@ -65,25 +76,11 @@ void add_client_socket_to_set(server_t *server)
     }
 }
 
-bool wait_for_connections(server_t *server)
+void wait_for_connections(server_t *server)
 {
     if ((select(server->sd->max_socket_descriptor + 1, &server->sd->readfd, NULL, NULL, NULL) < 0))
     {
         perror("select");
-        return (false);
-    } else {
-        return (true);
-    }
-}
-
-void send_response(server_t *server, int client_socket, char *message)
-{
-    printf("[SERVER SEND] %s", message);
-
-    if (send(client_socket, message, strlen(message), 0) != (ssize_t)strlen(message))
-    {
-        perror("send");
-        exit(EXIT_FAILURE);
     }
 }
 

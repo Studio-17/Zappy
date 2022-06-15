@@ -5,6 +5,8 @@
 ** server
 */
 
+#include "netlib.h"
+
 #include "server/server.h"
 #include "server/communication/request/request.h"
 
@@ -24,10 +26,9 @@ void create_server(server_t *server, options_t *options)
         add_server_socket_to_set(server);
         add_client_socket_to_set(server);
 
-        if (wait_for_connections(server))
-            connect_client(server);
+        wait_for_connections(server);
 
-        handle_server(server);
+        connect_client(server);
     }
 }
 
@@ -35,30 +36,6 @@ void client_deconnected(server_t *server, int client_socket)
 {
     close(server->sd->socket_descriptor);
     server->ss->client[client_socket] = 0;
-}
-
-void client_sent_request(server_t *server, int client_socket, char *command)
-{
-    return;
-}
-
-void handle_server(server_t *server)
-{
-    char request[MESSAGE_SIZE];
-    int read_status;
-
-    for (int index = 0; index < server->ss->max_client; index += 1)
-    {
-        server->sd->socket_descriptor = server->ss->client[index];
-
-        if (FD_ISSET(server->sd->socket_descriptor, &server->sd->readfd))
-        {
-            if ((read_status = read(server->sd->socket_descriptor, request, MESSAGE_SIZE)) == 0)
-                client_deconnected(server, index);
-            else
-                client_sent_request(server, index, request);
-        }
-    }
 }
 
 void debug_server(server_t *server)

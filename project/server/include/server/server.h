@@ -64,13 +64,14 @@ void connect_client(server_t *server);
 void clear_socket_set(server_t *server);
 void add_server_socket_to_set(server_t *server);
 void add_client_socket_to_set(server_t *server);
-bool wait_for_connections(server_t *server);
+void wait_for_connections(server_t *server);
 void add_client_to_server(server_t *server, int client_socket);
 
 // HANDLE SERVER
 void handle_server(server_t *server);
 void client_deconnected(server_t *server, int client_socketn);
-void client_sent_request(server_t *server, int client_socket, char *command);
+
+void client_sent_request(server_t *server, int client_socket);
 
 // void send_response(server_t *server, int client_socket, char *message);
 // void get_request(int client_socket)

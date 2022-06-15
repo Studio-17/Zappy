@@ -16,7 +16,7 @@ enum CLIENT_TYPE {
     NB_TYPES,
 };
 
-typedef struct client_s {
+typedef struct server_client_s {
     int sockfd;
     int client_nb;
     enum CLIENT_TYPE type;
