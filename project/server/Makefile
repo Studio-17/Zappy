@@ -1,6 +1,6 @@
 ##
 ## EPITECH PROJECT, 2022
-## B-EPI-000-PAR-0-0-projectname-user.email
+## B-YEP-410-PAR-4-1-zappy-martin.vanaud
 ## File description:
 ## Makefile
 ##
@@ -17,23 +17,54 @@ DELETE_DIR	=	$(DELETE) -r
 
 MAIN_SOURCE	=	source/main.c			\
 
-SOURCE	=	\
+SOURCE	=	source/server/communication/request/request.c	\
+			source/server/communication/response/response.c	\
+			source/server/server.c							\
+			source/server/connection/connect/client.c		\
+			source/server/connection/connect/server.c		\
+			source/server/connection/setup/setup.c			\
+			source/errors/errors.c							\
+			source/options/options.c						\
+			source/options/usage.c							\
+			source/zappy/map/map.c							\
+			source/zappy/map/resources.c					\
 
 MAIN_OBJ	=	$(MAIN_SOURCE:.c=.o)
 
-OBJ	=	$(SOURCE:.cpp=.o)
+OBJ	=	$(SOURCE:.c=.o)
 
-INCLUDE_DIRS	=	-I source/errors/
+INCLUDE_DIRS	+=	-I ../library/include/
+INCLUDE_DIRS	+=	-I include/
+INCLUDE_DIRS	+=	-I include/server/
+INCLUDE_DIRS	+=	-I include/server/communication/
+INCLUDE_DIRS	+=	-I include/server/communication/request/
+INCLUDE_DIRS	+=	-I include/server/communication/response/
+INCLUDE_DIRS	+=	-I include/server/client/
+INCLUDE_DIRS	+=	-I include/errors/
+INCLUDE_DIRS	+=	-I include/options/
+INCLUDE_DIRS	+=	-I include/zappy/
+INCLUDE_DIRS	+=	-I include/zappy/elevation/
+INCLUDE_DIRS	+=	-I include/zappy/vision/
+INCLUDE_DIRS	+=	-I include/zappy/map/
+INCLUDE_DIRS	+=	-I include/zappy/teams/
 
 CFLAGS	+=	-W -Wall -Wextra
 CFLAGS	+=	$(INCLUDE_DIRS)
+
+LDFLAGS	+=	-lm
+LDFLAGS	+=	-L ../library/
+
+LDLIBS	+=	-llist
+LDLIBS	+=	-lmini
+LDLIBS	+=	-lnet
 
 NAME	=	zappy_server
 
 all: $(NAME)
 
 $(NAME): $(MAIN_OBJ) $(OBJ)
-	@$(CC) -o $(NAME) $(MAIN_OBJ) $(OBJ) $(CFLAGS)
+	@make -C ../library/
+	@$(CC) -o $(NAME) $(MAIN_OBJ) $(OBJ) $(CFLAGS) $(LDFLAGS) $(LDLIBS)
 
 clean:
 	@$(DELETE_FILE) $(MAIN_OBJ)
