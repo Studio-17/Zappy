@@ -5,14 +5,24 @@
 ** main
 */
 
-#include "options/options.h"
+#include <signal.h>
 
-#include "client/client.h"
+#include "ai/include/options/options.h"
+
+#include "ai/include/client/client.h"
+
+void sigint_handler(__attribute__((unused)) int sig)
+{
+    printf("Logging off client ...\n");
+    exit(0);
+}
 
 int main(int ac, char **av)
 {
     int options_status = 1;
     options_t *options = malloc(sizeof(options_t));
+
+    signal(SIGINT, sigint_handler);
 
     setup_options(options);
 

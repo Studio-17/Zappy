@@ -5,7 +5,15 @@
 ** client
 */
 
-#include "client/client.h"
+#define _GNU_SOURCE
+
+#include <stdio.h>
+
+#include "netlib.h"
+#include "minilib.h"
+
+#include "ai/include/client/client.h"
+#include "ai/include/options/options.h"
 
 void setup_client(client_t *client, options_t *options)
 {
@@ -25,32 +33,16 @@ void setup_client(client_t *client, options_t *options)
     client->server.sin_port = htons(port);
 }
 
-void get_greeting_message(int sockfd)
-{
-    char msg[24] = {0};
-    bzero(msg, sizeof(msg));
-    recv(sockfd, msg, sizeof(msg), 0);
-
-    printf("[CLIENT RECV] %s", msg);
-}
-
-void send_request(int sockfd, char *request)
-{
-    printf("[CLIENT SEND] %s", request);
-
-    send(sockfd, request, sizeof(request), 0);
-}
-
 void connect_client(client_t *client, char *team_name)
 {
     if (connect(client->socket, (struct sockaddr *)&client->server, sizeof(client->server)) != 0) {
         perror("connect");
         exit(0);
     } else {
-        get_greeting_message(client->socket);
-        send_request(client->socket, strcat(team_name, "\n"));
-        get_greeting_message(client->socket);
-        get_greeting_message(client->socket);
+        handle_client(client);
+        while (1) {
+            continue;
+        }
     }
 }
 
@@ -67,10 +59,12 @@ void free_client(client_t *client)
 
 int handle_client(client_t *client)
 {
-    bool exited = false;
+    char *identification = NULL;
+    asprintf(&identification, "IA Client Connected on socket %d, at address %s\n", client->socket, inet_ntoa(client->server.sin_addr));
 
-    while (1) {
-        if (exited)
-            close(client->socket);
-    }
+    send_request(client->socket, identification);
+    printf("%s\n", get_response(client->socket));
+
+    send_request(client->socket, "martin");
+    printf("%s\n", get_response(client->socket));
 }
