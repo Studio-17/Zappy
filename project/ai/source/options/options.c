@@ -5,8 +5,8 @@
 ** options
 */
 
-#include "options/options.h"
-#include "options/usage.h"
+#include "ai/include/options/options.h"
+#include "ai/include/options/usage.h"
 
 #include "minilib.h"
 
