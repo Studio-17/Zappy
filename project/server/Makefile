@@ -19,6 +19,9 @@ MAIN_SOURCE	=	source/main.c			\
 
 SOURCE	=	source/server/communication/request/request.c		\
 			source/server/communication/response/response.c		\
+			source/server/connection/connect/client.c			\
+			source/server/connection/connect/server.c			\
+			source/server/connection/setup/setup.c				\
 			source/server/server.c								\
 			source/errors/errors.c								\
 			source/options/options.c							\
@@ -37,7 +40,7 @@ INCLUDE_DIRS	+=	-I include/server/
 INCLUDE_DIRS	+=	-I include/server/communication/
 INCLUDE_DIRS	+=	-I include/server/communication/request/
 INCLUDE_DIRS	+=	-I include/server/communication/response/
-INCLUDE_DIRS	+=	-I include/server/connection/
+INCLUDE_DIRS	+=	-I include/server/client/
 INCLUDE_DIRS	+=	-I include/errors/
 INCLUDE_DIRS	+=	-I include/options/
 INCLUDE_DIRS	+=	-I include/zappy/

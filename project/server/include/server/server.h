@@ -23,24 +23,30 @@
 
     #include "options/options.h"
 
-    #include "server/connection/client.h"
+    #include "server/client/client.h"
 
-    #define MAX_CLIENTS 10
+    #define MESSAGE_SIZE 512
 
-typedef struct informations_s {
-    char *address;
-    int server_port;
-    int ai_port;
-    int gui_port;
-} informations_t;
+typedef struct server_socket_s {
+    int server;
+    int *client;
+    int max_client;
+} server_socket_t;
+
+typedef struct server_socket_descriptor_s {
+    fd_set readfd;
+    int socket_descriptor;
+    int max_socket_descriptor;
+} server_socket_descriptor_t;
 
 typedef struct server_s {
-    int sockfd;
-    unsigned int port;
-    int max_clients;
-    fd_set readfds;
-    struct sockaddr_in sockaddr;
-    client_t *clients;
+    int port;
+    struct sockaddr_in address;
+    int address_length;
+
+    server_socket_t *ss;
+
+    server_socket_descriptor_t *sd;
 } server_t;
 
 // typedef struct server_request_s {
@@ -49,12 +55,31 @@ typedef struct server_s {
 //     enum RESPONSE (*response)();
 // } server_request_t;
 
-int create_server(server_t *server, options_t *options);
+void create_server(server_t *server, options_t *options);
 
-void setup_server(server_t *server);
-void connect_server(server_t *server, char *team_name);
+// SETUP SERVER
+void setup_server(server_t *server, options_t *options);
+void initialise_all_clients_sockets(server_t *server);
+void create_server_socket(server_t *server);
+void allow_multiple_connections(server_t *server);
 
-int handle_server(server_t *server);
+// CONNECT SERVER
+void configure_socket_type(server_t *server);
+void bind_socket_to_server(server_t *server);
+
+// CONNECT CLIENT
+void connect_client(server_t *server);
+void clear_socket_set(server_t *server);
+void add_server_socket_to_set(server_t *server);
+void add_client_socket_to_set(server_t *server);
+bool wait_for_connections(server_t *server);
+void send_greeting_message(server_t *server, int client_socket);
+void add_client_to_server(server_t *server, int client_socket);
+
+// HANDLE SERVER
+void handle_server(server_t *server);
+void client_deconnected(server_t *server, int client_socketn);
+void client_sent_request(server_t *server, int client_socket, char *command);
 
 void debug_server(server_t *server);
 void free_server(server_t *server);
