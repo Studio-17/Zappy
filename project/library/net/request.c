@@ -7,12 +7,17 @@
 
 #include "netlib.h"
 
-void get_request(void)
+char *get_request(int socket)
 {
-    return;
+    char *message = malloc(sizeof(char) * 2048);
+
+    if (read(socket, message, sizeof(char) * 2048) == -1)
+        perror("read");
+
+    return (message);
 }
 
-void send_request(void)
+void send_request(int socket, char *message)
 {
-    return;
+    write(socket, message, strlen(message));
 }

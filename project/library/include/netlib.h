@@ -8,10 +8,19 @@
 #ifndef NETLIB_H_
     #define NETLIB_H_
 
-void get_response(void);
-void send_response(void);
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <unistd.h>
 
-void get_request(void);
-void send_request(void);
+    #include <string.h>
+    #include <sys/types.h>
+
+    #include <sys/socket.h>
+
+char *get_response(int socket);
+void send_response(int socket, char *message);
+
+char *get_request(int socket);
+void send_request(int socket, char *message);
 
 #endif /* !NETLIB_H_ */
