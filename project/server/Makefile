@@ -57,7 +57,7 @@ CFLAGS	+=	$(INCLUDE_DIRS)
 
 LDFLAGS	+=	-lm
 LDFLAGS	+=	-L ../library/
-LDFLAGS	=	-l criterion --coverage
+LDFLAGS	+=	-l criterion --coverage
 
 LDLIBS	+=	-llist
 LDLIBS	+=	-lmini
@@ -86,7 +86,7 @@ fclean:	clean
 
 tests_run: $(OBJ) $(SOURCE_OBJ)
 	@make -C ../library/
-	@$(CC) -o $(NAME) $(SOURCE) $(TEST_SOURCE) $(CFLAGS) $(LDFLAGS) $(LDLIBS)
+	@$(CC) -o $(TEST_NAME) $(SOURCE) $(TEST_SOURCE) $(CFLAGS) $(LDFLAGS) $(LDLIBS)
 	@./unit_tests
 	@gcovr
 	@gcovr --branches
