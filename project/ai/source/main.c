@@ -32,5 +32,7 @@ int main(int ac, char **av)
 
     free_options(options);
 
+    free_client(client);
+
     return (EXIT_SUCCESS);
 }

@@ -22,15 +22,14 @@
 
     #include "options/options.h"
 
-typedef struct informations_s {
-    int port;
-    char *address;
-} informations_t;
+// typedef struct informations_s {
+//     int port;
+//     char *address;
+// } informations_t;
 
 typedef struct client_s {
     int socket;
     struct sockaddr_in server;
-    informations_t *informations;
 } client_t;
 
 void setup_client(client_t *client, options_t *options);

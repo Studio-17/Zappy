@@ -14,7 +14,7 @@ void setup_options(options_t *options)
 {
     options->port = -1;
     options->name = NULL;
-    options->machine = "localhost";
+    options->machine = "127.0.0.1";
 }
 
 int get_options(int ac, char **av, options_t *options)
@@ -43,7 +43,7 @@ int get_options(int ac, char **av, options_t *options)
         case 'n':
             options->name = optarg;
             break;
-        case 'm':
+        case 'h':
             options->machine = optarg;
             break;
         default:

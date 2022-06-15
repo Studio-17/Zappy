@@ -12,21 +12,17 @@ void setup_client(client_t *client, options_t *options)
     int port = options->port;
     char *machine = options->machine;
 
-    client->informations = malloc(sizeof(informations_t));
-
-    client->informations->port = port;
-    client->informations->address = machine;
-
     client->socket = socket(AF_INET, SOCK_STREAM, 0);
     if (client->socket == -1) {
         perror("socket");
         exit(0);
     }
+
     bzero(&client->server, sizeof(client->server));
 
     client->server.sin_family = AF_INET;
-    client->server.sin_addr.s_addr = inet_addr(client->informations->address);
-    client->server.sin_port = htons(client->informations->port);
+    client->server.sin_addr.s_addr = inet_addr(machine);
+    client->server.sin_port = htons(port);
 }
 
 void get_greeting_message(int sockfd)
@@ -64,9 +60,6 @@ void debug_client(client_t *client)
 {
     printf("[DEBUG] client->socket: %d\n", client->socket);
     printf("[DEBUG] client->server: %d\n", client->server.sin_port);
-
-    printf("[DEBUG] client->informations->port: %d\n", client->informations->port);
-    printf("[DEBUG] client->informations->address: %s\n", client->informations->address);
 }
 
 void free_client(client_t *client)
