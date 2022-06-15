@@ -18,8 +18,6 @@ DELETE_DIR	=	$(DELETE) -r
 MAIN_SOURCE	=	source/main.c			\
 
 SOURCE	=	source/client/client.c				\
-			source/client/communication/recv.c 	\
-			source/client/communication/send.c 	\
 			source/options/options.c			\
 			source/options/usage.c				\
 
@@ -28,9 +26,9 @@ MAIN_OBJ	=	$(MAIN_SOURCE:.c=.o)
 OBJ	=	$(SOURCE:.c=.o)
 
 INCLUDE_DIRS	+=	-I ../library/include/
+INCLUDE_DIRS	+=	-I ..
 INCLUDE_DIRS	+=	-I include/
 INCLUDE_DIRS	+=	-I include/client/
-INCLUDE_DIRS	+=	-I include/client/communication/
 INCLUDE_DIRS	+=	-I include/options/
 
 CFLAGS	+=	-W -Wall -Wextra
