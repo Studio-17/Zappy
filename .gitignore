@@ -41,6 +41,8 @@
 *.su
 *.idb
 *.pdb
+*.gcno
+*.gcda
 
 # Kernel Module Compile Results
 *.mod*
@@ -59,3 +61,4 @@ dkms.conf
 zappy_server
 zappy_gui
 zappy_ai
+unit_tests
