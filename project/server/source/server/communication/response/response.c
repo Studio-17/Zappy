@@ -16,7 +16,6 @@
 
 void send_response(void)
 {
-
 }
 
 enum RESPONSE set_player_position(void)
@@ -73,12 +72,12 @@ enum RESPONSE start_incantation(void)
 
 void response_ok(server_t *server, __attribute__((unused)) void *data)
 {
-    send(server->sockfd, "ok\n", 3, 0);
+    send(server->ss->server, "ok\n", 3, 0);
 }
 
 void response_ko(server_t *server, __attribute__((unused)) void *data)
 {
-    send(server->sockfd, "ko\n", 3, 0);
+    send(server->ss->server, "ko\n", 3, 0);
 }
 
 void response_ok_ko(server_t *server, void *data)
@@ -86,19 +85,19 @@ void response_ok_ko(server_t *server, void *data)
     bool status = *(bool *)data;
 
     if (status)
-        send(server->sockfd, "ok\n", 3, 0);
+        send(server->ss->server, "ok\n", 3, 0);
     else
-        send(server->sockfd, "ko\n", 3, 0);
+        send(server->ss->server, "ko\n", 3, 0);
 }
 
 void response_tiles(server_t *server, __attribute__((unused)) void *data)
 {
-    send(server->sockfd, "Not implemented yet\n", 21, 0);
+    send(server->ss->server, "Not implemented yet\n", 21, 0);
 }
 
 void response_inventory(server_t *server, __attribute__((unused)) void *data)
 {
-    send(server->sockfd, "Not implemented yet\n", 21, 0);
+    send(server->ss->server, "Not implemented yet\n", 21, 0);
 }
 
 void response_value(server_t *server, void *data)
@@ -107,22 +106,24 @@ void response_value(server_t *server, void *data)
     char *message = my_itoa(value, message);
     strcat(message, "\n");
 
-    send(server->sockfd, message, strlen(message), 0);
+    send(server->ss->server, message, strlen(message), 0);
 }
 
 void response_dead(server_t *server, __attribute__((unused)) void *data)
 {
-    send(server->sockfd, "dead\n", 5, 0);
+    send(server->ss->server, "dead\n", 5, 0);
 }
 
 void response_elevation_underway(server_t *server, void *data)
 {
     response_elevation elevation = *(response_elevation *)data;
 
-    if (elevation.status) {
+    if (elevation.status)
+    {
         char *message = "Elevation underway Current level: ";
         strcat(message, strcat(my_itoa(elevation.level, message), "\n"));
-        send(server->sockfd, message, strlen(message), 0);
-    } else
-        send(server->sockfd, "ko\n", 3, 0);
+        send(server->ss->server, message, strlen(message), 0);
+    }
+    else
+        send(server->ss->server, "ko\n", 3, 0);
 }

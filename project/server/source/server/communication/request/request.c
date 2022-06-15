@@ -91,18 +91,20 @@ void handle_request(server_t *server, char *command)
 {
     printf("[REQUEST] %s\n", command);
 
-    int (*REQUEST[])() = { &request_forward, &request_right, &request_left,
-    &request_look, &request_inventory, &request_broadcast_text,
-    &request_connect_nbr, &request_fork, &request_eject, &request_take_object,
-    &request_set_object, &request_incantation };
+    int (*REQUEST[])() = {&request_forward, &request_right, &request_left,
+                          &request_look, &request_inventory, &request_broadcast_text,
+                          &request_connect_nbr, &request_fork, &request_eject, &request_take_object,
+                          &request_set_object, &request_incantation};
 
     // void (*RESPONSE[])(server_t *, void *) = { &response_ok, &response_ok,
     // &response_ok, &response_tiles, &response_inventory, &response_ok,
     // &response_value, &response_ok, &response_ok_ko, &response_ok_ko,
     // &response_ok_ko, &response_elevation_underway };
 
-    for (int index = 0; index < NB_COMMANDS; index += 1) {
-        if (strncmp(command, request_ai_list[index].request, strlen(request_ai_list[index].request)) == 0) {
+    for (int index = 0; index < NB_COMMANDS; index += 1)
+    {
+        if (strncmp(command, request_ai_list[index].request, strlen(request_ai_list[index].request)) == 0)
+        {
             printf("[RESPONSE] %s\n", commands_ai[request_ai_list[index].command].action);
             printf("%d\n", REQUEST[index]());
             // RESPONSE[index](server, NULL);
