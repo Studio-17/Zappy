@@ -9,14 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "tools/tools.h"
+#include "minilib.h"
 
 #include "server/server.h"
 #include "server/communication/response/response.h"
-
-void send_response(void)
-{
-}
 
 enum RESPONSE set_player_position(void)
 {
@@ -103,7 +99,7 @@ void response_inventory(server_t *server, __attribute__((unused)) void *data)
 void response_value(server_t *server, void *data)
 {
     int value = *(int *)data;
-    char *message = my_itoa(value, message);
+    char *message = my_itoa(value);
     strcat(message, "\n");
 
     send(server->ss->server, message, strlen(message), 0);
@@ -121,7 +117,7 @@ void response_elevation_underway(server_t *server, void *data)
     if (elevation.status)
     {
         char *message = "Elevation underway Current level: ";
-        strcat(message, strcat(my_itoa(elevation.level, message), "\n"));
+        strcat(message, strcat(my_itoa(elevation.level), "\n"));
         send(server->ss->server, message, strlen(message), 0);
     }
     else

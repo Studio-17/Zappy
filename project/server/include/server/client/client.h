@@ -8,7 +8,8 @@
 #ifndef CLIENT_H_
     #define CLIENT_H_
 
-    #include "tools/list.h"
+    #include "minilib.h"
+    #include "listlib.h"
 
 enum CLIENT_TYPE {
     AI,

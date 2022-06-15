@@ -9,11 +9,16 @@
     #define ZAPPY_H_
 
     #include "options/options.h"
+
+    #include "server/server.h"
+
     #include "zappy/map/map.h"
     #include "zappy/map/resources.h"
 
 typedef struct zappy_s {
     options_t *options;
+
+    server_t *server;
 
     map_t *map;
     resources_t *ressources;

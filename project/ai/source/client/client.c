@@ -31,18 +31,14 @@ void get_greeting_message(int sockfd)
     bzero(msg, sizeof(msg));
     recv(sockfd, msg, sizeof(msg), 0);
 
-    printf("%s", msg);
+    printf("[CLIENT RECV] %s", msg);
 }
 
 void send_request(int sockfd, char *request)
 {
+    printf("[CLIENT SEND] %s", request);
+
     send(sockfd, request, sizeof(request), 0);
-
-    char msg[24] = {0};
-    bzero(msg, sizeof(msg));
-    recv(sockfd, msg, sizeof(msg), 0);
-
-    printf("%s", msg);
 }
 
 void connect_client(client_t *client, char *team_name)
@@ -52,7 +48,9 @@ void connect_client(client_t *client, char *team_name)
         exit(0);
     } else {
         get_greeting_message(client->socket);
-        send_request(client->socket, team_name);
+        send_request(client->socket, strcat(team_name, "\n"));
+        get_greeting_message(client->socket);
+        get_greeting_message(client->socket);
     }
 }
 

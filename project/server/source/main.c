@@ -12,6 +12,7 @@
 
 #include "server/server.h"
 
+#include "zappy/zappy.h"
 #include "zappy/map/map.h"
 
 #include "options/options.h"
@@ -20,22 +21,24 @@ int main(int ac, char **av)
 {
     srand(time(NULL));
 
+    zappy_t *zappy = malloc(sizeof(zappy_t));
+
     int options_status = 1;
-    options_t *options = malloc(sizeof(options_t));
+    zappy->options = malloc(sizeof(options_t));
 
-    setup_options(options);
+    setup_options(zappy->options);
 
-    options_status = get_options(ac, av, options);
+    options_status = get_options(ac, av, zappy->options);
     if (options_status == EXIT_FAILURE)
         return (EXIT_FAILURE);
 
-    options_status = handle_options(options);
+    options_status = handle_options(zappy->options);
     if (options_status == EXIT_FAILURE)
         return (EXIT_FAILURE);
 
-    map_t *map = malloc(sizeof(map_t));
+    zappy->map = malloc(sizeof(map_t));
 
-    create_map(map, options->width, options->height);
+    create_map(zappy->map, zappy->options->width, zappy->options->height);
 
     resources_t resource[] = {
         {
@@ -82,25 +85,25 @@ int main(int ac, char **av)
         },
     };
 
-    setup_resources(resource, map->width, map->height);
+    setup_resources(resource, zappy->map->width, zappy->map->height);
 
     float number_of_resources = 0.0f;
     for (int index = 0; index < NB_ITEMS ; index += 1)
         number_of_resources += resource[index].quantity;
 
-    map->ratio = number_of_resources / map->size;
+    zappy->map->ratio = number_of_resources / zappy->map->size;
 
-    fill_map(map, resource);
+    fill_map(zappy->map, resource);
 
-    server_t *server = malloc(sizeof(server_t));
+    zappy->server = malloc(sizeof(server_t));
 
-    int server_status = old_server(server, options);
+    create_server(zappy->server, zappy->options);
 
-    free_options(options);
+    free_options(zappy->options);
 
-    free_map(map);
+    free_map(zappy->map);
 
-    free(server);
+    free_server(zappy->server);
 
     return (EXIT_SUCCESS);
 }

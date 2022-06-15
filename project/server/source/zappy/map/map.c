@@ -28,17 +28,21 @@ void fill_map(map_t *map, resources_t *resources_list)
 
     int count = 0;
 
-    for (int map_width = 0; map_width < map->width; map_width += 1) {
-        for (int map_height = 0; map_height < map->height; map_height += 1) {
+    for (int map_width = 0; map_width < map->width; map_width += 1)
+    {
+        for (int map_height = 0; map_height < map->height; map_height += 1)
+        {
             map->tiles[map_width][map_height].width = map_width;
             map->tiles[map_width][map_height].heigth = map_height;
 
             map->tiles[map_width][map_height].resources = malloc(sizeof(resources_t) * ceilling);
 
             // resource_count = (rand() % ceilling);
-            for (int index = 0; index < ceilling; index += 1) {
+            for (int index = 0; index < ceilling; index += 1)
+            {
                 resource = (rand() % NB_ITEMS);
-                if (resources_list[resource].quantity != 0) {
+                if (resources_list[resource].quantity != 0)
+                {
                     count += 1;
                     map->tiles[map_width][map_height].resources[index] = resources_list[resource];
                     resources_list[resource].quantity -= 1;
@@ -55,9 +59,12 @@ void debug_map(map_t *map, resources_t *resources_list)
 
     printf("[DEBUG] map->size: %f\n", map->size);
 
-    for (int map_width = 0; map_width < map->width; map_width += 1) {
-        for (int map_height = 0; map_height < map->height; map_height += 1) {
-            for (int index = 0; index < ceil(map->ratio); index += 1) {
+    for (int map_width = 0; map_width < map->width; map_width += 1)
+    {
+        for (int map_height = 0; map_height < map->height; map_height += 1)
+        {
+            for (int index = 0; index < ceil(map->ratio); index += 1)
+            {
                 printf("[DEBUG] map->tiles[%d][%d].resources[%d]: %s\n", map->tiles[map_width][map_height].heigth, map->tiles[map_width][map_height].width, index, map->tiles[map_width][map_height].resources[index].name);
             }
         }
@@ -74,8 +81,10 @@ void debug_map(map_t *map, resources_t *resources_list)
 
 void free_map(map_t *map)
 {
-    for (int map_width = 0; map_width < map->width; map_width += 1) {
-        for (int map_heigth = 0; map_heigth < map->height; map_heigth += 1) {
+    for (int map_width = 0; map_width < map->width; map_width += 1)
+    {
+        for (int map_heigth = 0; map_heigth < map->height; map_heigth += 1)
+        {
             free(map->tiles[map_width][map_heigth].resources);
         }
         free(map->tiles[map_width]);

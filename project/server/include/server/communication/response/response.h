@@ -29,8 +29,6 @@ enum RESPONSE {
 
 // AI_RESPONSE
 
-void send_response(void);
-
 enum RESPONSE set_player_position(void);
 
 enum RESPONSE get_player_surroundings(void);

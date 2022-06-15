@@ -9,13 +9,14 @@
 
 void setup_resources(resources_t *resource, int width, int height)
 {
-    for (int index = 0; index < NB_ITEMS ; index += 1)
+    for (int index = 0; index < NB_ITEMS; index += 1)
         resource[index].quantity = RESSOURCE_QUANTITY(width, height, resource[index].density);
 }
 
 void debug_resources(resources_t *resource)
 {
-    for (int index = 0; index < NB_ITEMS ; index += 1) {
+    for (int index = 0; index < NB_ITEMS; index += 1)
+    {
         printf("[DEBUG] resource.name: %s\n", resource[index].name);
         printf("[DEBUG] resource.density: %f\n", resource[index].density);
         printf("[DEBUG] resource.quantity: %d\n", resource[index].quantity);

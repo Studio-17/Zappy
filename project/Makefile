@@ -6,25 +6,32 @@
 ##
 
 
-all:	zappy_server zappy_gui zappy_ai
+all:	libraries zappy_server zappy_gui zappy_ai
 
-zappy_server:
-	make -C server/
+zappy_ai:
+	make -C ai/
+
+libraries:
+	make -C library/
 
 zappy_gui:
 	make -C gui/
 
-zappy_ai:
-	chmod +x ai/zappy_ai
+zappy_server:
+	make -C server/
 
 clean:
-	make clean -C server/
+	make clean -C ai/
 	make clean -C gui/
+	make clean -C library/
+	make clean -C server/
 
 fclean:	clean
-	make fclean -C server/
+	make fclean -C ai/
 	make fclean -C gui/
+	make fclean -C library/
+	make fclean -C server/
 
 re:	fclean all
 
-.PHONY:	all zappy_server zappy_gui zappy_ai
+.PHONY:	all libraries zappy_server zappy_gui zappy_ai

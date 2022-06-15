@@ -22,28 +22,34 @@ SOURCE	=	source/client/client.c				\
 			source/client/communication/send.c 	\
 			source/options/options.c			\
 			source/options/usage.c				\
-			source/tools/tools.c				\
 
 MAIN_OBJ	=	$(MAIN_SOURCE:.c=.o)
 
 OBJ	=	$(SOURCE:.c=.o)
 
+INCLUDE_DIRS	+=	-I ../library/include/
 INCLUDE_DIRS	+=	-I include/
 INCLUDE_DIRS	+=	-I include/client/
 INCLUDE_DIRS	+=	-I include/client/communication/
 INCLUDE_DIRS	+=	-I include/options/
-INCLUDE_DIRS	+=	-I include/tools/
 
 CFLAGS	+=	-W -Wall -Wextra
 CFLAGS	+=	$(INCLUDE_DIRS)
-CFLAGS	+=	-lm
+
+LDFLAGS	+=	-lm
+LDFLAGS	+=	-L ../library/
+
+LDLIBS	+=	-llist
+LDLIBS	+=	-lmini
+LDLIBS	+=	-lnet
 
 NAME	=	zappy_ai
 
 all: $(NAME)
 
 $(NAME): $(MAIN_OBJ) $(OBJ)
-	@$(CC) -o $(NAME) $(MAIN_OBJ) $(OBJ) $(CFLAGS)
+	@make -C ../library/
+	@$(CC) -o $(NAME) $(MAIN_OBJ) $(OBJ) $(CFLAGS) $(LDFLAGS) $(LDLIBS)
 
 clean:
 	@$(DELETE_FILE) $(MAIN_OBJ)

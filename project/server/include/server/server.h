@@ -43,17 +43,9 @@ typedef struct server_s {
     int port;
     struct sockaddr_in address;
     int address_length;
-
     server_socket_t *ss;
-
     server_socket_descriptor_t *sd;
 } server_t;
-
-// typedef struct server_request_s {
-//     char *request;
-//     enum CLIENT_TYPE type;
-//     enum RESPONSE (*response)();
-// } server_request_t;
 
 void create_server(server_t *server, options_t *options);
 
@@ -73,13 +65,15 @@ void clear_socket_set(server_t *server);
 void add_server_socket_to_set(server_t *server);
 void add_client_socket_to_set(server_t *server);
 bool wait_for_connections(server_t *server);
-void send_greeting_message(server_t *server, int client_socket);
 void add_client_to_server(server_t *server, int client_socket);
 
 // HANDLE SERVER
 void handle_server(server_t *server);
 void client_deconnected(server_t *server, int client_socketn);
 void client_sent_request(server_t *server, int client_socket, char *command);
+
+// void send_response(server_t *server, int client_socket, char *message);
+// void get_request(int client_socket)
 
 void debug_server(server_t *server);
 void free_server(server_t *server);

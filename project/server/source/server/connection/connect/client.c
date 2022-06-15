@@ -5,7 +5,19 @@
 ** client
 */
 
+#include "minilib.h"
+
 #include "server/server.h"
+
+void get_request(int client_socket)
+{
+    char msg[24] = {0};
+
+    bzero(msg, sizeof(msg));
+    recv(client_socket, msg, sizeof(msg), 0);
+
+    printf("[SERVER RECV] %s", msg);
+}
 
 void connect_client(server_t *server)
 {
@@ -18,7 +30,12 @@ void connect_client(server_t *server)
             perror("accept");
             exit(EXIT_FAILURE);
         }
-        send_greeting_message(server, client_socket);
+
+        send_response(server, client_socket, "WELCOME\n");
+        get_request(client_socket);
+        send_response(server, client_socket, strcat(my_itoa(client_socket), "\n"));
+        send_response(server, client_socket, "10x10\n");
+
         add_client_to_server(server, client_socket);
     }
 }
@@ -59,9 +76,9 @@ bool wait_for_connections(server_t *server)
     }
 }
 
-void send_greeting_message(server_t *server, int client_socket)
+void send_response(server_t *server, int client_socket, char *message)
 {
-    char *message = "WELCOME\n";
+    printf("[SERVER SEND] %s", message);
 
     if (send(client_socket, message, strlen(message), 0) != (ssize_t)strlen(message))
     {
@@ -77,7 +94,6 @@ void add_client_to_server(server_t *server, int client_socket)
         if (server->ss->client[index] == 0)
         {
             server->ss->client[index] = client_socket;
-            printf("Adding to list of sockets as %d\n", index);
             break;
         }
     }

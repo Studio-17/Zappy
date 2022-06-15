@@ -58,3 +58,4 @@ dkms.conf
 # Zappy Files
 zappy_server
 zappy_gui
+zappy_ai

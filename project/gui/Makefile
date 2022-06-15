@@ -23,16 +23,25 @@ MAIN_OBJ	=	$(MAIN_SOURCE:.c=.o)
 
 OBJ	=	$(SOURCE:.c=.o)
 
+INCLUDE_DIRS	+=	-I ../library/include/
 INCLUDE_DIRS	+=	-I include/
 
 CFLAGS	+=	-W -Wall -Wextra
 CFLAGS	+=	$(INCLUDE_DIRS)
+
+LDFLAGS	+=	-lm
+LDFLAGS	+=	-L ../library/
+
+LDLIBS	+=	-llist
+LDLIBS	+=	-lmini
+LDLIBS	+=	-lnet
 
 NAME	=	zappy_gui
 
 all: $(NAME)
 
 $(NAME): $(MAIN_OBJ) $(OBJ)
+	@make -C ../library/
 	@$(CC) -o $(NAME) $(MAIN_OBJ) $(OBJ) $(CFLAGS)
 
 clean:

@@ -8,7 +8,7 @@
 #include "options/options.h"
 #include "options/usage.h"
 
-#include "tools/tools.h"
+#include "minilib.h"
 
 void setup_options(options_t *options)
 {
