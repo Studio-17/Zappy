@@ -29,9 +29,13 @@ SOURCE	=	source/server/communication/request/request.c	\
 			source/zappy/map/map.c							\
 			source/zappy/map/resources.c					\
 
+TEST_SOURCE	=	../tests/test.c
+
 MAIN_OBJ	=	$(MAIN_SOURCE:.c=.o)
 
 OBJ	=	$(SOURCE:.c=.o)
+
+TEST_OBJ	=	$(TEST_SOURCE:.c=.o)
 
 INCLUDE_DIRS	+=	-I ../library/include/
 INCLUDE_DIRS	+=	-I include/
@@ -53,12 +57,15 @@ CFLAGS	+=	$(INCLUDE_DIRS)
 
 LDFLAGS	+=	-lm
 LDFLAGS	+=	-L ../library/
+LDFLAGS	+=	-l criterion --coverage
 
 LDLIBS	+=	-llist
 LDLIBS	+=	-lmini
 LDLIBS	+=	-lnet
 
 NAME	=	zappy_server
+
+TEST_NAME	=	unit_tests
 
 all: $(NAME)
 
@@ -69,9 +76,20 @@ $(NAME): $(MAIN_OBJ) $(OBJ)
 clean:
 	@$(DELETE_FILE) $(MAIN_OBJ)
 	@$(DELETE_FILE) $(OBJ)
+	@$(DELETE_FILE) $(TEST_OBJ)
 
 fclean:	clean
 	@$(DELETE_FILE) $(NAME)
+	@$(DELETE_FILE)	$(TEST_NAME)
+	@$(DELETE_FILE) *.gcda
+	@$(DELETE_FILE) *.gcno
+
+tests_run: $(OBJ) $(SOURCE_OBJ)
+	@make -C ../library/
+	@$(CC) -o $(TEST_NAME) $(SOURCE) $(TEST_SOURCE) $(CFLAGS) $(LDFLAGS) $(LDLIBS)
+	@./unit_tests
+	@gcovr
+	@gcovr --branches
 
 re:	fclean all
 
