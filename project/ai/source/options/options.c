@@ -29,7 +29,7 @@ int get_options(int ac, char **av, options_t *options)
         {0, 0, 0, 0}};
 
     int long_index = 0;
-    while ((opt = getopt_long(ac, av, "hp:n:m:",
+    while ((opt = getopt_long(ac, av, "ep:n:h:",
                               long_options, &long_index)) != -1)
     {
         switch (opt)

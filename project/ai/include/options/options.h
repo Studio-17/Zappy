@@ -11,12 +11,15 @@
     #include <unistd.h>
     #include <stdio.h>
     #include <stdlib.h>
+    #include <string.h>
     #include <getopt.h>
 
+    #define IPV4_LENGTH 12
+
 enum OPTIONS_ERROR {
-    MISSING_OPTION = -1,
-    INVALID_OPTION = 0,
-    OPTIONS_ERROR_NONE = 1,
+    OPTIONS_ERROR_NONE = -1,
+    MISSING_OPTION = 0,
+    INVALID_OPTION = 1,
 };
 
 typedef struct options_error_s {
