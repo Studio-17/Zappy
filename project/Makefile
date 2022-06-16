@@ -5,30 +5,29 @@
 ## Makefile
 ##
 
-
 all:	libraries zappy_server zappy_gui zappy_ai
 
 zappy_ai:
-	make -C ai/
+	make -C client/ai/
 
 libraries:
 	make -C library/
 
 zappy_gui:
-	make -C gui/
+	make -C client/gui/
 
 zappy_server:
 	make -C server/
 
 clean:
-	make clean -C ai/
-	make clean -C gui/
+	make clean -C client/ai/
+	make clean -C client/gui/
 	make clean -C library/
 	make clean -C server/
 
 fclean:	clean
-	make fclean -C ai/
-	make fclean -C gui/
+	make fclean -C client/ai/
+	make fclean -C client/gui/
 	make fclean -C library/
 	make fclean -C server/
 
