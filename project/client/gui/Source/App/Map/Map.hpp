@@ -8,6 +8,9 @@
 #ifndef MAP_HPP_
 #define MAP_HPP_
 
+    #include <vector>
+    #include <string>
+
 class Map {
     public:
         Map();
@@ -15,6 +18,7 @@ class Map {
 
     protected:
     private:
+        std::vector<std::vector<std::string>> _map;
 };
 
 #endif /* !MAP_HPP_ */

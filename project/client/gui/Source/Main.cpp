@@ -6,14 +6,16 @@
 */
 
 #include "Options/Options.hpp"
+#include "App.hpp"
 
 int main(int ac, char **av)
 {
-    Options options;
+    App app("MyApp", 1920, 1080);
 
     try {
-        options.setupOptions(ac, av);
-        options.handleOptions();
+        app.setUpOptions(ac, av);
+        app.handleOptions();
+        app.startApp();
     } catch (OptionsErrors const &OptionError) {
         std::cerr << OptionError.what() << std::endl;
     }

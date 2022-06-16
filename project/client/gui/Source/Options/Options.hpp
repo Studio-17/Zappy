@@ -14,7 +14,7 @@
 
 #include <getopt.h>
 
-#include "Errors/ErrorsModules/Options/OptionsErrors.hpp"
+#include "ErrorsModules/Options/OptionsErrors.hpp"
 
 class Options {
     public:
