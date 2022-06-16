@@ -5,6 +5,8 @@
 ** client
 */
 
+#define _GNU_SOURCE
+
 #include "minilib.h"
 #include "netlib.h"
 
@@ -41,14 +43,25 @@ void connect_client(server_t *server)
 
         add_client_to_server(server, client_socket);
 
-        printf("%s\n", get_request(client_socket));
-        send_response(client_socket, "WELCOME");
+        request_payload_t req = get_struct_request(client_socket);
+        printf("%d\n", req.id);
+        printf("%s\n", req.command);
 
-        printf("%s\n", get_request(client_socket));
-        send_response(client_socket, strcat(my_itoa(client_socket), "\n10 10"));
+        response_payload_t response = {
+            .id = 1,
+            .status = true,
+            .message = "WELCOME\n"
+        };
+        send_struct_response(client_socket, response);
+
+        // printf("%s\n", get_request(client_socket));
+        // send_response(client_socket, "WELCOME");
+
+        // printf("%s\n", get_request(client_socket));
+        // send_response(client_socket, strcat(my_itoa(client_socket), "\n10 10"));
     }
 
-    handle_client(server);
+    // handle_client(server);
 }
 
 void clear_socket_set(server_t *server)

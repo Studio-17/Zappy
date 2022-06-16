@@ -39,9 +39,11 @@ INCLUDE_DIRS	+=	-I Source/Options/
 
 CXXFLAGS	+=	-W -Wall -Wextra
 CXXFLAGS	+=	$(INCLUDE_DIRS)
+CXXFLAGS	+=	-std=c++17
+CXXFLAGS	+=	-g3
 
 LDFLAGS	+=	-lm
-LDFLAGS	+=	-L $(LIBRARIES_PATH)/
+LDFLAGS	+=	-L $(LIBRARIES_PATH)
 
 LDLIBS	+=	-llist
 LDLIBS	+=	-lmini

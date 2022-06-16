@@ -46,10 +46,21 @@ void Client::handle()
     char *identification = NULL;
     asprintf(&identification, "IA Client Connected on socket %d, at address %s\n", _socket, inet_ntoa(_server.sin_addr));
 
-    send_request(_socket, identification);
-    printf("%s\n", get_response(_socket));
+    // send_request(_socket, identification);
+    // response_payload_t rsp = get_response_payload(get_response(_socket));
+
+    request_payload_t request;
+    request.id = _socket;
+    strcpy(request.command, identification);
+    send_struct_request(_socket, request);
+    response_payload_t response = get_struct_response(_socket);
+    printf("%d\n", response.id);
+    printf("%d\n", response.status);
+    printf("%s\n", response.message);
+
+    // printf("%s\n", get_response(_socket));
 
     // replace with actual team name
-    send_request(_socket, "martin");
-    printf("%s\n", get_response(_socket));
+    // send_request(_socket, "martin");
+    // printf("%s\n", get_response(_socket));
 }

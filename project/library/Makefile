@@ -18,8 +18,9 @@ SRC_LISTLIB	=	list/list.c			\
 SRC_MINILIB	=	mini/my_atoi.c		\
 				mini/my_itoa.c		\
 
-SRC_NETLIB	=	net/request.c		\
-				net/response.c		\
+SRC_NETLIB	=	net/request.c			\
+				net/response.c			\
+				net/protocol/payload.c	\
 
 LISTLIB_OBJ	=	$(SRC_LISTLIB:.c=.o)
 MINILIB_OBJ	=	$(SRC_MINILIB:.c=.o)

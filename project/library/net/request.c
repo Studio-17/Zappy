@@ -17,7 +17,22 @@ char *get_request(int socket)
     return (message);
 }
 
+request_payload_t get_struct_request(int socket)
+{
+    request_payload_t request;
+
+    if (read(socket, &request, sizeof(request_payload_t)) == -1)
+        perror("read");
+
+    return (request);
+}
+
 void send_request(int socket, char *message)
 {
     write(socket, message, strlen(message));
+}
+
+void send_struct_request(int socket, request_payload_t request)
+{
+    write(socket, &request, sizeof(request_payload_t));
 }
