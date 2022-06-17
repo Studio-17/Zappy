@@ -43,13 +43,29 @@ void Client::connection()
 
 void Client::handle()
 {
-    char *identification = NULL;
-    asprintf(&identification, "IA Client Connected on socket %d, at address %s\n", _socket, inet_ntoa(_server.sin_addr));
+    // SEND CLIENT TYPE & GET WELCOME MESSAGE
+    post_request(_socket, request_payload_t{"IA\n"});
+    response_payload_t response = get_response(_socket);
+    std::cout << response.payload;
 
-    send_request(_socket, identification);
-    printf("%s\n", get_response(_socket));
+    // SEND TEAM NAME & GET OK RESPONSE
+    post_request(_socket, request_payload_t{"martin\n"});
+    response_payload_t team_response = get_response(_socket);
 
-    // replace with actual team name
-    send_request(_socket, "martin");
-    printf("%s\n", get_response(_socket));
+    // SEND INFO REQUEST & GET CLIENT NUMBER
+    post_request(_socket, request_payload_t{"INFO CLIENT\n"});
+    response_payload_client_number_t client_number_response = get_response_client_number(_socket);
+    std::cout << client_number_response.client_id << std::endl;
+
+    // SEND INFO REQUEST & GET MAP DIMENSIONS
+    post_request(_socket, request_payload_t{"INFO MAP\n"});
+    response_payload_map_t map_response = get_response_map(_socket);
+    std::cout << map_response.height << " " << map_response.width << std::endl;
+}
+
+void Client::serverSentResponse()
+{
+    // CODE HERE ALL RESPONSES RELATED FUNCTIONS
+
+    return;
 }

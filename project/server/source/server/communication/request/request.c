@@ -8,18 +8,18 @@
 #include "server/communication/request/request.h"
 
 static const request_ai request_ai_list[] = {
-    {FORWARD, "Forward"},
-    {RIGHT, "Right"},
-    {LEFT, "Left"},
-    {LOOK, "Look"},
-    {INVENTORY, "Inventory"},
-    {BROADCAST_TEXT, "Broadcast"},
-    {CONNECT_NBR, "Connect_nbr"},
-    {FORK, "Fork"},
-    {EJECT, "Eject"},
-    {TAKE_OBJECT, "Take"},
-    {SET_OBJECT, "Set"},
-    {INCANTATION, "Incantation"},
+    {FORWARD, "Forward\n"},
+    {RIGHT, "Right\n"},
+    {LEFT, "Left\n"},
+    {LOOK, "Look\n"},
+    {INVENTORY, "Inventory\n"},
+    {BROADCAST_TEXT, "Broadcast\n"},
+    {CONNECT_NBR, "Connect_nbr\n"},
+    {FORK, "Fork\n"},
+    {EJECT, "Eject\n"},
+    {TAKE_OBJECT, "Take\n"},
+    {SET_OBJECT, "Set\n"},
+    {INCANTATION, "Incantation\n"},
 };
 
 static const command_ai commands_ai[] = {
@@ -87,98 +87,12 @@ static const command_ai commands_ai[] = {
     },
 };
 
-void handle_request(server_t *server, char *command)
+enum COMMANDS_AI get_command_ai(char *request)
 {
-    printf("[REQUEST] %s\n", command);
-
-    int (*REQUEST[])() = {&request_forward, &request_right, &request_left,
-                          &request_look, &request_inventory, &request_broadcast_text,
-                          &request_connect_nbr, &request_fork, &request_eject, &request_take_object,
-                          &request_set_object, &request_incantation};
-
-    // void (*RESPONSE[])(server_t *, void *) = { &response_ok, &response_ok,
-    // &response_ok, &response_tiles, &response_inventory, &response_ok,
-    // &response_value, &response_ok, &response_ok_ko, &response_ok_ko,
-    // &response_ok_ko, &response_elevation_underway };
-
-    for (int index = 0; index < NB_COMMANDS; index += 1)
-    {
-        if (strncmp(command, request_ai_list[index].request, strlen(request_ai_list[index].request)) == 0)
-        {
-            printf("[RESPONSE] %s\n", commands_ai[request_ai_list[index].command].action);
-            printf("%d\n", REQUEST[index]());
-            // RESPONSE[index](server, NULL);
-            return;
+    for (int index = 0; index < NB_COMMANDS_AI; index += 1) {
+        if (strcmp(request, request_ai_list[index].request) == 0) {
+            return (request_ai_list[index].command);
         }
     }
-}
-
-int request_forward(void)
-{
-    return (-1);
-}
-
-int request_right(void)
-{
-    return (-1);
-}
-
-int request_left(void)
-{
-    return (-1);
-}
-
-int request_look(void)
-{
-    return (-1);
-}
-
-int request_inventory(void)
-{
-    return (-1);
-}
-
-int request_broadcast_text(void)
-{
-    return (-1);
-}
-
-int request_connect_nbr(void)
-{
-    return (-1);
-}
-
-int request_fork(void)
-{
-    return (-1);
-}
-
-int request_eject(void)
-{
-    return (-1);
-}
-
-int request_death(void)
-{
-    return (-1);
-}
-
-int request_take_object(void)
-{
-    return (-1);
-}
-
-int request_set_object(void)
-{
-    return (-1);
-}
-
-int request_incantation(void)
-{
-    return (-1);
-}
-
-int request_map_size(void)
-{
     return (-1);
 }

@@ -14,20 +14,19 @@ libraries:
 	make -C library/
 
 zappy_gui:
-	make -C client/gui/
+	chmod +x client/gui/cmake.sh
+	bash client/gui/cmake.sh
 
 zappy_server:
 	make -C server/
 
 clean:
 	make clean -C client/ai/
-	make clean -C client/gui/
 	make clean -C library/
 	make clean -C server/
 
 fclean:	clean
 	make fclean -C client/ai/
-	make fclean -C client/gui/
 	make fclean -C library/
 	make fclean -C server/
 

@@ -33,7 +33,7 @@ enum COMMANDS_AI {
     SET_OBJECT,
     INCANTATION,
 
-    NB_COMMANDS,
+    NB_COMMANDS_AI,
 };
 
 // REQUEST
@@ -43,19 +43,7 @@ typedef struct request_ai_struct {
     char *request;
 } request_ai;
 
-int request_forward(void);
-int request_right(void);
-int request_left(void);
-int request_look(void);
-int request_inventory(void);
-int request_broadcast_text(void);
-int request_connect_nbr(void);
-int request_fork(void);
-int request_eject(void);
-int request_death(void);
-int request_take_object(void);
-int request_set_object(void);
-int request_incantation(void);
+enum COMMANDS_AI get_command_ai(char *request);
 
 // COMMANDS_AI
 
@@ -79,6 +67,7 @@ enum COMMANDS_GUI {
     PLAYER_INVENTORY,
     TIME_UNIT,
     TIME_UNIT_MODIFICATION,
+    NB_COMMANDS_GUI,
 };
 
 // REQUEST GUI
