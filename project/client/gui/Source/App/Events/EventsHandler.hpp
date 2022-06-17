@@ -14,11 +14,22 @@
 
 class EventsHandler {
     public:
-        EventsHandler();
-        ~EventsHandler();
+        EventsHandler(){};
+        ~EventsHandler(){};
+
+        void addNewListener(IListener *newListener) {
+            _listenersVector.push_back(newListener);
+        }
+
+        void eventReceive(char *data) {
+            for (auto memberToNotify : _listenersVector) {
+                memberToNotify->updateInformations(data);
+            }
+        }
 
     protected:
     private:
+        std::vector<IListener*> _listenersVector;
 
 };
 

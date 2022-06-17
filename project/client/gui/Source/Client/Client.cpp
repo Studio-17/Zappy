@@ -55,12 +55,21 @@ void Client::handle()
     // SEND INFO REQUEST & GET CLIENT NUMBER
     post_request(_socket, request_payload_t{"INFO CLIENT\n"});
     response_payload_client_number_t client_number_response = get_response_client_number(_socket);
+    _clientNumber = client_number_response.client_id;
     std::cout << client_number_response.client_id << std::endl;
 
+}
+
+std::pair<int, int> Client::getMapDimension()
+{
     // SEND INFO REQUEST & GET MAP DIMENSIONS
+    std::pair<int, int> mapDimension(0, 0);
     post_request(_socket, request_payload_t{"INFO MAP\n"});
     response_payload_map_t map_response = get_response_map(_socket);
+    mapDimension.first = map_response.width;
+    mapDimension.second = map_response.height;
     std::cout << map_response.height << " " << map_response.width << std::endl;
+    return (mapDimension);
 }
 
 void Client::serverSentResponse()
@@ -79,4 +88,15 @@ void Client::setupOptions(int ac, char **av)
 void Client::handleOptions()
 {
     _options->handleOptions();
+}
+
+void Client::listen()
+{
+    char data[512];
+    int readResult = 0;
+
+    // readResult = read(_socket, data, 512);
+    // if (readResult <= 0)
+    //     return;
+    _eventsHandler.eventReceive(data);
 }
