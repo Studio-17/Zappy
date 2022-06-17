@@ -10,17 +10,13 @@
 
     #include "minilib.h"
     #include "listlib.h"
+    #include "netlib.h"
 
 enum CLIENT_TYPE {
     AI,
     GRAPH,
     NB_TYPES,
 };
-
-typedef struct position_s {
-    int x;
-    int y;
-} position_t;
 
 typedef struct player_t {
     int id;

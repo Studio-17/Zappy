@@ -23,6 +23,7 @@ enum ITEM {
 
 typedef struct resources_s {
     char *name;
+    enum ITEM item;
     int resources;
     float density;
     int quantity;
