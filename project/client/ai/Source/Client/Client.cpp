@@ -49,8 +49,11 @@ void Client::handle()
     std::cout << response.payload;
 
     // SEND TEAM NAME & GET OK RESPONSE
-    post_request(_socket, request_payload_t{"martin\n"});
+    request_payload_t request;
+    strcpy(request.payload, _options->getName().c_str());
+    post_request(_socket, request);
     response_payload_t team_response = get_response(_socket);
+    std::cout << team_response.payload;
 
     // SEND INFO REQUEST & GET CLIENT NUMBER
     post_request(_socket, request_payload_t{"INFO CLIENT\n"});

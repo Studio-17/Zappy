@@ -13,11 +13,11 @@ void client_sent_request(server_t *server)
     return;
 }
 
-void handle_client(server_t *server)
+void handle_client(zappy_t *zappy)
 {
-    for (int index = 0; index < server->ss->max_client; index += 1) {
+    for (int index = 0; index < zappy->server->ss->max_client; index += 1) {
 
-        server->sd->socket_descriptor = server->ss->client[index];
+        zappy->server->sd->socket_descriptor = zappy->server->ss->client[index];
 
         // CODE HERE ALL RESPONSE RELATED FUNCTIONS
         // client_sent_request(server);

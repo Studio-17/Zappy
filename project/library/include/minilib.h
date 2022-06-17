@@ -15,4 +15,6 @@
 int my_atoi(char *string);
 char *my_itoa(int number);
 
+char **my_strtok(char *str, char sep);
+
 #endif /* !MINILIB_H_ */

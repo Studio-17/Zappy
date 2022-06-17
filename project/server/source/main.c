@@ -13,7 +13,6 @@
 
 #include "server/server.h"
 
-#include "zappy/zappy.h"
 #include "zappy/map/map.h"
 
 #include "options/options.h"
@@ -44,13 +43,14 @@ int main(int ac, char **av)
     if (options_status == EXIT_FAILURE)
         return (EXIT_FAILURE);
 
+    zappy->client = malloc(sizeof(ai_client_t) * zappy->options->clients_nb);
     zappy->server = malloc(sizeof(server_t));
 
-    create_server(zappy->server, zappy->options);
+    create_server(zappy);
 
     free_options(zappy->options);
 
-    free_server(zappy->server);
+    free_server(zappy);
 
     return (EXIT_SUCCESS);
 }
