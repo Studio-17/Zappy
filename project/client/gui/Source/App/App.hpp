@@ -12,7 +12,8 @@
     #include "Window.hpp"
     #include "Camera.hpp"
     #include "Options.hpp"
-    #include "Map.hpp"
+    #include "Client.hpp"
+    #include "Game.hpp"
 
 class App {
     public:
@@ -26,12 +27,18 @@ class App {
         void setUpOptions(int ac, char **av);
         void handleOptions();
 
+        void draw();
+
     protected:
     private:
         Options _options;
         RayLib::Window _window;
         RayLib::CinematicCamera _camera;
-        Map _gameMap;
+        Client _client;
+        Game _game;
+
+        int _mapHeight = 10;
+        int _mapWidth = 10;
 };
 
 #endif /* !APP_HPP_ */

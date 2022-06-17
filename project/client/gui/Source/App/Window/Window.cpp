@@ -12,7 +12,6 @@ RayLib::Window::Window(float width, float height, std::string const &title)
     InitWindow(width, height, title.c_str());
     if (!IsWindowReady())
         throw Errors("window failed to open");
-
 }
 
 RayLib::Window::Window(std::pair<float, float> const &size, std::string const &title)
