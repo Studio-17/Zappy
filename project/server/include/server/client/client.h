@@ -13,15 +13,33 @@
 
 enum CLIENT_TYPE {
     AI,
+    GRAPH,
     NB_TYPES,
 };
 
-typedef struct server_client_s {
-    int sockfd;
+typedef struct position_s {
+    int x;
+    int y;
+} position_t;
+
+typedef struct player_t {
+    int id;
+    int level;
+    int orientation;
+    position_t position;
+} player_t;
+
+typedef struct ai_client_s {
+    int socket;
     int client_nb;
     enum CLIENT_TYPE type;
-    // struct sockaddr_in addr;
-    list_t list;
-} client_t;
+    player_t player;
+} ai_client_t;
+
+typedef struct gui_client_s {
+    int socket;
+    int client_nb;
+    enum CLIENT_TYPE type;
+} gui_client_t;
 
 #endif /* !CLIENT_H_ */

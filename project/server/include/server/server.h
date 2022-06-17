@@ -21,6 +21,8 @@
     #include "zappy/map/map.h"
     #include "zappy/map/resources.h"
 
+    #include "client/client.h"
+
     #include "options/options.h"
 
     #include "server/server_struct.h"
@@ -32,6 +34,7 @@ typedef struct zappy_s {
     options_t *options;
     server_t *server;
     map_t *map;
+    ai_client_t *client;
     resources_t *ressources;
 } zappy_t;
 

@@ -16,6 +16,8 @@ void setup_server(server_t *server, options_t *options)
 
     server->ss->client = malloc(sizeof(int) * options->clients_nb);
     server->ss->max_client = options->clients_nb;
+
+    server->clients = 0;
 }
 
 void initialise_all_clients_sockets(server_t *server)
