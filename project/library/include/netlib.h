@@ -12,6 +12,16 @@
     #include <stdbool.h>
     #include <stdio.h>
 
+// HEADER
+
+typedef struct payload_header_s {
+    int size;
+    int type; // TO BE CAST TO ENUM type : )
+} payload_header_t;
+
+void post_header(int socket, payload_header_t header);
+payload_header_t get_header(int socket);
+
 // BASE
 typedef struct request_payload {
     char payload[1024];
@@ -52,5 +62,25 @@ typedef struct response_payload_map_s {
 
 response_payload_map_t get_response_map(int socket);
 void post_response_map(int socket, response_payload_map_t response);
+
+typedef struct position_s {
+    int x;
+    int y;
+} position_t;
+
+typedef struct request_payload_player_position_s {
+    int player_id;
+} request_payload_player_position_t;
+
+typedef struct response_payload_player_position_s {
+    bool status;
+    int player_id;
+    position_t position;
+} response_payload_player_position_t;
+
+void post_response_player_position(int socket, response_payload_player_position_t response);
+
+request_payload_player_position_t get_request_player_position(int socket);
+void post_request_player_position(int socket, request_payload_player_position_t request);
 
 #endif /* !NETLIB_H_ */

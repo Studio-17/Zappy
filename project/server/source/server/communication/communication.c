@@ -19,7 +19,19 @@ void handle_client(zappy_t *zappy)
 
         zappy->server->sd->socket_descriptor = zappy->server->ss->client[index];
 
-        // CODE HERE ALL RESPONSE RELATED FUNCTIONS
-        // client_sent_request(server);
+        // request_payload_player_position_t player_position_request = get_request_player_position(zappy->server->sd->socket_descriptor);
+
+        // payload_header_t header = {
+        //     .size = sizeof(payload_header_t),
+        //     .type = 0,
+        // };
+        // post_header(zappy->server->sd->socket_descriptor, header);
+
+        // response_payload_player_position_t response = {
+        //     .status = true,
+        //     .player_id = zappy->client[player_position_request.player_id].client_nb,
+        //     .position = zappy->client[player_position_request.player_id].player.position,
+        // };
+        // post_response_player_position(zappy->server->sd->socket_descriptor, response);
     }
 }

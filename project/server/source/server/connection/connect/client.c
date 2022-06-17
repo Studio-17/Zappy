@@ -14,6 +14,9 @@
 
 static bool team_name_allowed(char *client_names, char *team_name)
 {
+    if (strcmp(team_name, "GRAPHIC") == 0)
+        return (true);
+
     char **names = my_strtok(client_names, ' ');
 
     for (int index = 0; names[index]; index += 1) {
@@ -82,7 +85,7 @@ void connect_client(zappy_t *zappy)
         // CODE HERE ALL GREETING RELATED FUNCTIONS
     }
 
-    // handle_client(server);
+    handle_client(zappy);
 }
 
 void clear_socket_set(server_t *server)
