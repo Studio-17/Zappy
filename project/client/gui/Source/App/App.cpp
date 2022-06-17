@@ -22,6 +22,13 @@ App::~App()
 
 void App::startApp()
 {
+    try {
+        _client.setup();
+        _client.connection();
+    } catch (ClientErrors const &ClientError) {
+        std::cerr << ClientError.what() << std::endl;
+    }
+
     startConnection();
     startMainLoop();
 }
@@ -51,12 +58,12 @@ void App::draw()
     _game.drawTiles();
 }
 
-void App::setUpOptions(int ac, char **av)
+void App::setupOptions(int ac, char **av)
 {
-    _options.setupOptions(ac, av);
+    _client.setupOptions(ac, av);
 }
 
 void App::handleOptions()
 {
-    _options.handleOptions();
+    _client.handleOptions();
 }
