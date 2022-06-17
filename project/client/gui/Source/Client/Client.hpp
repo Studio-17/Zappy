@@ -11,6 +11,7 @@
 #include <cstring>
 
 #include <memory>
+#include <utility>
 
 #include <netdb.h>
 #include <sys/socket.h>
@@ -19,6 +20,8 @@
 #include "Errors/ErrorsModules/Client/ClientErrors.hpp"
 
 #include "Options/Options.hpp"
+#include "EventsHandler.hpp"
+
 
 class Client {
     public:
@@ -35,12 +38,18 @@ class Client {
         void setupOptions(int ac, char **av);
         void handleOptions();
 
+        void listen();
+
+        std::pair<int, int> getMapDimension();
+        EventsHandler _eventsHandler;
+
     protected:
     private:
         int _socket;
         sockaddr_in _server;
 
         std::unique_ptr<Options> _options;
+        int _clientNumber;
 };
 
 #endif /* !CLIENT_HPP_ */

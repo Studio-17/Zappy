@@ -35,7 +35,11 @@ void App::startApp()
 
 void App::startConnection()
 {
-    _game.sendMapSize(12, 12);
+    std::pair<int, int> mapDimension(0, 0);
+
+    _client._eventsHandler.addNewListener(this);
+    mapDimension = _client.getMapDimension();
+    _game.sendMapSize(mapDimension.first, mapDimension.second);
     _game.setUpGameMap();
 }
 
@@ -47,6 +51,7 @@ void App::startMainLoop()
         _camera.startMode3D();
 
         draw();
+        _client.listen();
 
         _camera.endMode3D();
         _window.endDrawing();
@@ -66,4 +71,9 @@ void App::setupOptions(int ac, char **av)
 void App::handleOptions()
 {
     _client.handleOptions();
+}
+
+void App::updateInformations(char *data)
+{
+    std::cout << "update Informations !!!!!!!!!!!!!!" << std::endl;
 }

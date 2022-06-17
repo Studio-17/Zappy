@@ -7,9 +7,10 @@
 
 #include "Ressources.hpp"
 
-Object::Ressources::Ressources(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Position const &position, Object::MAP_OBJECTS type) :
+Object::Ressources::Ressources(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Position const &position, Object::MAP_OBJECTS type, int id) :
         AThreeDimensionObject(pathToModel, pathToRessources, position, type)
 {
+    _id = id;
 }
 
 Object::Ressources::~Ressources()

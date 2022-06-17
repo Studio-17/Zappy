@@ -13,13 +13,14 @@
 namespace Object {
     class Ressources : public AThreeDimensionObject {
         public:
-            Ressources(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Position const &position, Object::MAP_OBJECTS type);
+            Ressources(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Position const &position, Object::MAP_OBJECTS type, int id);
             ~Ressources();
 
             void draw() override;
 
         protected:
         private:
+            int _id;
     };
 }
 
