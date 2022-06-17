@@ -25,7 +25,10 @@ file(GLOB SOURCES
     Source/App/Position/*.cpp
     Source/App/Object/*.cpp
     Source/App/Rendering/*.cpp
-    Source/App/Map/*.cpp
+    Source/App/Object/Player/*.cpp
+    Source/App/Object/Ressources/*.cpp
+    Source/App/Object/Tile/*.cpp
+    Source/App/Game/*.cpp
 )
 
 # specify the headers
@@ -42,7 +45,10 @@ include_directories(
     Source/App/
     Source/App/Object
     Source/App/Rendering
-    Source/App/Map
+    Source/App/Object/Player/
+    Source/App/Object/Ressources/
+    Source/App/Object/Tile/
+    Source/App/Game/
 )
 
 add_executable(zappy_gui ${SOURCES})
