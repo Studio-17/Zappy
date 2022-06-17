@@ -12,20 +12,24 @@
 
 #include "server/server.h"
 
-void client_sent_request(server_t *server, int client_socket)
+static void greeting_protocol(server_t *server, int client_socket)
 {
-    char *request = get_request(client_socket);
-    send_response(client_socket, "OUCOUC\n");
-}
+    // GET CLIENT TYPE & SEND WELCOME
+    request_payload_t request = get_request(client_socket);
+    post_response(client_socket, (response_payload_t) {true, "WELCOME\n"});
 
-static void handle_client(server_t *server)
-{
-    for (int index = 0; index < server->ss->max_client; index += 1) {
+    // GET CLIENT NAME & SEND OK/KO
+    request_payload_t team_name_request = get_request(client_socket);
+    printf("%s", team_name_request.payload);
+    post_response(client_socket, (response_payload_t) {true, "OK\n"});
 
-        server->sd->socket_descriptor = server->ss->client[index];
+    // GET INFO CLIENT & SEND CLIENT NUMBER
+    request_payload_t info_client_request = get_request(client_socket);
+    post_response_client_number(client_socket, (response_client_number_t) {true, client_socket});
 
-        client_sent_request(server, server->ss->client[index]);
-    }
+    // GET INFO MAP & SEND MAP DIMENSIONS
+    request_payload_t info_map_request = get_request(client_socket);
+    post_response_map(client_socket, (response_payload_map_t) {true, 10, 10});
 }
 
 void connect_client(server_t *server)
@@ -43,22 +47,9 @@ void connect_client(server_t *server)
 
         add_client_to_server(server, client_socket);
 
-        request_payload_t req = get_struct_request(client_socket);
-        printf("%d\n", req.id);
-        printf("%s\n", req.command);
+        greeting_protocol(server, client_socket);
 
-        response_payload_t response = {
-            .id = 1,
-            .status = true,
-            .message = "WELCOME\n"
-        };
-        send_struct_response(client_socket, response);
-
-        // printf("%s\n", get_request(client_socket));
-        // send_response(client_socket, "WELCOME");
-
-        // printf("%s\n", get_request(client_socket));
-        // send_response(client_socket, strcat(my_itoa(client_socket), "\n10 10"));
+        // CODE HERE ALL GREETING RELATED FUNCTIONS
     }
 
     // handle_client(server);

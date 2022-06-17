@@ -8,41 +8,49 @@
 #ifndef NETLIB_H_
     #define NETLIB_H_
 
-    #include <stdio.h>
-    #include <stdlib.h>
     #include <unistd.h>
-
-    #include <string.h>
     #include <stdbool.h>
-    #include <sys/types.h>
+    #include <stdio.h>
 
-    #include <sys/socket.h>
-
-typedef struct repsonse_payload_s {
-    int id;
-    bool status;
-    char message[256];
-} response_payload_t;
-
-typedef struct request_payload_s {
-    int id;
-    char command[256];
+// BASE
+typedef struct request_payload {
+    char payload[1024];
 } request_payload_t;
 
-char *get_response(int socket);
-response_payload_t get_struct_response(int socket);
-void send_response(int socket, char *message);
-void send_struct_response(int socket, response_payload_t response);
+void post_request(int socket, request_payload_t request);
+request_payload_t get_request(int socket);
 
-char *get_request(int socket);
-request_payload_t get_struct_request(int socket);
-void send_request(int socket, char *message);
-void send_struct_request(int socket, request_payload_t request);
+typedef struct response_payload {
+    bool status;
+    char payload[1024];
+} response_payload_t;
 
-response_payload_t get_response_payload(char *message);
-response_payload_t parse_response_payload(char **payload);
+void post_response(int socket, response_payload_t response);
+response_payload_t get_response(int socket);
 
-request_payload_t get_request_payload(char *message);
-request_payload_t parse_request_payload(char **payload);
+// CLIENT NUMBER
+typedef struct response_client_number {
+    bool status;
+    int id;
+} response_client_number_t;
+
+void post_response_client_number(int socket, response_client_number_t request);
+
+typedef struct response_payload_client_number {
+    bool status;
+    int client_id;
+} response_payload_client_number_t;
+
+response_payload_client_number_t get_response_client_number(int socket);
+
+// MAP
+typedef struct response_payload_map_s {
+    bool status;
+    int width;
+    int height;
+} response_payload_map_t;
+
+response_payload_map_t get_response_map(int socket);
+void post_response_map(int socket, response_payload_map_t response);
 
 #endif /* !NETLIB_H_ */

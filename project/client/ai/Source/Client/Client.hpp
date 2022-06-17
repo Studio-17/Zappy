@@ -30,6 +30,8 @@ class Client {
 
         void handle();
 
+        void serverSentResponse();
+
     protected:
     private:
         int _socket;

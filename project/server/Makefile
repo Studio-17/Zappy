@@ -17,17 +17,18 @@ DELETE_DIR	=	$(DELETE) -r
 
 MAIN_SOURCE	=	source/main.c			\
 
-SOURCE	=	source/server/communication/request/request.c	\
-			source/server/communication/response/response.c	\
-			source/server/server.c							\
-			source/server/connection/connect/client.c		\
-			source/server/connection/connect/server.c		\
-			source/server/connection/setup/setup.c			\
-			source/errors/errors.c							\
-			source/options/options.c						\
-			source/options/usage.c							\
-			source/zappy/map/map.c							\
-			source/zappy/map/resources.c					\
+SOURCE	=	source/server/communication/communication.c			\
+			source/server/communication/request/request.c		\
+			source/server/communication/response/response.c		\
+			source/server/server.c								\
+			source/server/connection/connect/client.c			\
+			source/server/connection/connect/server.c			\
+			source/server/connection/setup/setup.c				\
+			source/errors/errors.c								\
+			source/options/options.c							\
+			source/options/usage.c								\
+			source/zappy/map/map.c								\
+			source/zappy/map/resources.c						\
 
 TEST_SOURCE	=	../tests/test.c
 
@@ -39,18 +40,21 @@ TEST_OBJ	=	$(TEST_SOURCE:.c=.o)
 
 INCLUDE_DIRS	+=	-I ../library/include/
 INCLUDE_DIRS	+=	-I include/
-INCLUDE_DIRS	+=	-I include/server/
-INCLUDE_DIRS	+=	-I include/server/communication/
-INCLUDE_DIRS	+=	-I include/server/communication/request/
-INCLUDE_DIRS	+=	-I include/server/communication/response/
-INCLUDE_DIRS	+=	-I include/server/client/
-INCLUDE_DIRS	+=	-I include/errors/
-INCLUDE_DIRS	+=	-I include/options/
-INCLUDE_DIRS	+=	-I include/zappy/
-INCLUDE_DIRS	+=	-I include/zappy/elevation/
-INCLUDE_DIRS	+=	-I include/zappy/vision/
-INCLUDE_DIRS	+=	-I include/zappy/map/
-INCLUDE_DIRS	+=	-I include/zappy/teams/
+INCLUDE_DIRS	+=	-I include/server
+INCLUDE_DIRS	+=	-I include/server/communication
+INCLUDE_DIRS	+=	-I include/server/communication/request
+INCLUDE_DIRS	+=	-I include/server/communication/response
+INCLUDE_DIRS	+=	-I include/server/client
+INCLUDE_DIRS	+=	-I include/server/connection
+INCLUDE_DIRS	+=	-I include/server/connection/connect
+INCLUDE_DIRS	+=	-I include/server/connection/setup
+INCLUDE_DIRS	+=	-I include/errors
+INCLUDE_DIRS	+=	-I include/options
+INCLUDE_DIRS	+=	-I include/zappy
+INCLUDE_DIRS	+=	-I include/zappy/elevation
+INCLUDE_DIRS	+=	-I include/zappy/vision
+INCLUDE_DIRS	+=	-I include/zappy/map
+INCLUDE_DIRS	+=	-I include/zappy/teams
 
 CFLAGS	+=	-W -Wall -Wextra
 CFLAGS	+=	$(INCLUDE_DIRS)

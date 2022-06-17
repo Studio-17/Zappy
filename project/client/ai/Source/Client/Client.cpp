@@ -43,24 +43,29 @@ void Client::connection()
 
 void Client::handle()
 {
-    char *identification = NULL;
-    asprintf(&identification, "IA Client Connected on socket %d, at address %s\n", _socket, inet_ntoa(_server.sin_addr));
+    // SEND CLIENT TYPE & GET WELCOME MESSAGE
+    post_request(_socket, request_payload_t{"IA\n"});
+    response_payload_t response = get_response(_socket);
+    std::cout << response.payload;
 
-    // send_request(_socket, identification);
-    // response_payload_t rsp = get_response_payload(get_response(_socket));
+    // SEND TEAM NAME & GET OK RESPONSE
+    post_request(_socket, request_payload_t{"martin\n"});
+    response_payload_t team_response = get_response(_socket);
 
-    request_payload_t request;
-    request.id = _socket;
-    strcpy(request.command, identification);
-    send_struct_request(_socket, request);
-    response_payload_t response = get_struct_response(_socket);
-    printf("%d\n", response.id);
-    printf("%d\n", response.status);
-    printf("%s\n", response.message);
+    // SEND INFO REQUEST & GET CLIENT NUMBER
+    post_request(_socket, request_payload_t{"INFO CLIENT\n"});
+    response_payload_client_number_t client_number_response = get_response_client_number(_socket);
+    std::cout << client_number_response.client_id;
 
-    // printf("%s\n", get_response(_socket));
+    // SEND INFO REQUEST & GET MAP DIMENSIONS
+    post_request(_socket, request_payload_t{"INFO MAP\n"});
+    response_payload_map_t map_response = get_response_map(_socket);
+    std::cout << map_response.height << " " << map_response.width;
+}
 
-    // replace with actual team name
-    // send_request(_socket, "martin");
-    // printf("%s\n", get_response(_socket));
+void Client::serverSentResponse()
+{
+    // CODE HERE ALL RESPONSES RELATED FUNCTIONS
+
+    return;
 }
