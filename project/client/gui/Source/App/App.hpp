@@ -14,11 +14,14 @@
     #include "Options.hpp"
     #include "Client.hpp"
     #include "Game.hpp"
+    #include "IListener.hpp"
 
-class App {
+class App : public IListener {
     public:
         App(std::string const &name, int width, int height);
         ~App();
+
+        void updateInformations(char *data) override;
 
         void startApp();
         void startConnection();
@@ -31,10 +34,10 @@ class App {
 
     protected:
     private:
+        Client _client;
         Options _options{};
         RayLib::Window _window;
         RayLib::CinematicCamera _camera;
-        Client _client;
         Game _game;
 
         int _mapHeight = 10;
