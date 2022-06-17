@@ -16,15 +16,9 @@ namespace Object
      * @brief enum of 3D object type present in map
      */
     enum class MAP_OBJECTS {
-        GROUND = 'A',
-        WALL_MIDDLE = 'x',
-        WALL_SIDE = 'X',
-        BOX = 'O',
-        EMPTY = ' ',
-        BOMB = 'B',
-        BONUS = 'b',
-        PLAYER = 'P',
-        EXPLOSION = 'E'
+        TILES,
+        PLAYER,
+        RESSOURCES
     };
 
     /**

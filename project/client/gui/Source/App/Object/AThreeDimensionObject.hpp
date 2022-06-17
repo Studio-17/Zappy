@@ -9,6 +9,7 @@
     #define ATHREEDIMENSIONOBJECT_HPP_
 
     #include <raylib.h>
+    #include <vector>
 
     #include "Rendering/Animation.hpp"
     #include "Rendering/Model.hpp"

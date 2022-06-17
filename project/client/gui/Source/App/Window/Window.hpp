@@ -13,8 +13,10 @@
     #include <string>
     #include <any>
     #include <utility>
+    #include <array>
 
     #include "Errors.hpp"
+    #include "Camera.hpp"
 
 namespace RayLib
 {
