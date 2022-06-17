@@ -7,7 +7,7 @@
 
 #include "ClientErrors.hpp"
 
-ClientErrors::ClientErrors(std::string const &message) : Errors("Client: " + message)
+ClientErrors::ClientErrors(std::string const &message) : Errors("Options: " + message)
 {
 }
 

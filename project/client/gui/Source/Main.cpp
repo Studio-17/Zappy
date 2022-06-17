@@ -13,7 +13,7 @@ int main(int ac, char **av)
     App app("MyApp", 1920, 1080);
 
     try {
-        app.setUpOptions(ac, av);
+        app.setupOptions(ac, av);
         app.handleOptions();
         app.startApp();
     } catch (OptionsErrors const &OptionError) {

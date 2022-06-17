@@ -24,14 +24,14 @@ class App {
         void startConnection();
         void startMainLoop();
 
-        void setUpOptions(int ac, char **av);
+        void setupOptions(int ac, char **av);
         void handleOptions();
 
         void draw();
 
     protected:
     private:
-        Options _options;
+        Options _options{};
         RayLib::Window _window;
         RayLib::CinematicCamera _camera;
         Client _client;

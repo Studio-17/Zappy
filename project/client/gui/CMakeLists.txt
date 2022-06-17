@@ -12,10 +12,12 @@ include(cmake-modules/Findraylib.cmake)
 
 # specify the sources
 file(GLOB SOURCES
+    ../../library/net/protocol.c
     Source/Main.cpp
     Source/Client/*.cpp
     Source/Errors/*.cpp
     Source/Errors/ErrorsModules/*.cpp
+    Source/Errors/ErrorsModules/Client/*.cpp
     Source/Errors/ErrorsModules/Options/*.cpp
     Source/Options/*.cpp
     Source/Window/*.cpp
@@ -38,6 +40,8 @@ include_directories(
     Source/Client/
     Source/Errors/
     Source/Errors/ErrorsModules/
+    Source/Errors/ErrorsModules/Client/
+    Source/Errors/ErrorsModules/Options/
     Source/Options/
     Source/App/Window/
     Source/App/Camera/
