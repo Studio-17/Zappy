@@ -13,7 +13,6 @@
 
 #include "server/server.h"
 
-#include "zappy/zappy.h"
 #include "zappy/map/map.h"
 
 #include "options/options.h"
@@ -46,11 +45,11 @@ int main(int ac, char **av)
 
     zappy->server = malloc(sizeof(server_t));
 
-    create_server(zappy->server, zappy->options);
+    create_server(zappy);
 
     free_options(zappy->options);
 
-    free_server(zappy->server);
+    free_server(zappy);
 
     return (EXIT_SUCCESS);
 }

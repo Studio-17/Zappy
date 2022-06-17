@@ -17,6 +17,7 @@ SRC_LISTLIB	=	list/list.c			\
 
 SRC_MINILIB	=	mini/my_atoi.c		\
 				mini/my_itoa.c		\
+				mini/my_strtoword.c	\
 
 SRC_NETLIB	=	net/protocol.c		\
 

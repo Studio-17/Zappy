@@ -12,7 +12,19 @@
 
 #include "server/server.h"
 
-static void greeting_protocol(server_t *server, int client_socket)
+static bool team_name_allowed(char *client_names, char *team_name)
+{
+    char **names = my_strtok(client_names, ' ');
+
+    for (int index = 0; names[index]; index += 1) {
+        if (strcmp(names[index], team_name) == 0) {
+            return (true);
+        }
+    }
+    return (false);
+}
+
+static void greeting_protocol(zappy_t *zappy, int client_socket)
 {
     // GET CLIENT TYPE & SEND WELCOME
     request_payload_t request = get_request(client_socket);
@@ -21,7 +33,13 @@ static void greeting_protocol(server_t *server, int client_socket)
     // GET CLIENT NAME & SEND OK/KO
     request_payload_t team_name_request = get_request(client_socket);
     printf("%s", team_name_request.payload);
-    post_response(client_socket, (response_payload_t) {true, "OK\n"});
+    if (team_name_allowed(zappy->options->names, team_name_request.payload)) {
+        post_response(client_socket, (response_payload_t) {true, "OK\n"});
+    } else {
+        post_response(client_socket, (response_payload_t) {false, "KO\n"});
+        close(client_socket);
+        exit(0);
+    }
 
     // GET INFO CLIENT & SEND CLIENT NUMBER
     request_payload_t info_client_request = get_request(client_socket);
@@ -29,25 +47,25 @@ static void greeting_protocol(server_t *server, int client_socket)
 
     // GET INFO MAP & SEND MAP DIMENSIONS
     request_payload_t info_map_request = get_request(client_socket);
-    post_response_map(client_socket, (response_payload_map_t) {true, 10, 10});
+    post_response_map(client_socket, (response_payload_map_t) {true, zappy->options->width, zappy->options->height});
 }
 
-void connect_client(server_t *server)
+void connect_client(zappy_t *zappy)
 {
     int client_socket;
 
-    if (FD_ISSET(server->ss->server, &server->sd->readfd))
+    if (FD_ISSET(zappy->server->ss->server, &zappy->server->sd->readfd))
     {
-        if ((client_socket = accept(server->ss->server,
-                                 (struct sockaddr *)&server->address, (socklen_t *)&server->address_length)) < 0)
+        if ((client_socket = accept(zappy->server->ss->server,
+                                 (struct sockaddr *)&zappy->server->address, (socklen_t *)&zappy->server->address_length)) < 0)
         {
             perror("accept");
             exit(EXIT_FAILURE);
         }
 
-        add_client_to_server(server, client_socket);
+        add_client_to_server(zappy->server, client_socket);
 
-        greeting_protocol(server, client_socket);
+        greeting_protocol(zappy, client_socket);
 
         // CODE HERE ALL GREETING RELATED FUNCTIONS
     }
