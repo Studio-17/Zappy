@@ -49,7 +49,7 @@ void Client::handle()
     std::cout << response.payload;
 
     // SEND TEAM NAME & GET OK RESPONSE
-    post_request(_socket, request_payload_t{"GRAPHIC\n"});
+    post_request(_socket, request_payload_t{"GRAPHIC"});
     response_payload_t team_response = get_response(_socket);
 
     // SEND INFO REQUEST & GET CLIENT NUMBER

@@ -37,7 +37,7 @@ static void greeting_protocol(zappy_t *zappy, int client_socket)
         exit(0);
     }
     request_payload_t team_name_request = get_request(client_socket);
-    printf("%s", team_name_request.payload);
+    printf("%s\n", team_name_request.payload);
     if (team_name_allowed(zappy->options->names, team_name_request.payload)) {
         post_response(client_socket, (response_payload_t) {true, "OK\n"});
     } else {
@@ -50,10 +50,12 @@ static void greeting_protocol(zappy_t *zappy, int client_socket)
     request_payload_t info_client_request = get_request(client_socket);
     post_response_client_number(client_socket, (response_client_number_t) {true, zappy->server->clients});
 
+    if (strcmp(request.payload, "IA\n") == 0) {
     // CREATE A CLIENT (struct)
-    player_t player = (player_t) {.id = zappy->server->clients, .level = 1, .orientation = 0, .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height}};
-    zappy->client[zappy->server->clients] = (ai_client_t){client_socket, zappy->server->clients, AI, player};
-    zappy->server->clients += 1;
+        player_t player = (player_t) {.id = zappy->server->clients, .level = 1, .orientation = 0, .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height}};
+        zappy->client[zappy->server->clients] = (ai_client_t){client_socket, zappy->server->clients, AI, player};
+        zappy->server->clients += 1;
+    }
 
     // GET INFO MAP & SEND MAP DIMENSIONS
     request_payload_t info_map_request = get_request(client_socket);
