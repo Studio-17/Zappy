@@ -9,6 +9,7 @@
 
 #include "minilib.h"
 #include "netlib.h"
+#include "protocol/greeting.h"
 
 #include <fcntl.h>
 

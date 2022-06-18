@@ -5,8 +5,6 @@
 ** server
 */
 
-#include "netlib.h"
-
 #include "server/server.h"
 #include "server/communication/request/request.h"
 
