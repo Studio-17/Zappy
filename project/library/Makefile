@@ -19,7 +19,11 @@ SRC_MINILIB	=	mini/my_atoi.c		\
 				mini/my_itoa.c		\
 				mini/my_strtoword.c	\
 
-SRC_NETLIB	=	net/protocol.c		\
+SRC_NETLIB	=	net/protocol.c				\
+				net/header.c				\
+				net/protocol/greeting.c		\
+				net/protocol/player.c		\
+				net/protocol/map.c			\
 
 LISTLIB_OBJ	=	$(SRC_LISTLIB:.c=.o)
 MINILIB_OBJ	=	$(SRC_MINILIB:.c=.o)

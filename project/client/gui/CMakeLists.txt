@@ -12,7 +12,8 @@ include(cmake-modules/Findraylib.cmake)
 
 # specify the sources
 file(GLOB SOURCES
-    ../../library/net/protocol.c
+    ../../library/net/*.c
+    ../../library/net/protocol/*.c
     Source/Main.cpp
     Source/Client/*.cpp
     Source/Errors/*.cpp

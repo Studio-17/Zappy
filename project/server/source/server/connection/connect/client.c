@@ -9,6 +9,9 @@
 
 #include "minilib.h"
 #include "netlib.h"
+#include "protocol/greeting.h"
+
+#include <fcntl.h>
 
 #include "server/server.h"
 
@@ -82,8 +85,12 @@ void connect_client(zappy_t *zappy)
 
         greeting_protocol(zappy, client_socket);
 
+
         // CODE HERE ALL GREETING RELATED FUNCTIONS
     }
+
+    int unblock = fcntl(client_socket, F_GETFL, 0);
+    fcntl(client_socket, F_SETFL, unblock | O_NONBLOCK);
 
     handle_client(zappy);
 }

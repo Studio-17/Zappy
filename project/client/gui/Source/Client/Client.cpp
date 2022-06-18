@@ -7,6 +7,7 @@
 
 extern "C" {
     #include "netlib.h"
+    #include "protocol/greeting.h"
 }
 
 #include "Client.hpp"

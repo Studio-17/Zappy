@@ -2,8 +2,13 @@
 ** EPITECH PROJECT, 2022
 ** B-YEP-410-PAR-4-1-zappy-martin.vanaud
 ** File description:
-** protocol
+** map
 */
 
+#ifndef MAP_H_
+#define MAP_H_
+
 #include "netlib.h"
-#include "protocol/greeting.h"
+
+
+#endif /* !MAP_H_ */

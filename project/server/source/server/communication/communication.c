@@ -5,6 +5,8 @@
 ** communication
 */
 
+#include "protocol/player.h"
+
 #include "server/communication/communication.h"
 #include "server/server.h"
 
@@ -22,7 +24,7 @@ void handle_client(zappy_t *zappy)
         // request_payload_player_position_t player_position_request = get_request_player_position(zappy->server->sd->socket_descriptor);
 
         // payload_header_t header = {
-        //     .size = sizeof(payload_header_t),
+        //     .size = sizeof(payload_header_t), // set size of target struct instead of header
         //     .type = 0,
         // };
         // post_header(zappy->server->sd->socket_descriptor, header);
