@@ -64,5 +64,6 @@ response_payload_map_t get_response_map(int socket)
 
 void post_response_map(int socket, response_payload_map_t request)
 {
+    printf("%d %d\n", request.width, request.height);
     write(socket, &request, sizeof(response_payload_map_t));
 }
