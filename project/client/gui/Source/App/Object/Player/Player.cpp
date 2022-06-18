@@ -15,11 +15,12 @@ Object::Player::Player(std::pair<std::string, std::string> const &pathToRessourc
     _speed = 0.6f;
 }
 
-Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type) :
+Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId) :
     AThreeDimensionObject(pathToModel, pathToRessources, pathToAnimation, numberOfAnimations, position, type)
 {
     _scale = 7.0f;
     _speed = 0.6f;
+    _playerId = playerId;
 }
 
 Object::Player::~Player()

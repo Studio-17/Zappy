@@ -7,6 +7,11 @@
 
 #include "App.hpp"
 
+
+extern "C" {
+    #include "netlib.h"
+}
+
 App::App(std::string const &name, int width, int height) : _window(width, height, name), _camera(), _client(), _game()
 {
     _camera.setPosition(Position(65, 230, 266));
@@ -46,21 +51,19 @@ void App::startConnection()
 void App::startMainLoop()
 {
     while (!_window.windowShouldClose()) {
-        _window.startDrawing();
-        _window.clearBackground(DARKGRAY);
-        _camera.startMode3D();
-
-        draw();
         _client.listen();
-
-        _camera.endMode3D();
-        _window.endDrawing();
+        draw();
     }
 }
 
 void App::draw()
 {
+    _window.startDrawing();
+    _window.clearBackground(DARKGRAY);
+    _camera.startMode3D();
     _game.drawTiles();
+    _camera.endMode3D();
+    _window.endDrawing();
 }
 
 void App::setupOptions(int ac, char **av)
@@ -73,7 +76,24 @@ void App::handleOptions()
     _client.handleOptions();
 }
 
-void App::updateInformations(char *data)
+void App::updateInformations(char *data, int type)
 {
     std::cout << "update Informations !!!!!!!!!!!!!!" << std::endl;
+}
+
+void App::handleAddPlayer(char *data)
+{
+    // response_payload_add_player_t *addPlayer;
+
+    // addPlayer = (response_payload_add_player_t *)data;
+
+    // _game.addPlayer(addPlayer->team_name, addPlayer->player_id, addPlayer->position.x)
+}
+
+void App::handlePlayerPosition(char *data)
+{
+    response_payload_player_position_t *playerPos;
+
+    playerPos = (response_payload_player_position_t*)data;
+    _game.handlePlayerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y);
 }

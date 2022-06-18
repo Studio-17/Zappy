@@ -16,12 +16,25 @@
     #include "Game.hpp"
     #include "IListener.hpp"
 
+enum COMMANDS_GUI {
+    MAP_SIZE,
+    CONTENT_TILE,
+    CONTENT_MAP,
+    NAME_OF_TEAMS,
+    PLAYER_POSITION,
+    PLAYER_LEVEL,
+    PLAYER_INVENTORY,
+    TIME_UNIT,
+    TIME_UNIT_MODIFICATION,
+    NB_COMMANDS_GUI,
+};
+
 class App : public IListener {
     public:
         App(std::string const &name, int width, int height);
         ~App();
 
-        void updateInformations(char *data) override;
+        void updateInformations(char *data, int type) override;
 
         void startApp();
         void startConnection();
@@ -31,6 +44,9 @@ class App : public IListener {
         void handleOptions();
 
         void draw();
+
+        void handleAddPlayer(char *data);
+        void handlePlayerPosition(char *data);
 
     protected:
     private:

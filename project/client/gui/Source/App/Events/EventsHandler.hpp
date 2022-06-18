@@ -21,9 +21,9 @@ class EventsHandler {
             _listenersVector.push_back(newListener);
         }
 
-        void eventReceive(char *data) {
+        void eventReceive(char *data, int type) {
             for (auto memberToNotify : _listenersVector) {
-                memberToNotify->updateInformations(data);
+                memberToNotify->updateInformations(data, type);
             }
         }
 
