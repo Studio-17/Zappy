@@ -11,6 +11,10 @@
     #include "server/server.h"
     #include "communication/response/response.h"
 
+enum COMMANDS {
+    PLAYER_CONNECTED = 0,
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // AI
 ////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +66,7 @@ enum COMMANDS_GUI {
     CONTENT_TILE,
     CONTENT_MAP,
     NAME_OF_TEAMS,
+    PLAYER_CONNECTED,
     PLAYER_POSITION,
     PLAYER_LEVEL,
     PLAYER_INVENTORY,

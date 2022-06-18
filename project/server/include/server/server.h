@@ -41,7 +41,8 @@ typedef struct zappy_s {
 void create_server(zappy_t *zappy);
 void client_deconnected(zappy_t *zappy, int client_socketn);
 
-void handle_client(zappy_t *zappy);
+void configure_socket_type(server_t *server);
+void bind_socket_to_server(server_t *server);
 
 void connect_client(zappy_t *zappy);
 void clear_socket_set(server_t *server);
@@ -50,11 +51,10 @@ void add_client_socket_to_set(server_t *server);
 void wait_for_connections(server_t *server);
 void add_client_to_server(server_t *server, int client_socket);
 
+void listen_clients(zappy_t *zappy);
+
 void debug_server(zappy_t *zappy);
 void free_server(zappy_t *zappy);
-
-void configure_socket_type(server_t *server);
-void bind_socket_to_server(server_t *server);
 
 
 #endif /* !SERVER_H_ */

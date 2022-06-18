@@ -10,30 +10,24 @@
 #include "server/communication/communication.h"
 #include "server/server.h"
 
-void client_sent_request(server_t *server)
+static void client_sent_request(int type)
 {
     return;
 }
 
-void handle_client(zappy_t *zappy)
+void listen_clients(zappy_t *zappy)
 {
     for (int index = 0; index < zappy->server->ss->max_client; index += 1) {
 
         zappy->server->sd->socket_descriptor = zappy->server->ss->client[index];
 
-        // request_payload_player_position_t player_position_request = get_request_player_position(zappy->server->sd->socket_descriptor);
+        payload_header_t header = get_header(zappy->server->sd->socket_descriptor);
 
-        // payload_header_t header = {
-        //     .size = sizeof(payload_header_t), // set size of target struct instead of header
-        //     .type = 0,
-        // };
-        // post_header(zappy->server->sd->socket_descriptor, header);
+        char *data = NULL;
+        data = (char *)malloc(header.size);
 
-        // response_payload_player_position_t response = {
-        //     .status = true,
-        //     .player_id = zappy->client[player_position_request.player_id].client_nb,
-        //     .position = zappy->client[player_position_request.player_id].player.position,
-        // };
-        // post_response_player_position(zappy->server->sd->socket_descriptor, response);
+        read(zappy->server->sd->socket_descriptor, data, header.size);
+
+        client_sent_request(header.type);
     }
 }

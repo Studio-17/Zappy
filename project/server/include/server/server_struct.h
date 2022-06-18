@@ -30,6 +30,7 @@ typedef struct server_s {
     server_socket_t *ss;
     server_socket_descriptor_t *sd;
     int clients;
+    int gui;
 } server_t;
 
 #endif /* !SERVER_STRUCT_H_ */

@@ -10,10 +10,12 @@
 #include "minilib.h"
 #include "netlib.h"
 #include "protocol/greeting.h"
+#include "protocol/player.h"
 
 #include <fcntl.h>
 
 #include "server/server.h"
+#include "server/communication/request/request.h"
 
 static bool team_name_allowed(char *client_names, char *team_name)
 {
@@ -28,6 +30,21 @@ static bool team_name_allowed(char *client_names, char *team_name)
         }
     }
     return (false);
+}
+
+static void send_new_player_connected_to_gui(zappy_t *zappy)
+{
+    post_header(zappy->server->gui, (payload_header_t){
+        .size = sizeof(response_payload_player_connected_t),
+        .type = PLAYER_CONNECTED}
+    );
+
+    post_response_player_connected(zappy->server->gui, (response_payload_player_connected_t){
+        .id = zappy->server->clients,
+        .level = zappy->client[zappy->server->clients].player.level,
+        .orientation = zappy->client[zappy->server->clients].player.orientation,
+        .position = zappy->client[zappy->server->clients].player.position,
+    });
 }
 
 static void greeting_protocol(zappy_t *zappy, int client_socket)
@@ -60,8 +77,12 @@ static void greeting_protocol(zappy_t *zappy, int client_socket)
     // CREATE A CLIENT (struct)
         player_t player = (player_t) {.id = zappy->server->clients, .level = 1, .orientation = 0, .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height}};
         zappy->client[zappy->server->clients] = (ai_client_t){client_socket, zappy->server->clients, AI, player};
-        zappy->server->clients += 1;
+    } else if (strcmp(request.payload, "GRAPHIC\n") == 0) {
+        zappy->server->gui = client_socket;
     }
+
+    send_new_player_connected_to_gui(zappy);
+    zappy->server->clients += 1;
 
     // GET INFO MAP & SEND MAP DIMENSIONS
     request_payload_t info_map_request = get_request(client_socket);
@@ -92,7 +113,7 @@ void connect_client(zappy_t *zappy)
     int unblock = fcntl(client_socket, F_GETFL, 0);
     fcntl(client_socket, F_SETFL, unblock | O_NONBLOCK);
 
-    handle_client(zappy);
+    listen_clients(zappy);
 }
 
 void clear_socket_set(server_t *server)
