@@ -24,17 +24,23 @@ class Game {
         void setUpGameMap();
         void drawTiles();
 
+        void addPlayer(std::string const &team, int playerId, int x, int y);
+        void handlePlayerPosition(int playerId, int x, int y);
+
     protected:
     private:
         int _mapWidth;
         int _mapHeight;
         std::vector<std::shared_ptr<Object::Tile>> _tiles;
+        std::vector<std::shared_ptr<Object::Player>> _players;
 
         Object::Render::MyModel _tilesModel;
         Object::Render::MyModel _playersModel;
 
         Object::Render::MyTexture _tilesTexture;
         std::vector<Object::Render::MyTexture> _playersTextures;
+
+        Object::Render::MyAnimation _playersAnimation;
 };
 
 #endif /* !GAME_HPP_ */

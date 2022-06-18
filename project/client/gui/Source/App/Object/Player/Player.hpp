@@ -39,7 +39,7 @@ namespace Object {
              * @param position 3 dimensional Position
              * @param type map object type
              */
-            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type);
+            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId);
             /**
              * @brief Destroy the Player object
              */
@@ -99,6 +99,8 @@ namespace Object {
              */
             void setIsMoving(bool isMoving);
 
+            int getPlayerId() { return _playerId; };
+
         private:
 
             std::pair<float, float> _defaultSpeed = {0.5f, 0.8f};
@@ -109,6 +111,7 @@ namespace Object {
             int _life;
             bool _isAlive = true;
             bool _isMoving = false; ///< is moving
+            int _playerId;
     };
 }
 

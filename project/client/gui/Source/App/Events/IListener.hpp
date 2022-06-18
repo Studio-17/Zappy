@@ -10,7 +10,7 @@
 
 class IListener {
     public:
-        virtual void updateInformations(char *data) = 0;
+        virtual void updateInformations(char *data, int type) = 0;
 
     protected:
     private:
