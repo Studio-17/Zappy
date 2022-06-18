@@ -17,21 +17,6 @@
 #include "server/server.h"
 #include "server/communication/request/request.h"
 
-static bool team_name_allowed(char *client_names, char *team_name)
-{
-    if (strcmp(team_name, "GRAPHIC") == 0)
-        return (true);
-
-    char **names = my_strtok(client_names, ' ');
-
-    for (int index = 0; names[index]; index += 1) {
-        if (strcmp(names[index], team_name) == 0) {
-            return (true);
-        }
-    }
-    return (false);
-}
-
 static void send_new_player_connected_to_gui(zappy_t *zappy)
 {
     post_header(zappy->server->gui, (payload_header_t){
@@ -45,45 +30,8 @@ static void send_new_player_connected_to_gui(zappy_t *zappy)
         .orientation = zappy->client[zappy->server->clients].player.orientation,
         .position = zappy->client[zappy->server->clients].player.position,
     });
-}
 
-static void greeting_protocol(zappy_t *zappy, int client_socket)
-{
-    // GET CLIENT TYPE & SEND WELCOME
-    request_payload_t request = get_request(client_socket);
-    post_response(client_socket, (response_payload_t) {true, "WELCOME\n"});
-
-    // GET CLIENT NAME & SEND OK/KO
-    if (zappy->server->clients > zappy->options->clients_nb) {
-        post_response(client_socket, (response_payload_t) {false, "KO\n"});
-        close(client_socket);
-        exit(0);
-    }
-    request_payload_t team_name_request = get_request(client_socket);
-    printf("%s\n", team_name_request.payload);
-    if (team_name_allowed(zappy->options->names, team_name_request.payload)) {
-        post_response(client_socket, (response_payload_t) {true, "OK\n"});
-    } else {
-        post_response(client_socket, (response_payload_t) {false, "KO\n"});
-        close(client_socket);
-        return;
-    }
-
-    // GET INFO CLIENT & SEND CLIENT NUMBER
-    request_payload_t info_client_request = get_request(client_socket);
-    post_response_client_number(client_socket, (response_client_number_t) {true, zappy->server->clients});
-
-    if (strcmp(request.payload, "IA\n") == 0) {
-    // CREATE A CLIENT (struct)
-        player_t player = (player_t) {.id = zappy->server->clients, .level = 1, .orientation = 0, .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height}};
-        zappy->client[zappy->server->clients] = (ai_client_t){client_socket, zappy->server->clients, AI, player};
-    } else if (strcmp(request.payload, "GRAPHIC\n") == 0) {
-        zappy->server->gui = client_socket;
-    }
-
-    // GET INFO MAP & SEND MAP DIMENSIONS
-    request_payload_t info_map_request = get_request(client_socket);
-    post_response_map(client_socket, (response_payload_map_t) {true, zappy->options->width, zappy->options->height});
+    zappy->server->clients += 1;
 }
 
 void connect_client(zappy_t *zappy)
@@ -103,15 +51,12 @@ void connect_client(zappy_t *zappy)
 
         greeting_protocol(zappy, client_socket);
 
-
-        // CODE HERE ALL GREETING RELATED FUNCTIONS
     }
 
-    int unblock = fcntl(client_socket, F_GETFL, 0);
-    fcntl(client_socket, F_SETFL, unblock | O_NONBLOCK);
+    setup_non_blocking_sockets(client_socket);
 
-    send_new_player_connected_to_gui(zappy);
-    zappy->server->clients += 1;
+    if (zappy->server->is_gui_connected)
+        send_new_player_connected_to_gui(zappy);
 
     listen_clients(zappy);
 }

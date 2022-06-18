@@ -10,16 +10,17 @@ Epitech Project
 bash .github/scripts/setup.sh
 ```
 
-> Build & Execute (server)
+> Build & Execute (all)
 ```
-make -C server/
+make zappy_server
+
+make zappy_ai
+make zappy_gui
 
 ./server/zappy_server --help
-```
 
-> Build & Execute (ia)
-```
-python3 ia/zappy_ia
+./client/ai/zappy_ai --help
+./client/gui/build/zappy_gui --help
 ```
 
 > Usage
