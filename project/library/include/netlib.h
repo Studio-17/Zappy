@@ -17,7 +17,7 @@
 
 enum SENDER_ID {
     SERVER,
-    AI,
+    IA,
     GUI,
 };
 
