@@ -11,6 +11,7 @@
     #include <unistd.h>
     #include <stdbool.h>
     #include <stdio.h>
+    #include <fcntl.h>
 
 // HEADER
 

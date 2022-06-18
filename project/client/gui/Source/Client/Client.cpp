@@ -62,6 +62,8 @@ void Client::handle()
 
 std::pair<int, int> Client::getMapDimension()
 {
+    int unblock = 0;
+
     // SEND INFO REQUEST & GET MAP DIMENSIONS
     std::pair<int, int> mapDimension(0, 0);
     post_request(_socket, request_payload_t{"INFO MAP\n"});
@@ -69,6 +71,10 @@ std::pair<int, int> Client::getMapDimension()
     mapDimension.first = map_response.width;
     mapDimension.second = map_response.height;
     std::cout << map_response.height << " " << map_response.width << std::endl;
+
+    // UNBLOCK SOCKET
+    unblock = fcntl(_socket, F_GETFL, 0);
+    fcntl(_socket, F_SETFL, unblock | O_NONBLOCK);
     return (mapDimension);
 }
 
@@ -92,11 +98,18 @@ void Client::handleOptions()
 
 void Client::listen()
 {
-    char data[512];
+    char *data = nullptr;
     int readResult = 0;
+    payload_header_t header = {0, 0};
 
-    // readResult = read(_socket, data, 512);
-    // if (readResult <= 0)
-    //     return;
-    _eventsHandler.eventReceive(data);
+    readResult = read(_socket, &header, sizeof(payload_header_t));
+    if (readResult <= 0) {
+        return;
+    }
+    data = (char*)malloc(header.size);
+    readResult = read(_socket, data, header.size);
+    if (readResult <= 0)
+        return;
+    _eventsHandler.eventReceive(data, header.type);
+    free(data);
 }
