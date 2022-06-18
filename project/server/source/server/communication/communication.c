@@ -10,24 +10,30 @@
 #include "server/communication/communication.h"
 #include "server/server.h"
 
-static void client_sent_request(int type)
+static void gui_client_sent_request(int type)
 {
     return;
 }
 
+static int get_generic_request(int client_socket, int size_to_read)
+{
+    char *data = malloc(size_to_read);
+
+    read(client_socket, data, size_to_read);
+}
+
 void listen_clients(zappy_t *zappy)
 {
-    // for (int index = 0; index < zappy->server->ss->max_client; index += 1) {
+    int request_type = -1;
 
-    //     zappy->server->sd->socket_descriptor = zappy->server->ss->client[index];
+    for (int index = 0; index < zappy->server->ss->max_client; index += 1) {
 
-    //     payload_header_t header = get_header(zappy->server->sd->socket_descriptor);
+        zappy->server->sd->socket_descriptor = zappy->server->ss->client[index];
 
-    //     char *data = NULL;
-    //     data = (char *)malloc(header.size);
+        payload_header_t header = get_header(zappy->server->sd->socket_descriptor);
 
-    //     read(zappy->server->sd->socket_descriptor, data, header.size);
+        request_type = get_generic_request(zappy->server->sd->socket_descriptor, header.size);
 
-    //     client_sent_request(header.type);
-    // }
+        gui_client_sent_request(header.type);
+    }
 }

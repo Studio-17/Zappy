@@ -20,6 +20,7 @@
 static void send_new_player_connected_to_gui(zappy_t *zappy)
 {
     post_header(zappy->server->gui, (payload_header_t){
+        .id = SERVER,
         .size = sizeof(response_payload_player_connected_t),
         .type = PLAYER_CONNECTED}
     );
