@@ -10,6 +10,8 @@
 
 extern "C" {
     #include "netlib.h"
+    #include "protocol/player.h"
+    #include "protocol/greeting.h"
 }
 
 App::App(std::string const &name, int width, int height) : _window(width, height, name), _camera(), _client(), _game()
