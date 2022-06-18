@@ -84,16 +84,17 @@ void App::handleOptions()
 
 void App::updateInformations(char *data, int type)
 {
-    std::cout << "update Informations !!!!!!!!!!!!!!" << std::endl;
+    if (type == PLAYER_CONNECTED)
+        handleAddPlayer(data);
 }
 
 void App::handleAddPlayer(char *data)
 {
-    // response_payload_add_player_t *addPlayer;
+    response_payload_player_connected_t *addPlayer;
 
-    // addPlayer = (response_payload_add_player_t *)data;
+    addPlayer = (response_payload_player_connected_t *)data;
 
-    // _game.addPlayer(addPlayer->team_name, addPlayer->player_id, addPlayer->position.x)
+    _game.addPlayer("hello", addPlayer->id, addPlayer->position.x, addPlayer->position.y);
 }
 
 void App::handlePlayerPosition(char *data)

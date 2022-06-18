@@ -81,9 +81,6 @@ static void greeting_protocol(zappy_t *zappy, int client_socket)
         zappy->server->gui = client_socket;
     }
 
-    send_new_player_connected_to_gui(zappy);
-    zappy->server->clients += 1;
-
     // GET INFO MAP & SEND MAP DIMENSIONS
     request_payload_t info_map_request = get_request(client_socket);
     post_response_map(client_socket, (response_payload_map_t) {true, zappy->options->width, zappy->options->height});
@@ -112,6 +109,9 @@ void connect_client(zappy_t *zappy)
 
     int unblock = fcntl(client_socket, F_GETFL, 0);
     fcntl(client_socket, F_SETFL, unblock | O_NONBLOCK);
+
+    send_new_player_connected_to_gui(zappy);
+    zappy->server->clients += 1;
 
     listen_clients(zappy);
 }
