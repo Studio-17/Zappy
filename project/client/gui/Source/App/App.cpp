@@ -14,6 +14,10 @@ extern "C" {
     #include "protocol/greeting.h"
 }
 
+static std::vector<std::pair<COMMANDS_GUI, void(App::*)(char *)>> _commandsMap = {
+            std::make_pair(MAP_SIZE, &App::handleAddPlayer)
+};
+
 App::App(std::string const &name, int width, int height) : _window(width, height, name), _camera(), _client(), _game()
 {
     _camera.setPosition(Position(65, 230, 266));

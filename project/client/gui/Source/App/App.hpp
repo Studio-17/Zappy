@@ -9,6 +9,8 @@
 #define APP_HPP_
 
     #include <iostream>
+    #include <functional>
+
     #include "Window.hpp"
     #include "Camera.hpp"
     #include "Options.hpp"
@@ -28,6 +30,7 @@ enum COMMANDS_GUI {
     TIME_UNIT_MODIFICATION,
     NB_COMMANDS_GUI,
 };
+
 
 class App : public IListener {
     public:
