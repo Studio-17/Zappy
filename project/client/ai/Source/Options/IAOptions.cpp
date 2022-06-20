@@ -5,18 +5,18 @@
 ** Options
 */
 
-#include "Options.hpp"
+#include "IAOptions.hpp"
 
-Options::Options()
+IAOptions::IAOptions()
 {
 
 }
 
-Options::~Options()
+IAOptions::~IAOptions()
 {
 }
 
-void Options::setupOptions(int ac, char **av)
+void IAOptions::setupOptions(int ac, char **av)
 {
     int opt = 0;
 
@@ -52,13 +52,13 @@ void Options::setupOptions(int ac, char **av)
     }
 }
 
-void Options::handleOptions()
+void IAOptions::handleOptions()
 {
     if (_port < 1 || _name.empty() || _machine.empty())
         throw OptionsErrors("Invalid options");
 }
 
-void Options::printUsage()
+void IAOptions::printUsage()
 {
     std::cout << "  ./zappy_ai --help" << std::endl;
     std::cout << "USAGE: ./zappy_ai -p port -n name -h machine" << std::endl;

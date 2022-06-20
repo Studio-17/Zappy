@@ -5,8 +5,8 @@
 ** Options
 */
 
-#ifndef OPTIONS_HPP_
-#define OPTIONS_HPP_
+#ifndef IAOPTIONS_HPP_
+#define IAOPTIONS_HPP_
 
 #include <iostream>
 #include <string>
@@ -16,20 +16,16 @@
 
 #include "Errors/ErrorsModules/Options/OptionsErrors.hpp"
 
-class Options {
+class IAOptions {
     public:
-        Options();
-        ~Options();
-
+        IAOptions();
+        ~IAOptions();
         void setupOptions(int ac, char **av);
         void handleOptions();
-
         void printUsage();
-
         int getPort() { return (_port); };
         std::string getName() { return (_name); };
         std::string getMachine() { return (_machine); };
-
     protected:
     private:
         int _port;
@@ -37,4 +33,4 @@ class Options {
         std::string _machine = "127.0.0.1";
 };
 
-#endif /* !OPTIONS_HPP_ */
+#endif /* !IAOPTIONS_HPP_ */
