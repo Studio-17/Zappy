@@ -5,6 +5,8 @@
 ** greeting
 */
 
+#define _GNU_SOURCE
+
 #include "netlib.h"
 #include "protocol/greeting.h"
 #include "protocol/player.h"
@@ -14,8 +16,6 @@
 
 static void ai_protocol(zappy_t *zappy, int client_socket)
 {
-    get_client_team_name(zappy, client_socket);
-
     request_payload_t info_client_request = get_request(client_socket);
     post_response_client_number(client_socket, (response_client_number_t) {true, zappy->server->clients});
 
@@ -27,8 +27,6 @@ static void ai_protocol(zappy_t *zappy, int client_socket)
 
 static void gui_protocol(zappy_t *zappy, int client_socket)
 {
-    get_client_team_name(zappy, client_socket);
-
     request_payload_t info_client_request = get_request(client_socket);
     post_response_client_number(client_socket, (response_client_number_t) {true, zappy->server->clients});
 
@@ -38,16 +36,40 @@ static void gui_protocol(zappy_t *zappy, int client_socket)
     get_map_informations(zappy, client_socket);
 }
 
+static void post_welcome(zappy_t *zappy, int socket)
+{
+    char *message = "WELCOME";
+
+    dprintf(socket, "%s\n", message);
+}
+
+static void get_team_name(zappy_t *zappy, int socket)
+{
+    char team_name[256];
+
+    if (read(socket, &team_name, sizeof(team_name)) < 0)
+        perror("get_team_name read");
+    
+    printf("%s", team_name);
+}
+
+static void post_client_num(zappy_t *zappy, int socket)
+{
+    dprintf(socket, "%d\n", zappy->server->sd->socket_descriptor);
+}
+
+static void post_map_dimensions(zappy_t *zappy, int socket)
+{
+    dprintf(socket, "%d %d\n", zappy->options->width, zappy->options->height);
+}
+
 void greeting_protocol(zappy_t *zappy, int client_socket)
 {
-    request_payload_t request = get_request(client_socket);
-    post_response(client_socket, (response_payload_t) {true, "WELCOME\n"});
+    post_welcome(zappy, client_socket);
 
-    if (strcmp(request.payload, "IA\n") == 0) {
-        ai_protocol(zappy, client_socket);
-    } else if (strcmp(request.payload, "GRAPHIC\n") == 0) {
-        gui_protocol(zappy, client_socket);
-    } else {
-        // this is an error
-    }
+    get_team_name(zappy, client_socket);
+
+    post_client_num(zappy, client_socket);
+
+    post_map_dimensions(zappy, client_socket);
 }
