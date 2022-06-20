@@ -122,10 +122,10 @@ void listen_clients(zappy_t *zappy)
 
         zappy->server->sd->socket_descriptor = zappy->server->ss->client[index];
 
-        payload_header_t header = get_header(zappy->server->sd->socket_descriptor);
+        // payload_header_t header = get_header(zappy->server->sd->socket_descriptor);
 
-        request_data = get_generic_request(zappy->server->sd->socket_descriptor, header.size);
+        // request_data = get_generic_request(zappy->server->sd->socket_descriptor, header.size);
 
-        gui_request_to_handle[header.type].handler(zappy, request_data);
+        // gui_request_to_handle[header.type].handler(zappy, request_data);
     }
 }
