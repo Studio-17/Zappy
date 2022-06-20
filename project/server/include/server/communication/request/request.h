@@ -9,6 +9,7 @@
     #define REQUEST_H_
 
     #include "server/server.h"
+    #include "server/server_struct.h"
     #include "communication/response/response.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,10 +72,6 @@ enum COMMANDS_GUI {
     NB_COMMANDS_GUI,
 };
 
-// REQUEST GUI
-
-int request_map_size(void);
-
 // COMMANDS_AI
 
 typedef struct command_gui_struct {
@@ -126,6 +123,21 @@ static const command_gui commands_gui[] = {
     },
 };
 
-void handle_request(server_t *server, char *command);
+typedef void (*gui_request_handler)(zappy_t *, void *);
+
+void request_map_size(zappy_t *, void *);
+void request_tile_content(zappy_t *, void *);
+void request_team_names(zappy_t *, void *);
+void request_player_connected(zappy_t *, void *);
+void request_player_position(zappy_t *, void *);
+void request_player_inventory(zappy_t *, void *);
+void request_player_level(zappy_t *, void *);
+void request_time_unit(zappy_t *, void *);
+void request_time_unit_modification(zappy_t *, void *);
+
+typedef struct gui_request_s {
+    int type;
+    gui_request_handler handler;
+} gui_request_t;
 
 #endif /* !REQUEST_H_ */

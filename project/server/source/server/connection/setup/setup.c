@@ -18,6 +18,8 @@ void setup_server(server_t *server, options_t *options)
     server->ss->max_client = options->clients_nb;
 
     server->clients = 0;
+
+    server->is_gui_connected = false;
 }
 
 void initialise_all_clients_sockets(server_t *server)
@@ -42,4 +44,11 @@ void allow_multiple_connections(server_t *server)
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
+}
+
+void setup_non_blocking_sockets(int client_socket)
+{
+    int unblock = fcntl(client_socket, F_GETFL, 0);
+
+    fcntl(client_socket, F_SETFL, unblock | O_NONBLOCK);
 }

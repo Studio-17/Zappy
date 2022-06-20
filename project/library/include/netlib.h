@@ -15,7 +15,14 @@
 
 // HEADER
 
+enum SENDER_ID {
+    SERVER,
+    IA,
+    GUI,
+};
+
 typedef struct payload_header_s {
+    int id; // SERVER = 0, 1 = AI, 2 = GUI
     int size;
     int type; // TO BE CAST TO ENUM type : )
 } payload_header_t;
