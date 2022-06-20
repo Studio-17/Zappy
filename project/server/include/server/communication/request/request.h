@@ -28,7 +28,7 @@ enum COMMANDS_AI {
     CONNECT_NBR,
     FORK,
     EJECT,
-    // DEATH,
+    DEATH,
 
     TAKE_OBJECT,
     SET_OBJECT,
@@ -39,10 +39,13 @@ enum COMMANDS_AI {
 
 // REQUEST
 
-typedef struct request_ai_struct {
-    enum COMMANDS_AI command;
+typedef void (*ai_request_handler)(zappy_t *, void *);
+
+typedef struct ai_request_s {
     char *request;
-} request_ai;
+    enum COMMANDS_AI command;
+    ai_request_handler handler;
+} ai_request_t;
 
 enum COMMANDS_AI get_command_ai(char *request);
 

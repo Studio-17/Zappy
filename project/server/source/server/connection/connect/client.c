@@ -54,7 +54,7 @@ void connect_client(zappy_t *zappy)
 
     }
 
-    setup_non_blocking_sockets(client_socket);
+    // setup_non_blocking_sockets(client_socket);
 
     if (zappy->server->is_gui_connected)
         send_new_player_connected_to_gui(zappy);

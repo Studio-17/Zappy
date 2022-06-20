@@ -5,6 +5,8 @@
 ** greeting
 */
 
+#define _GNU_SOURCE
+
 #include "netlib.h"
 #include "protocol/greeting.h"
 #include "protocol/player.h"
@@ -36,7 +38,9 @@ static void gui_protocol(zappy_t *zappy, int client_socket)
 
 static void post_welcome(zappy_t *zappy, int socket)
 {
-    write(socket, "WELCOME\n", strlen("WELCOME\n"));
+    char *message = "WELCOME";
+
+    dprintf(socket, "%s\n", message);
 }
 
 static void get_team_name(zappy_t *zappy, int socket)
@@ -45,30 +49,18 @@ static void get_team_name(zappy_t *zappy, int socket)
 
     if (read(socket, &team_name, sizeof(team_name)) < 0)
         perror("get_team_name read");
-
-    if (strcmp(team_name, "GRAPHIC\n") == 0)
-        printf("%s\n", "this is a graphic client");
-    else
-        printf("%s\n", "this is an ai client");
-
+    
+    printf("%s", team_name);
 }
 
 static void post_client_num(zappy_t *zappy, int socket)
 {
-    char *client_num = my_itoa(zappy->server->clients);
-    client_num = strcat(client_num, "\n");
-
-    write(socket, &client_num, sizeof(&client_num));
+    dprintf(socket, "%d\n", zappy->server->sd->socket_descriptor);
 }
 
 static void post_map_dimensions(zappy_t *zappy, int socket)
 {
-    char *map_dimension = strcat(" ", my_itoa(zappy->map->height));
-    map_dimension = strcat(" ", strcat(map_dimension, " "));
-    map_dimension = strcat(map_dimension, my_itoa(zappy->map->width));
-    map_dimension = strcat(map_dimension, "\n");
-
-    write(socket, &map_dimension, sizeof(map_dimension));
+    dprintf(socket, "%d %d\n", zappy->options->width, zappy->options->height);
 }
 
 void greeting_protocol(zappy_t *zappy, int client_socket)
