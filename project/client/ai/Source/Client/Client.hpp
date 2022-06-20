@@ -32,6 +32,9 @@ class Client {
 
         void serverSentResponse();
 
+        void postRequest(int socketId, std::string const &request);
+        std::string getRequest(int socketId);
+
     protected:
     private:
         int _socket;
