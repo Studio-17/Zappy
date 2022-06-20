@@ -35,7 +35,7 @@ typedef struct zappy_s {
     server_t *server;
     map_t *map;
     ai_client_t *client;
-    resources_t *ressources;
+    resources_t *resources;
 } zappy_t;
 
 void create_server(zappy_t *zappy);
