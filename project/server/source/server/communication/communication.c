@@ -21,7 +21,7 @@ void listen_clients(zappy_t *zappy)
         if (zappy->server->is_gui_connected)
             gui_handle_request(zappy);
 
-        // ai_handle_request(zappy);
+        ai_handle_request(zappy);
 
     }
 }
