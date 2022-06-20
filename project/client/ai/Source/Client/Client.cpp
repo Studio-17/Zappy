@@ -76,10 +76,10 @@ void Client::handle()
     postRequest(_socket, "Martin");
 
     clientNumString = getRequest(_socket);
-    std::cout << "Client IA received: " << welcomeString << std::endl;
+    std::cout << "Number client: " << clientNumString << std::endl;
 
     coordString = getRequest(_socket);
-    std::cout << "Client IA received: " << welcomeString << std::endl;
+    std::cout << "MapSize: " << coordString << std::endl;
 }
 
 void Client::serverSentResponse()
@@ -97,10 +97,12 @@ void Client::postRequest(int socketId, std::string const &request)
 std::string Client::getRequest(int socketId)
 {
     std::string response;
+    response.resize(100);
+    int result = 0;
 
-    if (read(socketId, (void*)response.c_str(), 100) < 0)
+    if ((result = read(socketId, (void *)response.c_str(), 100)) < 0)
         perror("AIClient: getRequest");
-
+    response.resize(result);
     return (response);
 }
 
