@@ -29,7 +29,7 @@ typedef struct map_s {
     tile_t **tiles;
 } map_t;
 
-void create_map(map_t *map, int width, int height);
+map_t *create_map(int width, int height);
 
 void fill_map(map_t *map, resources_t *resource);
 
