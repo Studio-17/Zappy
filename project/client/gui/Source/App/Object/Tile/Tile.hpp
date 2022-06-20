@@ -9,7 +9,7 @@
 #define TILE_HPP_
 
     #include "AThreeDimensionObject.hpp"
-    #include "Ressources.hpp"
+    #include "Resource.hpp"
 
 namespace Object {
     class Tile : public AThreeDimensionObject {
@@ -19,9 +19,12 @@ namespace Object {
 
             void draw() override;
 
+            std::vector<std::shared_ptr<Object::Resource>> getResources() const;
+            void setResources(std::vector<std::shared_ptr<Object::Resource>> const &resources);
+
         protected:
         private:
-            std::vector<std::shared_ptr<Ressources>> _ressources;
+            std::vector<std::shared_ptr<Object::Resource>> _resources;
     };
 }
 

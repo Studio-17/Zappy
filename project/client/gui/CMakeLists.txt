@@ -29,7 +29,7 @@ file(GLOB SOURCES
     Source/App/Object/*.cpp
     Source/App/Rendering/*.cpp
     Source/App/Object/Player/*.cpp
-    Source/App/Object/Ressources/*.cpp
+    Source/App/Object/Resource/*.cpp
     Source/App/Object/Tile/*.cpp
     Source/App/Game/*.cpp
     Source/Events/*.cpp
@@ -45,14 +45,14 @@ include_directories(
     Source/Errors/ErrorsModules/Client/
     Source/Errors/ErrorsModules/Options/
     Source/Options/
+    Source/App/
     Source/App/Window/
     Source/App/Camera/
     Source/App/Position/
-    Source/App/
     Source/App/Object
     Source/App/Rendering
     Source/App/Object/Player/
-    Source/App/Object/Ressources/
+    Source/App/Object/Resource/
     Source/App/Object/Tile/
     Source/App/Game/
     Source/App/Events/

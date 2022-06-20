@@ -27,6 +27,16 @@ Object::AThreeDimensionObject::AThreeDimensionObject(Object::Render::MyModel pat
     _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
 }
 
+Object::AThreeDimensionObject::AThreeDimensionObject(Object::Render::MyModel pathToModel, Position const &position, Object::MAP_OBJECTS type) :
+    _isEnable(true), _position(position),
+    _type(type),
+    _model(pathToModel.getModel()),
+    // _texture(pathToTexture.getTexture()),
+    _isAnimated(false), _scale(0.5f)
+{
+    // _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
+}
+
 Object::AThreeDimensionObject::AThreeDimensionObject(std::pair<std::string, std::string> const &pathToRessources, std::string const &pathToAnimation, unsigned int nbAnimation, Position const &position, Object::MAP_OBJECTS type) :
     _isEnable(true), _position(position),
     _type(type),

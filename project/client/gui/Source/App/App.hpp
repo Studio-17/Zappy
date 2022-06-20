@@ -10,6 +10,7 @@
 
     #include <iostream>
     #include <functional>
+    #include <map>
 
     #include "Window.hpp"
     #include "Camera.hpp"
@@ -20,13 +21,13 @@
 
 enum COMMANDS_GUI {
     MAP_SIZE,
-    CONTENT_TILE,
+    CONTENT_TILE, // STRUCT DONE
     CONTENT_MAP,
     NAME_OF_TEAMS,
-    PLAYER_CONNECTED,
-    PLAYER_POSITION,
-    PLAYER_LEVEL,
-    PLAYER_INVENTORY,
+    PLAYER_CONNECTED, // STRUCT DONE
+    PLAYER_POSITION, // STRUCT DONE
+    PLAYER_LEVEL, // STRUCT DONE
+    PLAYER_INVENTORY, // STRUCT DONE
     TIME_UNIT,
     TIME_UNIT_MODIFICATION,
     NB_COMMANDS_GUI,
@@ -51,6 +52,10 @@ class App : public IListener {
 
         void handleAddPlayer(char *data);
         void handlePlayerPosition(char *data);
+        void handlePlayerLevel(char *data);
+        void handlePlayerInventory(char *data);
+        void handleContentTile(char *data);
+        void handleContentMap(char *data);
 
     protected:
     private:

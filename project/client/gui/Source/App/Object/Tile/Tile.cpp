@@ -27,3 +27,13 @@ void Object::Tile::draw()
     if (_isEnable)
         DrawModel(_model, modelPosition, _scale, WHITE);
 }
+
+std::vector<std::shared_ptr<Object::Resource>> Object::Tile::getResources() const
+{
+    return _resources;
+}
+
+void Object::Tile::setResources(std::vector<std::shared_ptr<Object::Resource>> const &resources)
+{
+    _resources = resources;
+}
