@@ -8,7 +8,7 @@
 #include <csignal>
 
 #include "Ia.hpp"
-#include "Client/Client.hpp"
+#include "Client/IAClient.hpp"
 
 void sigint_handler([[maybe_unused]] int signal_num)
 {
