@@ -22,6 +22,8 @@ SOURCE	=	source/server/communication/communication.c			\
 			source/server/communication/response/response.c		\
 			source/server/server.c								\
 			source/server/connection/connect/client.c			\
+			source/server/connection/connect/connect.c			\
+			source/server/connection/connect/greeting.c			\
 			source/server/connection/connect/server.c			\
 			source/server/connection/setup/setup.c				\
 			source/errors/errors.c								\
@@ -58,6 +60,7 @@ INCLUDE_DIRS	+=	-I include/zappy/teams/
 
 CFLAGS	+=	-W -Wall -Wextra
 CFLAGS	+=	$(INCLUDE_DIRS)
+CFLAGS	+=	-g3
 
 LDFLAGS	+=	-lm
 LDFLAGS	+=	-L ../library/

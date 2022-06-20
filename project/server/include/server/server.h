@@ -35,7 +35,7 @@ typedef struct zappy_s {
     server_t *server;
     map_t *map;
     ai_client_t *client;
-    resources_t *ressources;
+    resources_t *resources;
 } zappy_t;
 
 void create_server(zappy_t *zappy);
@@ -50,6 +50,12 @@ void add_server_socket_to_set(server_t *server);
 void add_client_socket_to_set(server_t *server);
 void wait_for_connections(server_t *server);
 void add_client_to_server(server_t *server, int client_socket);
+
+void greeting_protocol(zappy_t *zappy, int client_socket);
+void setup_non_blocking_sockets(int client_socket);
+
+void get_client_team_name(zappy_t *zappy, int client_socket);
+void get_map_informations(zappy_t *zappy, int client_socket);
 
 void listen_clients(zappy_t *zappy);
 

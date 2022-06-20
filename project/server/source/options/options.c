@@ -87,7 +87,7 @@ int handle_options(options_t *options)
     }
 
     int count = 1;
-    for (int index = 0; index < strlen(options->names); index++){
+    for (int index = 0; index < (ssize_t)strlen(options->names); index++){
         if (options->names[index] == ' ') {
             count++;
         }

@@ -45,10 +45,20 @@ int main(int ac, char **av)
 
     zappy->client = malloc(sizeof(ai_client_t) * zappy->options->clients_nb);
     zappy->server = malloc(sizeof(server_t));
+    zappy->map = create_map(10, 10);
+    zappy->resources = setup_resources(10, 10);
+
+    float number_of_resources = 0.0;
+    for (int index = 0; index < NB_ITEMS ; index += 1)
+        number_of_resources += zappy->resources[index].quantity;
+    zappy->map->ratio = number_of_resources / zappy->map->size;
+    fill_map(zappy->map, zappy->resources);
 
     create_server(zappy);
 
     free_options(zappy->options);
+    free_map(zappy->map);
+    free_resources(zappy->resources);
 
     free_server(zappy);
 
