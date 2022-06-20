@@ -24,12 +24,11 @@ enum ITEM {
 typedef struct resources_s {
     char *name;
     enum ITEM item;
-    int resources;
     float density;
     int quantity;
 } resources_t;
 
-void setup_resources(resources_t *resource, int width, int height);
+resources_t *setup_resources(int width, int height);
 
 
 void debug_resources(resources_t *resource);
