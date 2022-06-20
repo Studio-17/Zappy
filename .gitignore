@@ -63,4 +63,4 @@ zappy_gui
 zappy_ai
 unit_tests
 project/client/gui/build/
-.github/environement/.martin.env
+.github/environement/
