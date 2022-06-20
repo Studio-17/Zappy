@@ -54,9 +54,14 @@ static const gui_request_t gui_request_to_handle[] = {
 void request_map_size(zappy_t *zappy, void *request_data)
 {
     int socket = zappy->server->sd->socket_descriptor;
-    request_payload_t payload = *(request_payload_t *)request_data;
 
-    // should i post a header here too ?
+    post_header(zappy->server->gui, (payload_header_t){
+        .id = SERVER,
+        .size = sizeof(response_payload_map_t),
+        .type = MAP_SIZE
+    });
+
+    request_payload_t payload = *(request_payload_t *)request_data;
     post_response_map(socket, (response_payload_map_t) {
         .status = true,
         .width = zappy->map->width,
@@ -76,22 +81,58 @@ void request_team_names(zappy_t *zappy, void *request_data)
 
 void request_player_connected(zappy_t *zappy, void *request_data)
 {
+    int socket = zappy->server->sd->socket_descriptor;
 
+    post_header(socket, (payload_header_t){
+        .id = SERVER,
+        .size = sizeof(response_payload_player_connected_t),
+        .type = PLAYER_CONNECTED
+    });
+
+    post_response_player_connected(socket, (response_payload_player_connected_t){
+        .id = zappy->server->clients,
+        .level = zappy->client[zappy->server->clients].player.level,
+        .orientation = zappy->client[zappy->server->clients].player.orientation,
+        .position = zappy->client[zappy->server->clients].player.position,
+    });
 }
 
 void request_player_position(zappy_t *zappy, void *request_data)
 {
+    int socket = zappy->server->sd->socket_descriptor;
 
+    post_header(socket, (payload_header_t){
+        .id = SERVER,
+        .size = sizeof(response_payload_player_connected_t),
+        .type = PLAYER_CONNECTED
+    });
+
+    post_response_player_position(socket, (response_payload_player_position_t){
+        .status = true,
+        .player_id = zappy->server->clients,
+        .position = zappy->client[zappy->server->clients].player.position,
+    });
 }
 
 void request_player_inventory(zappy_t *zappy, void *request_data)
 {
-
 }
 
 void request_player_level(zappy_t *zappy, void *request_data)
 {
+    int socket = zappy->server->sd->socket_descriptor;
 
+    post_header(socket, (payload_header_t){
+        .id = SERVER,
+        .size = sizeof(response_payload_player_connected_t),
+        .type = PLAYER_CONNECTED
+    });
+
+    post_response_player_level(socket, (response_payload_player_level_t){
+        .status = true,
+        .player_id = zappy->server->clients,
+        .level = zappy->client[zappy->server->clients].player.level,
+    });
 }
 
 void request_time_unit(zappy_t *zappy, void *request_data)
@@ -122,10 +163,14 @@ void listen_clients(zappy_t *zappy)
 
         zappy->server->sd->socket_descriptor = zappy->server->ss->client[index];
 
-        // payload_header_t header = get_header(zappy->server->sd->socket_descriptor);
+        if (zappy->server->is_gui_connected) {
+            payload_header_t header = get_header(zappy->server->sd->socket_descriptor);
 
-        // request_data = get_generic_request(zappy->server->sd->socket_descriptor, header.size);
+            request_data = get_generic_request(zappy->server->sd->socket_descriptor, header.size);
+            gui_request_to_handle[header.type].handler(zappy, request_data);
+        }
 
-        // gui_request_to_handle[header.type].handler(zappy, request_data);
+        // code here ai request handler
+
     }
 }
