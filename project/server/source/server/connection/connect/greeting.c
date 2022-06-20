@@ -19,7 +19,7 @@ static void ai_protocol(zappy_t *zappy, int client_socket)
     request_payload_t info_client_request = get_request(client_socket);
     post_response_client_number(client_socket, (response_client_number_t) {true, zappy->server->clients});
 
-    player_t player = (player_t) {.id = zappy->server->clients, .level = 1, .orientation = 0, .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height}};
+    player_t player = (player_t) {.id = zappy->server->clients, .level = 1, .orientation = SOUTH, .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height}};
     zappy->client[zappy->server->clients] = (ai_client_t){client_socket, zappy->server->clients, AI, player};
 
     get_map_informations(zappy, client_socket);
@@ -49,7 +49,13 @@ static void get_team_name(zappy_t *zappy, int socket)
 
     if (read(socket, &team_name, sizeof(team_name)) < 0)
         perror("get_team_name read");
-    
+
+    if (strcmp(team_name, "GRAPHIC\n") != 0) {
+        player_t player = (player_t) {.id = zappy->server->clients, .level = 1, .orientation = SOUTH, .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height}};
+        zappy->client[zappy->server->clients] = (ai_client_t){socket, zappy->server->clients, AI, player};
+        zappy->server->clients += 1;
+    }
+
     printf("%s", team_name);
 }
 

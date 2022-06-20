@@ -18,11 +18,17 @@ enum CLIENT_TYPE {
     NB_TYPES,
 };
 
+enum DIRECTION {
+    NORTH = 0,
+    EST = 1,
+    SOUTH = 2,
+    WEST = 3
+};
 typedef struct player_t {
     int id;
     int level;
-    int orientation;
     position_t position;
+    enum DIRECTION orientation;
 } player_t;
 
 typedef struct ai_client_s {
