@@ -45,26 +45,41 @@ void Client::connection()
 void Client::handle()
 {
     // SEND CLIENT TYPE & GET WELCOME MESSAGE
-    post_request(_socket, request_payload_t{"IA\n"});
-    response_payload_t response = get_response(_socket);
-    std::cout << response.payload;
+    // post_request(_socket, request_payload_t{"IA\n"});
+    // response_payload_t response = get_response(_socket);
+    // std::cout << response.payload;
 
     // SEND TEAM NAME & GET OK RESPONSE
-    request_payload_t request;
-    strcpy(request.payload, _options->getName().c_str());
-    post_request(_socket, request);
-    response_payload_t team_response = get_response(_socket);
-    std::cout << team_response.payload;
+    // request_payload_t request;
+    // strcpy(request.payload, _options->getName().c_str());
+    // post_request(_socket, request);
+    // response_payload_t team_response = get_response(_socket);
+    // std::cout << team_response.payload;
 
     // SEND INFO REQUEST & GET CLIENT NUMBER
-    post_request(_socket, request_payload_t{"INFO CLIENT\n"});
-    response_payload_client_number_t client_number_response = get_response_client_number(_socket);
-    std::cout << client_number_response.client_id << std::endl;
+    // post_request(_socket, request_payload_t{"INFO CLIENT\n"});
+    // response_payload_client_number_t client_number_response = get_response_client_number(_socket);
+    // std::cout << client_number_response.client_id << std::endl;
 
     // SEND INFO REQUEST & GET MAP DIMENSIONS
-    post_request(_socket, request_payload_t{"INFO MAP\n"});
-    response_payload_map_t map_response = get_response_map(_socket);
-    std::cout << map_response.height << " " << map_response.width << std::endl;
+    // post_request(_socket, request_payload_t{"INFO MAP\n"});
+    // response_payload_map_t map_response = get_response_map(_socket);
+    // std::cout << map_response.height << " " << map_response.width << std::endl;
+
+    std::string welcomeString;
+    std::string clientNumString;
+    std::string coordString;
+
+    welcomeString = getRequest(_socket);
+    std::cout << "Client IA received: " << welcomeString << std::endl;
+
+    postRequest(_socket, "Martin");
+
+    clientNumString = getRequest(_socket);
+    std::cout << "Number client: " << clientNumString << std::endl;
+
+    coordString = getRequest(_socket);
+    std::cout << "MapSize: " << coordString << std::endl;
 }
 
 void Client::serverSentResponse()
@@ -73,3 +88,22 @@ void Client::serverSentResponse()
 
     return;
 }
+
+void Client::postRequest(int socketId, std::string const &request)
+{
+    write(socketId, request.c_str(), request.size());
+}
+
+std::string Client::getRequest(int socketId)
+{
+    std::string response;
+    response.resize(100);
+    int result = 0;
+
+    if ((result = read(socketId, (void *)response.c_str(), 100)) < 0)
+        perror("AIClient: getRequest");
+    response.resize(result);
+    return (response);
+}
+
+
