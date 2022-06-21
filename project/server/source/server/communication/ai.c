@@ -51,6 +51,19 @@ void ai_forward_request(zappy_t *zappy, void *data, int player_index)
     position_t movement = direction[zappy->client[player_index].player.orientation];
 
     move(zappy, movement, player_index);
+
+    post_header(zappy->server->socket_descriptor->socket_descriptor, (payload_header_t){
+        .id = SERVER,
+        .size = sizeof(response_payload_player_position_t),
+        .type = PLAYER_POSITION
+    });
+
+    post_response_player_position(zappy->server->socket_descriptor->socket_descriptor, (response_payload_player_position_t){
+        .status = true,
+        .player_id = player_index,
+        .position = zappy->client[player_index].player.position,
+    });
+
     ai_response_ok_ko(socket, true);
 }
 
@@ -63,8 +76,11 @@ void ai_right_request(zappy_t *zappy, void *data, int player_index)
     zappy->client[player_index].player.orientation += 1;
     if (zappy->client[player_index].player.orientation > WEST)
         zappy->client[player_index].player.orientation = NORTH;
+
     movement = direction[zappy->client[player_index].player.orientation];
+
     move(zappy, movement, player_index);
+
     ai_response_ok_ko(socket, true);
 }
 
@@ -78,8 +94,11 @@ void ai_left_request(zappy_t *zappy, void *data, int player_index)
         zappy->client[player_index].player.orientation = WEST;
     else
         zappy->client[player_index].player.orientation -= 1;
+
     movement = direction[zappy->client[player_index].player.orientation];
+
     move(zappy, movement, player_index);
+
     ai_response_ok_ko(socket, true);
 }
 

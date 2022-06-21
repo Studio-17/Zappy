@@ -20,8 +20,8 @@ void listen_clients(zappy_t *zappy)
                 continue;
             zappy->server->socket_descriptor->socket_descriptor = zappy->server->server_socket->client[index];
 
-            // if (zappy->server->is_gui_connected)
-            // gui_handle_request(zappy);
+            if (zappy->server->is_gui_connected)
+                gui_handle_request(zappy);
 
             ai_handle_request(zappy, index);
         }
