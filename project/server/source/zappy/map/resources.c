@@ -7,7 +7,7 @@
 
 #include <string.h>
 
-#include "zappy/map/map.h"
+#include "server/server.h"
 
 resources_t *setup_resources(int width, int height)
 {

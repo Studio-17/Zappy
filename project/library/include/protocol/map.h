@@ -17,13 +17,13 @@ typedef struct request_payload_content_tile_s {
 
 typedef struct response_payload_content_tile_s {
     position_t position;
+    int food;
     int linemate;
     int deraumere;
     int sibur;
     int mendiane;
     int phiras;
     int thystame;
-    int food;
 } response_payload_content_tile_t;
 
 void post_response_content_tile(int socket, response_payload_content_tile_t response);
@@ -37,9 +37,7 @@ typedef struct request_payload_content_map_s {
 } request_payload_content_map_t;
 
 typedef struct response_payload_content_map_s {
-    position_t map_size;
     response_payload_content_tile_t **content;
-
 } response_payload_content_map_t;
 
 void post_response_content_map(int socket, response_payload_content_map_t response);
