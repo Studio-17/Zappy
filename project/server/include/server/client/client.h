@@ -19,10 +19,12 @@ enum CLIENT_TYPE {
 };
 
 enum DIRECTION {
+    DEFAULT = -1,
     NORTH = 0,
     EST = 1,
     SOUTH = 2,
-    WEST = 3
+    WEST = 3,
+    OUTOFRANGE
 };
 typedef struct player_t {
     int id;
