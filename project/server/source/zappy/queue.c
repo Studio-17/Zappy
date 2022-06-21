@@ -43,7 +43,7 @@ int execute_tasks(list_t list)
     }
 }
 
-int main(void)
+int queue(void)
 {
     list_t list = NULL;
     srand(time(0));
