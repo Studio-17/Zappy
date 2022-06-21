@@ -13,7 +13,6 @@
     #include "AThreeDimensionObject.hpp"
 
 namespace Object {
-
     /**
      * @brief Player class
      */
@@ -99,7 +98,38 @@ namespace Object {
              */
             void setIsMoving(bool isMoving);
 
+            /**
+             * @brief Get the Player Id
+             *
+             * @return int
+             */
             int getPlayerId() { return _playerId; };
+
+            /**
+             * @brief Get the Player Level
+             *
+             * @return int
+             */
+            int getLevel() { return _level; };
+            /**
+             * @brief Set the Player Level
+             *
+             * @param level int value level
+             */
+            void setLevel(int level);
+
+            /**
+             * @brief Get the Inventory
+             *
+             * @return std::vector<PLAYER_RESSOURCES, int>
+             */
+            std::vector<std::pair<PLAYER_RESSOURCES, int>> getInventory() { return _inventory; };
+            /**
+             * @brief Set the Inventory
+             *
+             * @param inventory inventory ressources
+             */
+            void setInventory(std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory);
 
         private:
 
@@ -112,6 +142,9 @@ namespace Object {
             bool _isAlive = true;
             bool _isMoving = false; ///< is moving
             int _playerId;
+            int _level;
+
+            std::vector<std::pair<PLAYER_RESSOURCES, int>> _inventory;
     };
 }
 
