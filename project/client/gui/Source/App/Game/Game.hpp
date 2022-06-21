@@ -31,6 +31,7 @@ class Game {
     private:
         int _mapWidth;
         int _mapHeight;
+
         std::vector<std::shared_ptr<Object::Tile>> _tiles;
         std::vector<std::shared_ptr<Object::Player>> _players;
 
