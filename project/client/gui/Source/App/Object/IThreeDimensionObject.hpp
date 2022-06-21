@@ -18,7 +18,7 @@ namespace Object
     enum class MAP_OBJECTS {
         TILES,
         PLAYER,
-        RESSOURCES,
+        RESOURCES,
         FOOD,
         LINEMATE,
         DERAUMERE,

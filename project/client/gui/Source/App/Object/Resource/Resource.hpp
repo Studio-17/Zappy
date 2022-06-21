@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2022
 ** project
 ** File description:
-** Ressources
+** Resources
 */
 
 #ifndef RESOURCE_HPP_
@@ -13,7 +13,7 @@
 namespace Object {
     class Resource : public AThreeDimensionObject {
         public:
-            Resource(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Position const &position, Object::MAP_OBJECTS type, int quantity);
+            Resource(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Position const &position, Object::MAP_OBJECTS type, int quantity);
             Resource(Object::Render::MyModel &pathToModel, Position const &position, Object::MAP_OBJECTS type, int quantity);
             ~Resource();
 
@@ -28,4 +28,4 @@ namespace Object {
     };
 }
 
-#endif /* !RESSOURCE_HPP_ */
+#endif /* !RESOURCE_HPP_ */

@@ -63,15 +63,44 @@ void connect_client(zappy_t *zappy)
             }
 
             create_player(zappy, client_socket);
+
             zappy->server->clients += 1;
             if (zappy->server->is_gui_connected)
                 send_new_player_connected_to_gui(zappy, saved_index);
+        } else {
+            response_payload_content_tile_t **map_tiles = malloc(sizeof(response_payload_content_tile_t) * zappy->options->height);
+            for (int map_height = 0; map_height < zappy->options->height; map_height += 1) {
+
+                map_tiles[map_height] = malloc(sizeof(response_payload_content_tile_t) * zappy->options->width);
+
+                for (int map_width = 0; map_width < zappy->options->width; map_width += 1) {
+
+                    map_tiles[map_height][map_width].position.x = map_width;
+                    map_tiles[map_height][map_width].position.y = map_height;
+                    map_tiles[map_height][map_width].food = zappy->map->tiles[map_height][map_width].resources[FOOD].quantity;
+                    map_tiles[map_height][map_width].linemate = zappy->map->tiles[map_height][map_width].resources[LINEMATE].quantity;
+                    map_tiles[map_height][map_width].deraumere = zappy->map->tiles[map_height][map_width].resources[DERAUMERE].quantity;
+                    map_tiles[map_height][map_width].sibur = zappy->map->tiles[map_height][map_width].resources[SIBUR].quantity;
+                    map_tiles[map_height][map_width].mendiane = zappy->map->tiles[map_height][map_width].resources[MENDIANE].quantity;
+                    map_tiles[map_height][map_width].phiras = zappy->map->tiles[map_height][map_width].resources[PHIRAS].quantity;
+                    map_tiles[map_height][map_width].thystame = zappy->map->tiles[map_height][map_width].resources[THYSTAME].quantity;
+
+                }
+            }
+            post_header(zappy->server->gui, (payload_header_t){
+                .id = SERVER,
+                .size = sizeof(request_payload_content_map_t),
+                .type = CONTENT_MAP
+            });
+            // sleep(5);
+
+            post_response_content_map(zappy->server->gui, (response_payload_content_map_t){
+                .content = map_tiles,
+            });
         }
 
     }
-        // add_client_to_server(zappy->server, client_socket);
 
-    // setup_non_blocking_sockets(client_socket);
 
     listen_clients(zappy);
 }

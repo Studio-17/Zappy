@@ -16,29 +16,37 @@ namespace Object {
     /**
      * @brief Player class
      */
+
+    enum class ORIENTATION {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
+    };
+
     class Player : public AThreeDimensionObject {
         public:
             /**
              * @brief Construct a new Player object
              *
-             * @param pathToRessources pair of path to ressources texture and model
-             * @param pathToAnimation path to ressource animation
+             * @param pathToResources pair of path to resources texture and model
+             * @param pathToAnimation path to resource animation
              * @param nbAnimation number of animation
              * @param position 3 dimensional Position
              * @param type map object type
              */
-            Player(std::pair<std::string, std::string> const &pathToRessources, std::string const pathToAnimation, unsigned int nbAnimation, Position const &position, Object::MAP_OBJECTS type);
+            Player(std::pair<std::string, std::string> const &pathToResources, std::string const pathToAnimation, unsigned int nbAnimation, Position const &position, Object::MAP_OBJECTS type);
             /**
              * @brief Construct a new Player object
              *
-             * @param pathToModel path to ressource model
-             * @param pathToRessources path to ressource texture
-             * @param pathToAnimation path to ressource animation
+             * @param pathToModel path to resource model
+             * @param pathToResources path to resource texture
+             * @param pathToAnimation path to resource animation
              * @param numberOfAnimations number of animation
              * @param position 3 dimensional Position
              * @param type map object type
              */
-            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId);
+            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation);
             /**
              * @brief Destroy the Player object
              */
@@ -121,15 +129,17 @@ namespace Object {
             /**
              * @brief Get the Inventory
              *
-             * @return std::vector<PLAYER_RESSOURCES, int>
+             * @return std::vector<PLAYER_RESOURCES, int>
              */
-            std::vector<std::pair<PLAYER_RESSOURCES, int>> getInventory() { return _inventory; };
+            std::vector<std::pair<PLAYER_RESOURCES, int>> getInventory() { return _inventory; };
             /**
              * @brief Set the Inventory
              *
-             * @param inventory inventory ressources
+             * @param inventory inventory resources
              */
-            void setInventory(std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory);
+            void setInventory(std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &inventory);
+
+            void setOrientation(enum Object::ORIENTATION);
 
         private:
 
@@ -144,7 +154,8 @@ namespace Object {
             int _playerId;
             int _level;
 
-            std::vector<std::pair<PLAYER_RESSOURCES, int>> _inventory;
+            std::vector<std::pair<PLAYER_RESOURCES, int>> _inventory;
+            ORIENTATION _playerOrientation;
     };
 }
 

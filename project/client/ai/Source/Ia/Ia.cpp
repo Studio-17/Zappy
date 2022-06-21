@@ -5,9 +5,11 @@
 ** Ia
 */
 
+#include <unistd.h>
+
 #include "Ia.hpp"
 
-Ia::Ia([[maybe_unused]] int test) : _client()
+Ia::Ia() : _client()
 {
 }
 
@@ -33,5 +35,20 @@ void Ia::startIa()
         _mapSize = _client.getMapSize();
     } catch (ClientErrors const &ClientError) {
         std::cerr << ClientError.what() << std::endl;
+    }
+    mainLoop();
+}
+
+void Ia::mainLoop()
+{
+    std::string response;
+
+    while (true) {
+        usleep(1);
+        response = _client.handleAction("Forward");
+        if (response.compare("ok"))
+            std::cout << "IA received: " << response << std::endl;
+        else
+            std::cout << "Bad response from the IA: " << response << std::endl;
     }
 }

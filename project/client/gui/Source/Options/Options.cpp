@@ -58,7 +58,7 @@ void Options::printUsage()
 {
     std::cout << "  ./zappy_gui --help" << std::endl;
     std::cout << "USAGE: ./zappy_gui -p port -h machine" << std::endl;
-    std::cout << "      port is the port number" << std::endl;
+    std::cout << "      port    is the port number" << std::endl;
     std::cout << "      machine is the name of the machine; localhost by default" << std::endl;
 
     exit(0);

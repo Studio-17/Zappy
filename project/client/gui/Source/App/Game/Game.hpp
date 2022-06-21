@@ -28,16 +28,16 @@ class Game {
         void setUpGameMap();
         void drawTiles();
 
-        void addPlayer(std::string const &team, int playerId, int x, int y);
+        void addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation);
         void updatePlayerPosition(int playerId, int x, int y);
         void updatePlayerLevel(int playerId, int level);
-        void updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory);
-        void updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &resources);
+        void updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &inventory);
+        void updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &resources);
         void updateContentMap(response_payload_content_tile_t **content);
 
         std::shared_ptr<Object::Tile> getTileByPosition(Position const &position);
 
-        void loadRessourcesModels();
+        void loadResourcesModels();
 
     protected:
     private:

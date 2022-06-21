@@ -62,8 +62,8 @@ void IAOptions::printUsage()
 {
     std::cout << "  ./zappy_ai --help" << std::endl;
     std::cout << "USAGE: ./zappy_ai -p port -n name -h machine" << std::endl;
-    std::cout << "  port is the port number" << std::endl;
-    std::cout << "  name is the name of the team" << std::endl;
+    std::cout << "  port    is the port number" << std::endl;
+    std::cout << "  name    is the name of the team" << std::endl;
     std::cout << "  machine is the name of the machine; localhost by default" << std::endl;
 
     exit(0);

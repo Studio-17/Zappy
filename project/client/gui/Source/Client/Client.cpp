@@ -122,9 +122,7 @@ void Client::listen()
     int readResult = 0;
     payload_header_t header = {0, 0, 0};
 
-    // std::cout << "socket: " << _socket << std::endl;
     readResult = read(_socket, &header, sizeof(payload_header_t));
-    // std::cout << "listen header read result: " << readResult << std::endl;
     if (readResult <= 0) {
         return;
     }

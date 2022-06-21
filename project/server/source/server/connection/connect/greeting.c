@@ -10,6 +10,7 @@
 #include "netlib.h"
 #include "protocol/greeting.h"
 #include "protocol/player.h"
+#include "protocol/map.h"
 
 #include "server/server.h"
 #include "server/communication/request/request.h"
@@ -19,6 +20,12 @@ static void post_welcome(__attribute__((unused)) zappy_t *zappy, int socket)
     char *message = "WELCOME";
 
     dprintf(socket, "%s\n", message);
+}
+
+static void initialize_gui(zappy_t *zappy, int socket)
+{
+    zappy->server->gui = socket;
+    zappy->server->is_gui_connected = true;
 }
 
 static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
@@ -34,8 +41,7 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
         if (strncmp(zappy->options->team_names[index], team_name, strlen(zappy->options->team_names[index]) - 1) == 0
         || strncmp(team_name, "GRAPHIC\n", strlen("GRAPHIC\n")) == 0) {
             if (strncmp(team_name, "GRAPHIC\n", strlen("GRAPHIC\n")) == 0) {
-                zappy->server->gui = socket;
-                zappy->server->is_gui_connected = true;
+                initialize_gui(zappy, socket);
                 *is_gui = true;
 
             }

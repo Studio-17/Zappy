@@ -12,7 +12,7 @@
 #include <signal.h>
 
 #include "server.h"
-#include "map.h"
+// #include "map.h"
 #include "options.h"
 
 void sigint_handler(__attribute__((unused)) int sig)

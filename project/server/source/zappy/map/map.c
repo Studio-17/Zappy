@@ -5,7 +5,7 @@
 ** map
 */
 
-#include "zappy/map/map.h"
+#include "server/server.h"
 
 map_t *create_map(int width, int height)
 {
