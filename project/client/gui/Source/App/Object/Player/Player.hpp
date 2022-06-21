@@ -16,6 +16,14 @@ namespace Object {
     /**
      * @brief Player class
      */
+
+    enum class ORIENTATION {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
+    };
+
     class Player : public AThreeDimensionObject {
         public:
             /**
@@ -38,7 +46,7 @@ namespace Object {
              * @param position 3 dimensional Position
              * @param type map object type
              */
-            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId);
+            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation);
             /**
              * @brief Destroy the Player object
              */
@@ -131,6 +139,8 @@ namespace Object {
              */
             void setInventory(std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory);
 
+            void setOrientation(enum Object::ORIENTATION);
+
         private:
 
             std::pair<float, float> _defaultSpeed = {0.5f, 0.8f};
@@ -145,6 +155,7 @@ namespace Object {
             int _level;
 
             std::vector<std::pair<PLAYER_RESSOURCES, int>> _inventory;
+            ORIENTATION _playerOrientation;
     };
 }
 
