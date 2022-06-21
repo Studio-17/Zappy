@@ -15,6 +15,9 @@
     #include "Tile.hpp"
     #include "Player.hpp"
     #include "Model.hpp"
+    #include "netlib.h"
+    #include "protocol/player.h"
+    #include "protocol/map.h"
 
 class Game {
     public:
@@ -26,19 +29,21 @@ class Game {
         void drawTiles();
 
         void addPlayer(std::string const &team, int playerId, int x, int y);
+        void playerPosition(int playerId, int x, int y);
+        void playerLevel(int playerId, int level);
+        void playerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory);
+        void contentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &resources);
+        void contentMap(response_payload_content_tile_t **content);
+
+        std::shared_ptr<Object::Tile> getTileByPosition(Position const &position);
+
         void loadRessourcesModels();
-        void handlePlayerPosition(int playerId, int x, int y);
-        void handlePlayerLevel(int playerId, int level);
-        void handlePlayerInventory(int playerId, std::vector<Object::PLAYER_RESSOURCES, int> const &inventory);
-        void handleContentMap(std::vector<std::vector<Object::PLAYER_RESSOURCES, int>> const &resources);
-        void handleContentTile(Position const &tilePosition, std::vector<Object::PLAYER_RESSOURCES, int> const &resources);
 
     protected:
     private:
         int _mapWidth;
         int _mapHeight;
         std::vector<std::shared_ptr<Object::Tile>> _tiles;
-        // std::vector<std::vector<std::shared_ptr<Object::Tile>>> _tiles2;
         std::vector<std::shared_ptr<Object::Player>> _players;
 
         Object::Render::MyModel _tilesModel;

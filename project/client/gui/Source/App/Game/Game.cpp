@@ -41,7 +41,7 @@ void Game::setUpGameMap()
 
     for (std::size_t line = 0; line < _mapWidth; line++) {
         for (size_t col = 0; col < _mapHeight; col++) {
-            _tiles.emplace_back(std::make_shared<Object::Tile>(_tilesModel, _tilesTexture, Position(tilePosition.x, tilePosition.y, tilePosition.z), Object::MAP_OBJECTS::TILES));
+            _tiles.emplace_back(std::make_shared<Object::Tile>(_tilesModel, _tilesTexture, _resourcesModels, Position(tilePosition.x, tilePosition.y, tilePosition.z), Object::MAP_OBJECTS::TILES));
             tilePosition.x += 10.0f;
         }
         tilePosition.z += 10.0f;
@@ -66,7 +66,7 @@ void Game::addPlayer(std::string const &team, int playerId, int x, int y)
     std::cout << "player " << playerId << " was added" << std::endl;
 }
 
-void Game::handlePlayerPosition(int playerId, int x, int y)
+void Game::playerPosition(int playerId, int x, int y)
 {
     Position playerPosition(x, 0, y);
     for (auto &player : _players) {
@@ -76,7 +76,7 @@ void Game::handlePlayerPosition(int playerId, int x, int y)
     std::cout << "player " << playerId << " moved " << x << y << std::endl;
 }
 
-void Game::handlePlayerLevel(int playerId, int level)
+void Game::playerLevel(int playerId, int level)
 {
     for (auto &player : _players) {
         if (player->getPlayerId() == playerId)
@@ -85,7 +85,7 @@ void Game::handlePlayerLevel(int playerId, int level)
     std::cout << "player " << playerId << " level is " << level << std::endl;
 }
 
-void Game::handlePlayerInventory(int playerId, std::vector<Object::PLAYER_RESSOURCES, int> const &inventory)
+void Game::playerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory)
 {
     for (auto &player : _players) {
         if (player->getPlayerId() == playerId)
@@ -93,32 +93,37 @@ void Game::handlePlayerInventory(int playerId, std::vector<Object::PLAYER_RESSOU
     }
 }
 
-void Game::handleContentMap(std::vector<std::vector<Object::PLAYER_RESSOURCES, int>> const &resources)
+void Game::contentMap(response_payload_content_tile_t **content)
 {
-    // for (std::size_t line = 0; line < resources.size(); line++) {
-    //     for (size_t col = 0; col < resources.at(line).size(); col++) {
-    //         handleContentTile(Position(line, 0, col), resources.at(line));
-    //     }
-    // }
+    std::size_t cpt = 0;
+    std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> resources;
+
+    for (std::size_t index = 0; index < _mapWidth; index++) {
+        for (std::size_t index2 = 0; index2 < _mapHeight; index2++) {
+            resources.emplace_back(Object::PLAYER_RESSOURCES::FOOD, content[index][index2].food);
+            resources.emplace_back(Object::PLAYER_RESSOURCES::LINEMATE, content[index][index2].linemate);
+            resources.emplace_back(Object::PLAYER_RESSOURCES::DERAUMERE, content[index][index2].deraumere);
+            resources.emplace_back(Object::PLAYER_RESSOURCES::SIBUR, content[index][index2].sibur);
+            resources.emplace_back(Object::PLAYER_RESSOURCES::MENDIANE, content[index][index2].mendiane);
+            resources.emplace_back(Object::PLAYER_RESSOURCES::PHIRAS, content[index][index2].phiras);
+            resources.emplace_back(Object::PLAYER_RESSOURCES::THYSTAME, content[index][index2].thystame);
+            _tiles.at(cpt)->setResources(resources);
+            cpt++;
+            resources.clear();
+        }
+    }
 }
 
-void Game::handleContentTile(Position const &tilePosition, std::vector<Object::PLAYER_RESSOURCES, int> const &resources)
+std::shared_ptr<Object::Tile> Game::getTileByPosition(Position const &position)
 {
-    // _tiles.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::FOOD)), tilePosition, Object::MAP_OBJECTS::FOOD, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::FOOD))));
-    // _tiles.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::LINEMATE)), tilePosition, Object::MAP_OBJECTS::LINEMATE, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::LINEMATE))));
-    // _tiles.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::DERAUMERE)), tilePosition, Object::MAP_OBJECTS::DERAUMERE, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::DERAUMERE))));
-    // _tiles.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::SIBUR)), tilePosition, Object::MAP_OBJECTS::SIBUR, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::SIBUR))));
-    // _tiles.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::MENDIANE)), tilePosition, Object::MAP_OBJECTS::MENDIANE, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::MENDIANE))));
-    // _tiles.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::PHIRAS)), tilePosition, Object::MAP_OBJECTS::PHIRAS, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::PHIRAS))));
-    // _tiles.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::THYSTAME)), tilePosition, Object::MAP_OBJECTS::THYSTAME, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::THYSTAME))));
+    for (auto &tile : _tiles)
+        if (tile->getPosition() == position)
+            return (tile);
+    return nullptr;
+}
 
 
-    // TILES2
-    // _tiles2.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::FOOD)), tilePosition, Object::MAP_OBJECTS::FOOD, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::FOOD))));
-    // _tiles2.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::LINEMATE)), tilePosition, Object::MAP_OBJECTS::LINEMATE, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::LINEMATE))));
-    // _tiles2.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::DERAUMERE)), tilePosition, Object::MAP_OBJECTS::DERAUMERE, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::DERAUMERE))));
-    // _tiles2.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::SIBUR)), tilePosition, Object::MAP_OBJECTS::SIBUR, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::SIBUR))));
-    // _tiles2.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::MENDIANE)), tilePosition, Object::MAP_OBJECTS::MENDIANE, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::MENDIANE))));
-    // _tiles2.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::PHIRAS)), tilePosition, Object::MAP_OBJECTS::PHIRAS, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::PHIRAS))));
-    // _tiles2.at(tilePosition.getX()).at(tilePosition.getZ())->setResources(std::make_shared<Object::Resource>(_resourcesModels.at(static_cast<int>(Object::PLAYER_RESSOURCES::THYSTAME)), tilePosition, Object::MAP_OBJECTS::THYSTAME, resources.at(static_cast<int>(Object::PLAYER_RESSOURCES::THYSTAME))));
+void Game::contentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &resources)
+{
+    getTileByPosition(tilePosition)->setResources(resources);
 }
