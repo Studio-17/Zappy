@@ -22,7 +22,7 @@ int main(int ac, char **av)
 {
     signal(SIGINT, sigint_handler);
 
-    Ia IaApp(2);
+    Ia IaApp;
 
     try {
         IaApp.setUpOptions(ac, av);

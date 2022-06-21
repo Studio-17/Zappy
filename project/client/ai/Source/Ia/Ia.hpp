@@ -12,7 +12,7 @@
 
 class Ia {
     public:
-        Ia(int test);
+        Ia();
         ~Ia();
 
         void startIa();
@@ -22,10 +22,13 @@ class Ia {
 
         void mainLoop();
 
+
     protected:
     private:
         IAClient _client;
         std::string _mapSize;
+
+        std::string _action;
 };
 
 #endif /* !IA_HPP_ */
