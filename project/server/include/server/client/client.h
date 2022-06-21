@@ -18,28 +18,28 @@ enum CLIENT_TYPE {
     NB_TYPES,
 };
 
-enum RESOURCE {
-    FOOD,
-    LINEMATE,
-    DERAUMERE,
-    SIBUR,
-    MENDIANE,
-    PHIRAS,
-    THYSTAME,
-    NB_RESOURCE,
-};
+// enum RESOURCE {
+//     FOOD,
+//     LINEMATE,
+//     DERAUMERE,
+//     SIBUR,
+//     MENDIANE,
+//     PHIRAS,
+//     THYSTAME,
+//     NB_RESOURCE,
+// };
 
-typedef struct inventory_resource_s {
-    enum RESOURCE resource;
-    int quantity;
-} inventory_resource_t;
+// typedef struct inventory_resource_s {
+//     enum RESOURCE resource;
+//     int quantity;
+// } inventory_resource_t;
 
 typedef struct player_t {
     int id;
     int level;
     int orientation;
     position_t position;
-    inventory_resource_t resource_inventory[NB_RESOURCE];
+    // inventory_resource_t resource_inventory[NB_RESOURCE];
 } player_t;
 
 typedef struct ai_client_s {

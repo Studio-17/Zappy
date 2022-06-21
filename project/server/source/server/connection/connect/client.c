@@ -31,8 +31,6 @@ static void send_new_player_connected_to_gui(zappy_t *zappy)
         .orientation = zappy->client[zappy->server->clients].player.orientation,
         .position = zappy->client[zappy->server->clients].player.position,
     });
-
-    zappy->server->clients += 1;
 }
 
 void connect_client(zappy_t *zappy)
