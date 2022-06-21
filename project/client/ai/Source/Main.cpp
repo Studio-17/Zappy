@@ -7,8 +7,8 @@
 
 #include <csignal>
 
-#include "Client/Client.hpp"
-#include "Options/Options.hpp"
+#include "Ia.hpp"
+#include "Client/IAClient.hpp"
 
 void sigint_handler([[maybe_unused]] int signal_num)
 {
@@ -22,23 +22,14 @@ int main(int ac, char **av)
 {
     signal(SIGINT, sigint_handler);
 
-    Options options;
+    Ia IaApp(2);
 
     try {
-        options.setupOptions(ac, av);
-        options.handleOptions();
+        IaApp.setUpOptions(ac, av);
+        IaApp.handleOptions();
+        IaApp.startIa();
     } catch (OptionsErrors const &OptionError) {
         std::cerr << OptionError.what() << std::endl;
     }
-
-    Client client(options);
-
-    try {
-        client.setup();
-        client.connection();
-    } catch (ClientErrors const &ClientError) {
-        std::cerr << ClientError.what() << std::endl;
-    }
-
     return (0);
 }

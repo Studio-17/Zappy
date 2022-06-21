@@ -38,6 +38,9 @@ class Client {
         void setupOptions(int ac, char **av);
         void handleOptions();
 
+        void postRequest(int socketId, std::string const &request);
+        std::string getRequest(int socketId);
+
         void listen();
 
         std::pair<int, int> getMapDimension();
@@ -50,6 +53,7 @@ class Client {
 
         std::unique_ptr<Options> _options;
         int _clientNumber;
+        std::string _mapDimension;
 };
 
 #endif /* !CLIENT_HPP_ */

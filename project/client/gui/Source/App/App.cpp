@@ -39,7 +39,6 @@ void App::startApp()
     } catch (ClientErrors const &ClientError) {
         std::cerr << ClientError.what() << std::endl;
     }
-
     startConnection();
     startMainLoop();
 }
