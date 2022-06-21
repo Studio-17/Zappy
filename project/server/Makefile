@@ -20,11 +20,8 @@ MAIN_SOURCE	=	source/main.c			\
 SOURCE	=	source/server/communication/communication.c			\
 			source/server/communication/ai.c					\
 			source/server/communication/gui.c					\
-			source/server/communication/request/request.c		\
-			source/server/communication/response/response.c		\
 			source/server/server.c								\
 			source/server/connection/connect/client.c			\
-			source/server/connection/connect/connect.c			\
 			source/server/connection/connect/greeting.c			\
 			source/server/connection/connect/server.c			\
 			source/server/connection/setup/setup.c				\

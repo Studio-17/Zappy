@@ -52,6 +52,8 @@ void connect_client(zappy_t *zappy)
 
         greeting_protocol(zappy, client_socket);
 
+        // create_player();
+
     }
 
     // setup_non_blocking_sockets(client_socket);
