@@ -12,10 +12,11 @@ extern "C" {
     #include "netlib.h"
     #include "protocol/player.h"
     #include "protocol/greeting.h"
+    #include "protocol/map.h"
 }
 
 static std::vector<std::pair<COMMANDS_GUI, void(App::*)(char *)>> _commandsMap = {
-            std::make_pair(MAP_SIZE, nullptr),
+                std::make_pair(MAP_SIZE, nullptr),
             std::make_pair(PLAYER_CONNECTED, &App::handleAddPlayer),
             std::make_pair(PLAYER_POSITION, &App::handlePlayerPosition),
             std::make_pair(PLAYER_LEVEL, &App::handlePlayerLevel),
@@ -111,7 +112,7 @@ void App::handlePlayerPosition(char *data)
     response_payload_player_position_t *playerPos;
 
     playerPos = (response_payload_player_position_t*)data;
-    _game.handlePlayerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y);
+    _game.playerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y);
 }
 
 void App::handlePlayerLevel(char *data)
@@ -119,13 +120,13 @@ void App::handlePlayerLevel(char *data)
     response_payload_player_level_t *playerLevel;
 
     playerLevel = (response_payload_player_level_t*)data;
-    _game.handlePlayerLevel(playerLevel->player_id, playerLevel->level);
+    _game.playerLevel(playerLevel->player_id, playerLevel->level);
 }
 
 void App::handlePlayerInventory(char *data)
 {
     response_payload_player_inventory_t *playerInventory = (response_payload_player_inventory_t*)data;
-    std::vector<Object::PLAYER_RESSOURCES, int> resources;
+    std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> resources;
 
     resources.emplace_back(Object::PLAYER_RESSOURCES::FOOD, playerInventory->food);
     resources.emplace_back(Object::PLAYER_RESSOURCES::LINEMATE, playerInventory->linemate);
@@ -135,13 +136,13 @@ void App::handlePlayerInventory(char *data)
     resources.emplace_back(Object::PLAYER_RESSOURCES::PHIRAS, playerInventory->phiras);
     resources.emplace_back(Object::PLAYER_RESSOURCES::THYSTAME, playerInventory->thystame);
 
-    _game.handlePlayerInventory(playerInventory->player_id, resources);
+    _game.playerInventory(playerInventory->player_id, resources);
 }
 
 void App::handleContentTile(char *data)
 {
     response_payload_content_tile_t *contentTile = (response_payload_content_tile_t *)data;
-    std::vector<Object::PLAYER_RESSOURCES, int> resources;
+    std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> resources;
 
     resources.emplace_back(Object::PLAYER_RESSOURCES::FOOD, contentTile->food);
     resources.emplace_back(Object::PLAYER_RESSOURCES::LINEMATE, contentTile->linemate);
@@ -151,30 +152,11 @@ void App::handleContentTile(char *data)
     resources.emplace_back(Object::PLAYER_RESSOURCES::PHIRAS, contentTile->phiras);
     resources.emplace_back(Object::PLAYER_RESSOURCES::THYSTAME, contentTile->thystame);
 
-    _game.handleContentTile(Position(contentTile->position.x, 0, contentTile->position.y), resources);
+    _game.contentTile(Position(contentTile->position.x, 0, contentTile->position.y), resources);
 }
-
-// Object::Tile::Tile(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Position const &position, Object::MAP_OBJECTS type) :
-
 
 void App::handleContentMap(char *data)
 {
     response_payload_content_map_t *contentMap = (response_payload_content_map_t *)data;
-    std::pair<int, int> mapSize = {contentMap->map_size.position.x, contentMap->map_size.position.y};
-    std::vector<std::vector<std::vector<Object::PLAYER_RESSOURCES, int>>> resources;
-
-    // for (int i = 0; i < mapSize.first; i++) {
-    //     std::vector<Object::PLAYER_RESSOURCES, int> col;
-    //     for (int j = 0; j < mapSize.second; j++) {
-
-    //         // col.at(j).emplace_back("", contentMap->content[i][j].food, );
-    //         // resources.emplace_back(Object::PLAYER_RESSOURCES::FOOD, contentMap->map[i][j].food);
-    //         // resources.emplace_back(Object::PLAYER_RESSOURCES::LINEMATE, contentMap->map[i][j].linemate);
-    //         // resources.emplace_back(Object::PLAYER_RESSOURCES::DERAUMERE, contentMap->map[i][j].deraumere);
-    //         // resources.emplace_back(Object::PLAYER_RESSOURCES::SIBUR, contentMap->map[i][j].sibur);
-    //     }
-    //     resources.emplace_back(col);
-    //     col.clear();
-    // }
-    // _game.handleContentMap();
+    _game.contentMap(contentMap->content);
 }

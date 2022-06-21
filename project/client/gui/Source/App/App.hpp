@@ -18,6 +18,7 @@
     #include "Client.hpp"
     #include "Game.hpp"
     #include "IListener.hpp"
+    #include "netlib.h"
 
 enum COMMANDS_GUI {
     MAP_SIZE,
