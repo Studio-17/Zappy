@@ -86,7 +86,7 @@ void Client::handle()
 void Client::postRequest(int socketId, std::string const &request)
 {
     // write(socketId, request.c_str(), request.size());
-    dprintf(socketId, "%s\n", request.c_str());
+    dprintf(socketId, "%s", request.c_str());
 }
 
 std::string Client::getRequest(int socketId)

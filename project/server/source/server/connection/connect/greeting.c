@@ -43,7 +43,7 @@ static void post_welcome(zappy_t *zappy, int socket)
     dprintf(socket, "%s\n", message);
 }
 
-static void get_team_name(zappy_t *zappy, int socket)
+static bool get_team_name(zappy_t *zappy, int socket)
 {
     char team_name[256];
     bool valid_team_name = false;;
@@ -53,7 +53,7 @@ static void get_team_name(zappy_t *zappy, int socket)
 
     for (int index = 0; zappy->options->team_names[index]; index += 1) {
         if (strncmp(zappy->options->team_names[index], team_name, strlen(zappy->options->team_names[index]) - 1) == 0
-        || strcmp(team_name, "GRAPHIC\n") == 0) {
+        || strncmp(team_name, "GRAPHIC\n", strlen("GRAPHIC\n")) == 0) {
             valid_team_name = true;
             printf("%s", team_name);
             break;
@@ -62,6 +62,8 @@ static void get_team_name(zappy_t *zappy, int socket)
 
     if (!valid_team_name)
         dprintf(socket, "ko\n");
+
+    return (valid_team_name);
 }
 
 static void post_client_num(zappy_t *zappy, int socket)
@@ -78,9 +80,12 @@ void greeting_protocol(zappy_t *zappy, int client_socket)
 {
     post_welcome(zappy, client_socket);
 
-    get_team_name(zappy, client_socket);
+    if (get_team_name(zappy, client_socket)) {
 
-    post_client_num(zappy, client_socket);
+        post_client_num(zappy, client_socket);
 
-    post_map_dimensions(zappy, client_socket);
+        post_map_dimensions(zappy, client_socket);
+
+    }
+
 }
