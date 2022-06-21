@@ -74,7 +74,7 @@ void Object::Player::setLevel(int level)
     _level = level;
 }
 
-void Object::Player::setInventory(std::vector<PLAYER_RESSOURCES, int> const &inventory)
+void Object::Player::setInventory(std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory)
 {
     _inventory = inventory;
 }

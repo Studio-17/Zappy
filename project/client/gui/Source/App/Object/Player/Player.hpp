@@ -13,20 +13,6 @@
     #include "AThreeDimensionObject.hpp"
 
 namespace Object {
-
-    /**
-     * @brief enum for the player's ressources
-     */
-    enum class PLAYER_RESSOURCES {
-        FOOD,
-        LINEMATE,
-        DERAUMERE,
-        SIBUR,
-        MENDIANE,
-        PHIRAS,
-        THYSTAME
-    };
-
     /**
      * @brief Player class
      */
@@ -137,13 +123,13 @@ namespace Object {
              *
              * @return std::vector<PLAYER_RESSOURCES, int>
              */
-            std::vector<PLAYER_RESSOURCES, int> getInventory() { return _inventory; };
+            std::vector<std::pair<PLAYER_RESSOURCES, int>> getInventory() { return _inventory; };
             /**
              * @brief Set the Inventory
              *
              * @param inventory inventory ressources
              */
-            void setInventory(std::vector<PLAYER_RESSOURCES, int> const &inventory);
+            void setInventory(std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory);
 
         private:
 
@@ -158,7 +144,7 @@ namespace Object {
             int _playerId;
             int _level;
 
-            std::vector<PLAYER_RESSOURCES, int> _inventory;
+            std::vector<std::pair<PLAYER_RESSOURCES, int>> _inventory;
     };
 }
 
