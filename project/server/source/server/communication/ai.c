@@ -45,31 +45,34 @@ static void move(zappy_t *zappy, position_t movement, int player_index)
         zappy->client[player_index].player.position.y = 0;
 }
 
-void ai_forward_request(zappy_t *zappy, void *data, int player_index)
+static void post_player_movement(zappy_t *zappy, int player_index)
 {
-    int socket = zappy->server->socket_descriptor->socket_descriptor;
-    position_t movement = direction[zappy->client[player_index].player.orientation];
-
-    move(zappy, movement, player_index);
-
-    post_header(zappy->server->socket_descriptor->socket_descriptor, (payload_header_t){
+    post_header(zappy->server->gui, (payload_header_t){
         .id = SERVER,
         .size = sizeof(response_payload_player_position_t),
         .type = PLAYER_POSITION
     });
 
-    post_response_player_position(zappy->server->socket_descriptor->socket_descriptor, (response_payload_player_position_t){
+    post_response_player_position(zappy->server->gui, (response_payload_player_position_t){
         .status = true,
         .player_id = player_index,
         .position = zappy->client[player_index].player.position,
     });
+}
+
+void ai_forward_request(zappy_t *zappy, void *data, int player_index)
+{
+    position_t movement = direction[zappy->client[player_index].player.orientation];
+
+    move(zappy, movement, player_index);
+
+    post_player_movement(zappy, player_index);
 
     ai_response_ok_ko(socket, true);
 }
 
 void ai_right_request(zappy_t *zappy, void *data, int player_index)
 {
-    int socket = zappy->server->socket_descriptor->socket_descriptor;
     position_t movement;
 
     printf("position of player before: %dx, %dy\n", zappy->client[player_index].player.position.x, zappy->client[player_index].player.position.y);
@@ -81,12 +84,13 @@ void ai_right_request(zappy_t *zappy, void *data, int player_index)
 
     move(zappy, movement, player_index);
 
+    post_player_movement(zappy, player_index);
+
     ai_response_ok_ko(socket, true);
 }
 
 void ai_left_request(zappy_t *zappy, void *data, int player_index)
 {
-    int socket = zappy->server->socket_descriptor->socket_descriptor;
     position_t movement;
 
     printf("position of player before: %dx, %dy\n", zappy->client[player_index].player.position.x, zappy->client[player_index].player.position.y);
@@ -98,6 +102,8 @@ void ai_left_request(zappy_t *zappy, void *data, int player_index)
     movement = direction[zappy->client[player_index].player.orientation];
 
     move(zappy, movement, player_index);
+
+    post_player_movement(zappy, player_index);
 
     ai_response_ok_ko(socket, true);
 }

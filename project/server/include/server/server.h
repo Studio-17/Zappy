@@ -16,10 +16,11 @@
     #include <sys/types.h>
     #include <sys/socket.h>
 
+    #include <math.h>
+
     #include "netlib.h"
 
-    #include "zappy/map/map.h"
-    #include "zappy/map/resources.h"
+    #include "protocol/map.h"
 
     #include "client/client.h"
 
@@ -29,6 +30,54 @@
 
     #include "server/client/client.h"
     #include "server/connection/setup/setup.h"
+
+
+    #define RESSOURCE_QUANTITY(width, height, density) (width * height * density)
+
+enum ITEM {
+    FOOD,
+    LINEMATE,
+    DERAUMERE,
+    SIBUR,
+    MENDIANE,
+    PHIRAS,
+    THYSTAME,
+    NB_ITEMS,
+};
+
+typedef struct resources_s {
+    char *name;
+    enum ITEM item;
+    float density;
+    int quantity;
+} resources_t;
+
+resources_t *setup_resources(int width, int height);
+
+
+void debug_resources(resources_t *resource);
+void free_resources(resources_t *resources);
+
+typedef struct tile_s {
+    int width;
+    int heigth;
+    resources_t *resources;
+} tile_t;
+
+typedef struct map_s {
+    int width;
+    int height;
+    float size;
+    float ratio;
+    tile_t **tiles;
+} map_t;
+
+map_t *create_map(int width, int height);
+
+void fill_map(map_t *map, resources_t *resource);
+
+void debug_map(map_t *map, resources_t *resources_list);
+void free_map(map_t *map);
 
 typedef struct zappy_s {
     options_t *options;
