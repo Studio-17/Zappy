@@ -24,11 +24,16 @@ static void post_welcome(__attribute_maybe_unused__ zappy_t *zappy, int socket)
 static bool get_team_name(zappy_t *zappy, int socket)
 {
     char team_name[256];
+<<<<<<< HEAD
     bool valid_team_name = false;;
+=======
+    bzero(&team_name, sizeof(team_name));
+>>>>>>> master
 
     if (read(socket, &team_name, sizeof(team_name)) < 0)
         perror("get_team_name read");
 
+<<<<<<< HEAD
     for (int index = 0; zappy->options->team_names[index]; index += 1) {
         if (strncmp(zappy->options->team_names[index], team_name, strlen(zappy->options->team_names[index]) - 1) == 0
         || strncmp(team_name, "GRAPHIC\n", strlen("GRAPHIC\n")) == 0) {
@@ -42,6 +47,9 @@ static bool get_team_name(zappy_t *zappy, int socket)
         dprintf(socket, "ko\n");
 
     return (valid_team_name);
+=======
+    printf("%s", team_name);
+>>>>>>> master
 }
 
 static void post_client_num(zappy_t *zappy, int socket)
@@ -62,8 +70,9 @@ void greeting_protocol(zappy_t *zappy, int client_socket)
 
         post_client_num(zappy, client_socket);
 
+        usleep(100);
+
         post_map_dimensions(zappy, client_socket);
 
     }
-
 }
