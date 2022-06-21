@@ -49,15 +49,21 @@ void IAClient::handle()
     std::string coordString;
 
     welcomeString = getRequest(_socket);
-    std::cout << welcomeString << std::endl;
+    std::cout << welcomeString;
 
     postRequest(_socket, _options->getName());
 
     clientNumString = getRequest(_socket);
-    std::cout << clientNumString << std::endl;
+
+    std::size_t found = clientNumString.find("ko\n");
+    if (found != std::string::npos) {
+        std::cout << "ko" << std::endl;
+        exit(0);
+    } else
+        std::cout << clientNumString;
 
     coordString = getRequest(_socket);
-    std::cout << coordString << std::endl;
+    std::cout << coordString;
     _mapSize = coordString;
 }
 
