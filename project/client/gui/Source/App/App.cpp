@@ -100,7 +100,7 @@ void App::handleAddPlayer(char *data)
 
     addPlayer = (response_payload_player_connected_t *)data;
 
-    _game.addPlayer("hello", addPlayer->id, addPlayer->position.x, addPlayer->position.y);
+    _game.addPlayer("hello", addPlayer->id, addPlayer->position.x, addPlayer->position.y, (Object::ORIENTATION)addPlayer->orientation);
 }
 
 void App::handleUpdatePlayerPosition(char *data)
