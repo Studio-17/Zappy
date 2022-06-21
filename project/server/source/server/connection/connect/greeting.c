@@ -46,10 +46,11 @@ static void post_welcome(zappy_t *zappy, int socket)
 static void get_team_name(zappy_t *zappy, int socket)
 {
     char team_name[256];
+    bzero(&team_name, sizeof(team_name));
 
     if (read(socket, &team_name, sizeof(team_name)) < 0)
         perror("get_team_name read");
-    
+
     printf("%s", team_name);
 }
 
@@ -70,6 +71,8 @@ void greeting_protocol(zappy_t *zappy, int client_socket)
     get_team_name(zappy, client_socket);
 
     post_client_num(zappy, client_socket);
+
+    usleep(100);
 
     post_map_dimensions(zappy, client_socket);
 }

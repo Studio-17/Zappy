@@ -44,39 +44,25 @@ void Client::connection()
 
 void Client::handle()
 {
-    // // SEND CLIENT TYPE & GET WELCOME MESSAGE
-    // post_request(_socket, request_payload_t{"GRAPHIC\n"});
-    // response_payload_t response = get_response(_socket);
-    // std::cout << response.payload;
-
-    // // SEND TEAM NAME & GET OK RESPONSE
-    // post_request(_socket, request_payload_t{"GRAPHIC"});
-    // response_payload_t team_response = get_response(_socket);
-
-    // // SEND INFO REQUEST & GET CLIENT NUMBER
-    // post_request(_socket, request_payload_t{"INFO CLIENT\n"});
-    // response_payload_client_number_t client_number_response = get_response_client_number(_socket);
-    // _clientNumber = client_number_response.client_id;
-    // std::cout << client_number_response.client_id << std::endl;
-
     int unblock = 0;
 
     std::string welcomeString;
     std::string clientNumString;
     std::string coordString;
+    std::string graphic = "GRAPHIC";
 
     welcomeString = getRequest(_socket);
     std::cout << welcomeString << std::endl;
 
-    postRequest(_socket, "GRAPHIC\n");
+    postRequest(_socket, graphic);
 
     clientNumString = getRequest(_socket);
     std::cout << clientNumString << std::endl;
 
+
     coordString = getRequest(_socket);
     std::cout << coordString << std::endl;
     _mapDimension = coordString;
-    std::cout << "end of handle !!!!!!!!!!!!!!!!!!" << std::endl;
 
     // UNBLOCK SOCKET
     unblock = fcntl(_socket, F_GETFL, 0);
@@ -85,17 +71,17 @@ void Client::handle()
 
 void Client::postRequest(int socketId, std::string const &request)
 {
-    // write(socketId, request.c_str(), request.size());
     dprintf(socketId, "%s\n", request.c_str());
 }
 
 std::string Client::getRequest(int socketId)
 {
+    std::cout << "getRequest" << std::endl;
     std::string response;
-    response.resize(100);
+    response.resize(1024);
     int result = 0;
 
-    if ((result = read(socketId, (void *)response.c_str(), 100)) < 0)
+    if ((result = read(socketId, (void *)response.c_str(), 1024)) < 0)
         perror("AIClient: getRequest");
     response.resize(result);
     return (response);
@@ -103,14 +89,6 @@ std::string Client::getRequest(int socketId)
 
 std::pair<int, int> Client::getMapDimension()
 {
-    // // SEND INFO REQUEST & GET MAP DIMENSIONS
-    // std::pair<int, int> mapDimension(9, 9);
-    // post_request(_socket, request_payload_t{"INFO MAP\n"});
-    // response_payload_map_t map_response = get_response_map(_socket);
-    // mapDimension.first = map_response.width;
-    // mapDimension.second = map_response.height;
-    // std::cout << "mapSize" << map_response.height << " " << map_response.width << std::endl;
-
     std::string x;
     std::string y;
 
