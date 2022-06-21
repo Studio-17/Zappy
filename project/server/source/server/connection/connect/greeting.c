@@ -14,7 +14,7 @@
 #include "server/server.h"
 #include "server/communication/request/request.h"
 
-static void post_welcome(__attribute_maybe_unused__ zappy_t *zappy, int socket)
+static void post_welcome(__attribute__((unused)) zappy_t *zappy, int socket)
 {
     char *message = "WELCOME";
 
