@@ -57,13 +57,13 @@ void Game::drawTiles()
         player->draw();
 }
 
-void Game::addPlayer(std::string const &team, int playerId, int x, int y)
+void Game::addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation)
 {
-    Position playerPos((float)x, 0, (float)y);
+    Position playerPos((float)y, 0, (float)x);
     (void)team;
 
-    _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos, Object::MAP_OBJECTS::PLAYER, playerId));
-    std::cout << "player " << playerId << " was added with position of" << playerPos << std::endl;
+    _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation));
+    std::cout << "player " << playerId << " was added with position of" << playerPos << " and orientation of " << (int)orientation << std::endl;
 }
 
 void Game::updatePlayerPosition(int playerId, int x, int y)
@@ -71,7 +71,7 @@ void Game::updatePlayerPosition(int playerId, int x, int y)
     Position playerPosition(x, 0, y);
     for (auto &player : _players) {
         if (player->getPlayerId() == playerId)
-            player->setPosition(playerPosition);
+            player->setPosition(playerPosition * 10);
     }
     std::cout << "player " << playerId << " moved " << x << y << std::endl;
 }

@@ -28,7 +28,7 @@ class Game {
         void setUpGameMap();
         void drawTiles();
 
-        void addPlayer(std::string const &team, int playerId, int x, int y);
+        void addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation);
         void updatePlayerPosition(int playerId, int x, int y);
         void updatePlayerLevel(int playerId, int level);
         void updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory);

@@ -40,6 +40,10 @@
 
             std::string getMapSize() const;
 
+            int getSocket() const;
+
+            std::string handleAction(std::string const &action);
+
         protected:
         private:
             int _socket;
