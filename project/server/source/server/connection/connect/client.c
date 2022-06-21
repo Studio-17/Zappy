@@ -37,7 +37,6 @@ static void create_player(zappy_t *zappy, int socket)
 {
     player_t player = (player_t) {.id = zappy->server->clients, .level = 1, .orientation = 0, .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height}};
     zappy->client[zappy->server->clients] = (ai_client_t){socket, zappy->server->clients, AI, player};
-    zappy->server->clients += 1;
 }
 
 void connect_client(zappy_t *zappy)
@@ -61,6 +60,8 @@ void connect_client(zappy_t *zappy)
 
         if (zappy->server->is_gui_connected)
             send_new_player_connected_to_gui(zappy);
+
+        zappy->server->clients += 1;
 
     }
 

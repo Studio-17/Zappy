@@ -12,6 +12,7 @@ Object::Tile::Tile(Object::Render::MyModel &pathToModel, Object::Render::MyTextu
 {
     _scale = 0.5f;
 
+    setPosition(position);
     for (int index = 0; index < static_cast<int>(Object::PLAYER_RESSOURCES::THYSTAME); index++) {
         _resources.emplace_back(std::make_shared<Object::Resource>(_resourcesModels.at(index), position, static_cast<Object::MAP_OBJECTS>(index + 3), 0));
     }
