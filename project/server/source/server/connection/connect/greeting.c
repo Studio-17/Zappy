@@ -67,7 +67,5 @@ void greeting_protocol(zappy_t *zappy, int client_socket)
 
         post_map_dimensions(zappy, client_socket);
 
-        zappy->server->clients += 1;
-
     }
 }

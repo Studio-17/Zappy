@@ -33,6 +33,13 @@ static void send_new_player_connected_to_gui(zappy_t *zappy)
     });
 }
 
+static void create_player(zappy_t *zappy, int socket)
+{
+    player_t player = (player_t) {.id = zappy->server->clients, .level = 1, .orientation = 0, .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height}};
+    zappy->client[zappy->server->clients] = (ai_client_t){socket, zappy->server->clients, AI, player};
+    zappy->server->clients += 1;
+}
+
 void connect_client(zappy_t *zappy)
 {
     int client_socket;
@@ -50,14 +57,14 @@ void connect_client(zappy_t *zappy)
 
         greeting_protocol(zappy, client_socket);
 
-        // create_player();
+        create_player(zappy, client_socket);
+
+        if (zappy->server->is_gui_connected)
+            send_new_player_connected_to_gui(zappy);
 
     }
 
     // setup_non_blocking_sockets(client_socket);
-
-    if (zappy->server->is_gui_connected)
-        send_new_player_connected_to_gui(zappy);
 
     listen_clients(zappy);
 }
