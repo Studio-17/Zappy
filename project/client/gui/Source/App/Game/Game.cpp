@@ -59,7 +59,7 @@ void Game::drawTiles()
 
 void Game::addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation)
 {
-    Position playerPos((float)x, 0, (float)y);
+    Position playerPos((float)y, 0, (float)x);
     (void)team;
 
     _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation));
@@ -71,7 +71,7 @@ void Game::updatePlayerPosition(int playerId, int x, int y)
     Position playerPosition(x, 0, y);
     for (auto &player : _players) {
         if (player->getPlayerId() == playerId)
-            player->setPosition(playerPosition);
+            player->setPosition(playerPosition * 10);
     }
     std::cout << "player " << playerId << " moved " << x << y << std::endl;
 }
