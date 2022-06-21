@@ -63,16 +63,16 @@ void *gui_get_generic_request(int client_socket, int size_to_read)
 
 void gui_handle_request(zappy_t *zappy)
 {
-    payload_header_t header = get_header(zappy->server->sd->socket_descriptor);
+    // payload_header_t header = get_header(zappy->server->socket_descriptor->socket_descriptor);
 
-    void *request_data = gui_get_generic_request(zappy->server->sd->socket_descriptor, header.size);
+    // void *request_data = gui_get_generic_request(zappy->server->socket_descriptor->socket_descriptor, header.size);
 
-    gui_request_to_handle[header.type].handler(zappy, request_data);
+    // gui_request_to_handle[header.type].handler(zappy, request_data);
 }
 
 void request_map_size(zappy_t *zappy, void *request_data)
 {
-    int socket = zappy->server->sd->socket_descriptor;
+    int socket = zappy->server->socket_descriptor->socket_descriptor;
 
     post_header(zappy->server->gui, (payload_header_t){
         .id = SERVER,
@@ -100,7 +100,7 @@ void request_team_names(zappy_t *zappy, void *request_data)
 
 void request_player_connected(zappy_t *zappy, void *request_data)
 {
-    int socket = zappy->server->sd->socket_descriptor;
+    int socket = zappy->server->socket_descriptor->socket_descriptor;
 
     post_header(socket, (payload_header_t){
         .id = SERVER,
@@ -118,7 +118,7 @@ void request_player_connected(zappy_t *zappy, void *request_data)
 
 void request_player_position(zappy_t *zappy, void *request_data)
 {
-    int socket = zappy->server->sd->socket_descriptor;
+    int socket = zappy->server->socket_descriptor->socket_descriptor;
 
     post_header(socket, (payload_header_t){
         .id = SERVER,
@@ -139,7 +139,7 @@ void request_player_inventory(zappy_t *zappy, void *request_data)
 
 void request_player_level(zappy_t *zappy, void *request_data)
 {
-    int socket = zappy->server->sd->socket_descriptor;
+    int socket = zappy->server->socket_descriptor->socket_descriptor;
 
     post_header(socket, (payload_header_t){
         .id = SERVER,

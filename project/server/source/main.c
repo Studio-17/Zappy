@@ -11,11 +11,9 @@
 #include <time.h>
 #include <signal.h>
 
-#include "server/server.h"
-
-#include "zappy/map/map.h"
-
-#include "options/options.h"
+#include "server.h"
+#include "map.h"
+#include "options.h"
 
 void sigint_handler(__attribute__((unused)) int sig)
 {
@@ -23,25 +21,18 @@ void sigint_handler(__attribute__((unused)) int sig)
     exit(0);
 }
 
-int main(int ac, char **av)
+int main(int ac, char const * const *av)
 {
+    zappy_t *zappy = init_zappy();
+
     srand(time(NULL));
     signal(SIGINT, sigint_handler);
-
-    zappy_t *zappy = malloc(sizeof(zappy_t));
-
-    int options_status = 1;
-    zappy->options = malloc(sizeof(options_t));
-
-    setup_options(zappy->options);
-
-    options_status = get_options(ac, av, zappy->options);
-    if (options_status == EXIT_FAILURE)
-        return (EXIT_FAILURE);
-
-    options_status = handle_options(zappy->options);
-    if (options_status == EXIT_FAILURE)
-        return (EXIT_FAILURE);
+    if (!zappy)
+        return 84;
+    if (!get_options(ac, av, zappy->options))
+        return 84;
+    if (!handle_options(zappy->options))
+        return 84;
 
     zappy->options->team_names = my_strtok(zappy->options->names, ' ');
 
@@ -57,6 +48,7 @@ int main(int ac, char **av)
     fill_map(zappy->map, zappy->resources);
 
     create_server(zappy);
+    server_loop(zappy);
 
     free_options(zappy->options);
     free_map(zappy->map);

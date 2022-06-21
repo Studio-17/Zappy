@@ -16,13 +16,15 @@ Object::Player::Player(std::pair<std::string, std::string> const &pathToRessourc
     _level = 1;
 }
 
-Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId) :
+Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation) :
     AThreeDimensionObject(pathToModel, pathToRessources, pathToAnimation, numberOfAnimations, position, type)
 {
     _scale = 7.0f;
     _speed = 0.6f;
     _playerId = playerId;
     _level = 1;
+    _playerOrientation = playerOrientation;
+    setOrientation(_playerOrientation);
 }
 
 Object::Player::~Player()
@@ -46,15 +48,25 @@ void Object::Player::move(Position const &position, Position const &direction)
     _position += (tmp * _speed);
 }
 
+void Object::Player::setOrientation(Object::ORIENTATION orientation)
+{
+    Vector3 tmp;
+    if (orientation == ORIENTATION::NORTH)
+        tmp = {0, 90, 0};
+    if (orientation == ORIENTATION::EAST)
+        tmp = {0, 180, 0};
+    if (orientation == ORIENTATION::SOUTH)
+        tmp = {0, -90, 0};
+    if (orientation == ORIENTATION::WEST)
+        tmp = {0, 0, 0};
+
+    _model.transform = MatrixRotateXYZ((Vector3){ DEG2RAD * tmp.x, DEG2RAD * tmp.y, DEG2RAD * tmp.z});
+}
+
 void Object::Player::draw()
 {
-    Vector3 modelPosition = {
-        getPosition().getX(),
-        getPosition().getY(),
-        getPosition().getZ()
-    };
     if (_isEnable)
-        DrawModel(_model, modelPosition, _scale, WHITE);
+        DrawModel(_model, getPosition().getVector3(), _scale, WHITE);
 }
 
 void Object::Player::setSpeed(bool addSpeed)

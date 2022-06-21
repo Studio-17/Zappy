@@ -17,7 +17,10 @@ void create_server(zappy_t *zappy)
 
     configure_socket_type(zappy->server);
     bind_socket_to_server(zappy->server);
+}
 
+void server_loop(zappy_t *zappy)
+{
     while (1) {
         clear_socket_set(zappy->server);
 
@@ -32,8 +35,8 @@ void create_server(zappy_t *zappy)
 
 void client_deconnected(zappy_t *zappy, int client_socket)
 {
-    close(zappy->server->sd->socket_descriptor);
-    zappy->server->ss->client[client_socket] = 0;
+    close(zappy->server->socket_descriptor->socket_descriptor);
+    zappy->server->server_socket->client[client_socket] = 0;
 }
 
 void debug_server(zappy_t *zappy)
@@ -41,13 +44,13 @@ void debug_server(zappy_t *zappy)
     printf("[DEBUG] server->port = %d\n", zappy->server->port);
     printf("[DEBUG] server->address_length = %d\n", zappy->server->address_length);
 
-    printf("[DEBUG] server->ss->server = %d\n", zappy->server->ss->server);
-    for (int index = 0; index < zappy->server->ss->max_client; index += 1)
-        printf("[DEBUG] server->ss->client[%d] = %d\n", index, zappy->server->ss->client[index]);
-    printf("[DEBUG] server->ss->max_client = %d\n", zappy->server->ss->max_client);
+    printf("[DEBUG] server->server_socket->server = %d\n", zappy->server->server_socket->server);
+    for (int index = 0; index < zappy->server->server_socket->max_client; index += 1)
+        printf("[DEBUG] server->server_socket->client[%d] = %d\n", index, zappy->server->server_socket->client[index]);
+    printf("[DEBUG] server->server_socket->max_client = %d\n", zappy->server->server_socket->max_client);
 
-    printf("[DEBUG] server->sd->socket_descriptor = %d\n", zappy->server->sd->socket_descriptor);
-    printf("[DEBUG] server->sd->max_socket_descriptor = %d\n", zappy->server->sd->max_socket_descriptor);
+    printf("[DEBUG] server->socket_descriptor->socket_descriptor = %d\n", zappy->server->socket_descriptor->socket_descriptor);
+    printf("[DEBUG] server->socket_descriptor->max_socket_descriptor = %d\n", zappy->server->socket_descriptor->max_socket_descriptor);
 }
 
 void free_server(zappy_t *zappy)
