@@ -26,11 +26,29 @@ enum DIRECTION {
     WEST = 3,
     OUTOFRANGE
 };
+
+// enum RESOURCE {
+//     FOOD,
+//     LINEMATE,
+//     DERAUMERE,
+//     SIBUR,
+//     MENDIANE,
+//     PHIRAS,
+//     THYSTAME,
+//     NB_RESOURCE,
+// };
+
+// typedef struct inventory_resource_s {
+//     enum RESOURCE resource;
+//     int quantity;
+// } inventory_resource_t;
+
 typedef struct player_t {
     int id;
     int level;
     position_t position;
     enum DIRECTION orientation;
+    // inventory_resource_t resource_inventory[NB_RESOURCE];
 } player_t;
 
 typedef struct ai_client_s {

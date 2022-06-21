@@ -19,11 +19,12 @@ LIBRARIES_PATH	=	../../library
 
 MAIN_SOURCE	=	Source/Main.cpp			\
 
-SOURCE	=	Source/Client/Client.cpp								\
+SOURCE	=	Source/Client/IAClient.cpp								\
 			Source/Errors/Errors.cpp								\
 			Source/Errors/ErrorsModules/Options/OptionsErrors.cpp	\
 			Source/Errors/ErrorsModules/Client/ClientErrors.cpp		\
-			Source/Options/Options.cpp								\
+			Source/Options/IAOptions.cpp								\
+			Source/Ia/Ia.cpp										\
 
 MAIN_OBJ	=	$(MAIN_SOURCE:.cpp=.o)
 
@@ -31,11 +32,14 @@ OBJ	=	$(SOURCE:.cpp=.o)
 
 INCLUDE_DIRS	+=	-I $(LIBRARIES_PATH)/include/
 INCLUDE_DIRS	+=	-I Source/
-INCLUDE_DIRS	+=	-I Source/Client/
+INCLUDE_DIRS	+=	-I Source/IAClient/
 INCLUDE_DIRS	+=	-I Source/Errors/
 INCLUDE_DIRS	+=	-I Source/Errors/ErrorsModules/Client/
 INCLUDE_DIRS	+=	-I Source/Errors/ErrorsModules/Options/
 INCLUDE_DIRS	+=	-I Source/Options/
+INCLUDE_DIRS	+=	-I Source/Client/
+INCLUDE_DIRS	+=	-I Source/Ia/
+
 
 CXXFLAGS	+=	-W -Wall -Wextra
 CXXFLAGS	+=	$(INCLUDE_DIRS)

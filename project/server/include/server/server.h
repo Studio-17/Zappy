@@ -63,6 +63,8 @@ void *gui_get_generic_request(int client_socket, int size_to_read);
 void gui_handle_request(zappy_t *zappy);
 void ai_handle_request(zappy_t *zappy);
 
+void create_player(zappy_t *zappy);
+
 void debug_server(zappy_t *zappy);
 void free_server(zappy_t *zappy);
 

@@ -43,6 +43,8 @@ int main(int ac, char **av)
     if (options_status == EXIT_FAILURE)
         return (EXIT_FAILURE);
 
+    zappy->options->team_names = my_strtok(zappy->options->names, ' ');
+
     zappy->client = malloc(sizeof(ai_client_t) * zappy->options->clients_nb);
     zappy->server = malloc(sizeof(server_t));
     zappy->map = create_map(10, 10);
