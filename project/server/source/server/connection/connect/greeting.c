@@ -33,6 +33,10 @@ static bool get_team_name(zappy_t *zappy, int socket)
     for (int index = 0; zappy->options->team_names[index]; index += 1) {
         if (strncmp(zappy->options->team_names[index], team_name, strlen(zappy->options->team_names[index]) - 1) == 0
         || strncmp(team_name, "GRAPHIC\n", strlen("GRAPHIC\n")) == 0) {
+            if (strncmp(team_name, "GRAPHIC\n", strlen("GRAPHIC\n")) == 0) {
+                zappy->server->gui = socket;
+                zappy->server->is_gui_connected = true;
+            }
             valid_team_name = true;
             printf("%s", team_name);
             break;
@@ -58,6 +62,7 @@ static void post_map_dimensions(zappy_t *zappy, int socket)
 void greeting_protocol(zappy_t *zappy, int client_socket)
 {
     post_welcome(zappy, client_socket);
+    printf("Greetin protocol socket: %d\n", client_socket);
 
     if (get_team_name(zappy, client_socket)) {
 

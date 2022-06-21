@@ -63,11 +63,11 @@ void *gui_get_generic_request(int client_socket, int size_to_read)
 
 void gui_handle_request(zappy_t *zappy)
 {
-    payload_header_t header = get_header(zappy->server->sd->socket_descriptor);
+    // payload_header_t header = get_header(zappy->server->sd->socket_descriptor);
 
-    void *request_data = gui_get_generic_request(zappy->server->sd->socket_descriptor, header.size);
+    // void *request_data = gui_get_generic_request(zappy->server->sd->socket_descriptor, header.size);
 
-    gui_request_to_handle[header.type].handler(zappy, request_data);
+    // gui_request_to_handle[header.type].handler(zappy, request_data);
 }
 
 void request_map_size(zappy_t *zappy, void *request_data)

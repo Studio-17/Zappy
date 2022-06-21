@@ -63,7 +63,7 @@ void Game::addPlayer(std::string const &team, int playerId, int x, int y)
     (void)team;
 
     _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos, Object::MAP_OBJECTS::PLAYER, playerId));
-    std::cout << "player " << playerId << " was added" << std::endl;
+    std::cout << "player " << playerId << " was added with position of" << playerPos << std::endl;
 }
 
 void Game::updatePlayerPosition(int playerId, int x, int y)
