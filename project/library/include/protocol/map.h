@@ -10,22 +10,6 @@
 
 #include "netlib.h"
 
-
-// /* MAP_SIZE */
-typedef struct request_payload_map_size_s {
-} request_payload_map_size_t;
-
-typedef struct response_payload_map_size_s {
-    position_t position;
-} response_payload_map_size_t;
-
-request_payload_map_size_t get_request_map_size(int socket);
-void post_response_map_size(int socket, response_payload_map_size_t response);
-
-request_payload_map_size_t get_request_map_size(int socket);
-void post_request_map_size(int socket, request_payload_map_size_t request);
-
-
 /* CONTENT_TILE */
 typedef struct request_payload_content_tile_s {
     position_t position;
@@ -53,7 +37,7 @@ typedef struct request_payload_content_map_s {
 } request_payload_content_map_t;
 
 typedef struct response_payload_content_map_s {
-    response_payload_map_size_t map_size;
+    position_t map_size;
     response_payload_content_tile_t **content;
 
 } response_payload_content_map_t;
