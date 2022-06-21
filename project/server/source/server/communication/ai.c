@@ -52,13 +52,13 @@ void ai_forward_request(zappy_t *zappy, void *data, int player_index)
 
     move(zappy, movement, player_index);
 
-    post_header(zappy->server->socket_descriptor->socket_descriptor, (payload_header_t){
+    post_header(zappy->server->gui, (payload_header_t){
         .id = SERVER,
         .size = sizeof(response_payload_player_position_t),
         .type = PLAYER_POSITION
     });
 
-    post_response_player_position(zappy->server->socket_descriptor->socket_descriptor, (response_payload_player_position_t){
+    post_response_player_position(zappy->server->gui, (response_payload_player_position_t){
         .status = true,
         .player_id = player_index,
         .position = zappy->client[player_index].player.position,
