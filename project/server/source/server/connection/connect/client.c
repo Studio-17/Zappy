@@ -63,15 +63,13 @@ void connect_client(zappy_t *zappy)
             }
 
             create_player(zappy, client_socket);
+
             zappy->server->clients += 1;
             if (zappy->server->is_gui_connected)
                 send_new_player_connected_to_gui(zappy, saved_index);
         }
 
     }
-        // add_client_to_server(zappy->server, client_socket);
-
-    // setup_non_blocking_sockets(client_socket);
 
     listen_clients(zappy);
 }
