@@ -14,14 +14,16 @@
 
 void listen_clients(zappy_t *zappy)
 {
-    for (int index = 0; index < zappy->server->ss->max_client; index += 1) {
+    for (int index = 0; index < zappy->server->server_socket->max_client; index += 1) {
+        if (FD_ISSET(zappy->client[index].socket, &zappy->server->socket_descriptor->readfd)) {
+            if (!zappy->server->server_socket->client[index])
+                continue;
+            zappy->server->socket_descriptor->socket_descriptor = zappy->server->server_socket->client[index];
 
-        zappy->server->sd->socket_descriptor = zappy->server->ss->client[index];
+            // if (zappy->server->is_gui_connected)
+            // gui_handle_request(zappy);
 
-        if (zappy->server->is_gui_connected)
-            gui_handle_request(zappy);
-
-        ai_handle_request(zappy);
-
+            ai_handle_request(zappy, index);
+        }
     }
 }

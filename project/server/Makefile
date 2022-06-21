@@ -25,11 +25,11 @@ SOURCE	=	source/server/communication/communication.c			\
 			source/server/connection/connect/greeting.c			\
 			source/server/connection/connect/server.c			\
 			source/server/connection/setup/setup.c				\
-			source/errors/errors.c								\
 			source/options/options.c							\
 			source/options/usage.c								\
 			source/zappy/map/map.c								\
 			source/zappy/map/resources.c						\
+			source/zappy/map/zappy.c						\
 
 TEST_SOURCE	=	../tests/test.c
 
