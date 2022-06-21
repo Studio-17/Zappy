@@ -18,6 +18,15 @@ enum CLIENT_TYPE {
     NB_TYPES,
 };
 
+enum DIRECTION {
+    DEFAULT = -1,
+    NORTH = 0,
+    EST = 1,
+    SOUTH = 2,
+    WEST = 3,
+    OUTOFRANGE
+};
+
 // enum RESOURCE {
 //     FOOD,
 //     LINEMATE,
@@ -37,8 +46,8 @@ enum CLIENT_TYPE {
 typedef struct player_t {
     int id;
     int level;
-    int orientation;
     position_t position;
+    enum DIRECTION orientation;
     // inventory_resource_t resource_inventory[NB_RESOURCE];
 } player_t;
 

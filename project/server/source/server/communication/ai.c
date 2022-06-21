@@ -12,6 +12,10 @@
 #include "server/communication/communication.h"
 #include "server/communication/request/request.h"
 
+static const position_t direction[] = {
+    {-1, 0}, {0, 1}, {1, 0}, {0, -1}
+};
+
 void ai_base_request(zappy_t *zappy, void *data)
 {
     int socket = zappy->server->sd->socket_descriptor;
@@ -19,25 +23,64 @@ void ai_base_request(zappy_t *zappy, void *data)
     write(socket, "UNUSED REQUEST\n", strlen("UNUSED REQUEST\n"));
 }
 
+void ai_response_ok_ko(int socket, bool status)
+{
+    size_t message_size = 4;
+
+    write(socket, (status ? "ok\n" : "ko\n" ), message_size);
+}
+
+static void move(zappy_t *zappy, position_t movement)
+{
+    zappy->client[0].player.position.x += movement.x;
+    if (zappy->client[0].player.position.x < 0)
+        zappy->client[0].player.position.x = zappy->map->width - 1;
+    else if (zappy->client[0].player.position.x > zappy->map->width - 1)
+        zappy->client[0].player.position.x = 0;
+
+    zappy->client[0].player.position.y += movement.y;
+    if (zappy->client[0].player.position.y < 0)
+        zappy->client[0].player.position.y = zappy->map->height - 1;
+    else if (zappy->client[0].player.position.y > zappy->map->height - 1)
+        zappy->client[0].player.position.y = 0;
+}
+
 void ai_forward_request(zappy_t *zappy, void *data)
 {
     int socket = zappy->server->sd->socket_descriptor;
+    position_t movement = direction[zappy->client[0].player.orientation];
 
-    write(socket, "FORWARD\n", strlen("FORWARD\n"));
+    move(zappy, movement);
+    ai_response_ok_ko(socket, true);
 }
 
 void ai_right_request(zappy_t *zappy, void *data)
 {
     int socket = zappy->server->sd->socket_descriptor;
+    position_t movement;
 
-    write(socket, "RIGHT\n", strlen("RIGHT\n"));
+    printf("position of player before: %dx, %dy\n", zappy->client[0].player.position.x, zappy->client[0].player.position.y);
+    zappy->client[0].player.orientation += 1;
+    if (zappy->client[0].player.orientation > WEST)
+        zappy->client[0].player.orientation = NORTH;
+    movement = direction[zappy->client[0].player.orientation];
+    move(zappy, movement);
+    ai_response_ok_ko(socket, true);
 }
 
 void ai_left_request(zappy_t *zappy, void *data)
 {
     int socket = zappy->server->sd->socket_descriptor;
+    position_t movement;
 
-    write(socket, "LEFT\n", strlen("LEFT\n"));
+    printf("position of player before: %dx, %dy\n", zappy->client[0].player.position.x, zappy->client[0].player.position.y);
+    if (zappy->client[0].player.orientation < NORTH)
+        zappy->client[0].player.orientation = WEST;
+    else
+        zappy->client[0].player.orientation -= 1;
+    movement = direction[zappy->client[0].player.orientation];
+    move(zappy, movement);
+    ai_response_ok_ko(socket, true);
 }
 
 static const ai_request_t ai_request_to_handle[] = {
@@ -132,11 +175,4 @@ void ai_handle_request(zappy_t *zappy)
         }
 
     }
-}
-
-void ai_response_ok_ko(int socket, bool status)
-{
-    size_t message_size = 4;
-
-    write(socket, (status ? "ok\n" : "ko\n" ), message_size);
 }
