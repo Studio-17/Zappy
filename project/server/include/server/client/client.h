@@ -18,7 +18,7 @@ enum CLIENT_TYPE {
     NB_TYPES,
 };
 
-enum DIRECTION {
+enum ORIENTATION {
     DEFAULT = -1,
     NORTH = 0,
     EST = 1,
@@ -47,7 +47,7 @@ typedef struct player_t {
     int id;
     int level;
     position_t position;
-    enum DIRECTION orientation;
+    enum ORIENTATION orientation;
     // inventory_resource_t resource_inventory[NB_RESOURCE];
 } player_t;
 
