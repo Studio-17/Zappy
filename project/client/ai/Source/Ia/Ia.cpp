@@ -7,7 +7,7 @@
 
 #include "Ia.hpp"
 
-Ia::Ia(int test) : _client()
+Ia::Ia([[maybe_unused]] int test) : _client()
 {
 }
 
