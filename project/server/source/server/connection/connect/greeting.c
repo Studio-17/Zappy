@@ -21,7 +21,7 @@ static void post_welcome(__attribute__((unused)) zappy_t *zappy, int socket)
     dprintf(socket, "%s\n", message);
 }
 
-static bool get_team_name(zappy_t *zappy, int socket)
+static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
 {
     char team_name[256];
     bool valid_team_name = false;;
@@ -33,7 +33,14 @@ static bool get_team_name(zappy_t *zappy, int socket)
     for (int index = 0; zappy->options->team_names[index]; index += 1) {
         if (strncmp(zappy->options->team_names[index], team_name, strlen(zappy->options->team_names[index]) - 1) == 0
         || strncmp(team_name, "GRAPHIC\n", strlen("GRAPHIC\n")) == 0) {
+            if (strncmp(team_name, "GRAPHIC\n", strlen("GRAPHIC\n")) == 0) {
+                zappy->server->gui = socket;
+                zappy->server->is_gui_connected = true;
+                *is_gui = true;
+
+            }
             valid_team_name = true;
+
             printf("%s", team_name);
             break;
         }
@@ -55,11 +62,13 @@ static void post_map_dimensions(zappy_t *zappy, int socket)
     dprintf(socket, "%d %d\n", zappy->options->width, zappy->options->height);
 }
 
-void greeting_protocol(zappy_t *zappy, int client_socket)
+bool greeting_protocol(zappy_t *zappy, int client_socket)
 {
     post_welcome(zappy, client_socket);
+    printf("Greetin protocol socket: %d\n", client_socket);
+    bool is_gui = false;
 
-    if (get_team_name(zappy, client_socket)) {
+    if (get_team_name(zappy, client_socket, &is_gui)) {
 
         post_client_num(zappy, client_socket);
 
@@ -67,7 +76,6 @@ void greeting_protocol(zappy_t *zappy, int client_socket)
 
         post_map_dimensions(zappy, client_socket);
 
-        zappy->server->clients += 1;
-
     }
+    return is_gui;
 }

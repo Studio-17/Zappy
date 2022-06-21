@@ -10,10 +10,14 @@
 
     #include <memory>
     #include <vector>
+    #include <map>
 
     #include "Tile.hpp"
     #include "Player.hpp"
     #include "Model.hpp"
+    #include "netlib.h"
+    #include "protocol/player.h"
+    #include "protocol/map.h"
 
 class Game {
     public:
@@ -25,17 +29,27 @@ class Game {
         void drawTiles();
 
         void addPlayer(std::string const &team, int playerId, int x, int y);
-        void handlePlayerPosition(int playerId, int x, int y);
+        void updatePlayerPosition(int playerId, int x, int y);
+        void updatePlayerLevel(int playerId, int level);
+        void updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory);
+        void updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &resources);
+        void updateContentMap(response_payload_content_tile_t **content);
+
+        std::shared_ptr<Object::Tile> getTileByPosition(Position const &position);
+
+        void loadRessourcesModels();
 
     protected:
     private:
         int _mapWidth;
         int _mapHeight;
+
         std::vector<std::shared_ptr<Object::Tile>> _tiles;
         std::vector<std::shared_ptr<Object::Player>> _players;
 
         Object::Render::MyModel _tilesModel;
         Object::Render::MyModel _playersModel;
+        std::vector<Object::Render::MyModel> _resourcesModels;
 
         Object::Render::MyTexture _tilesTexture;
         std::vector<Object::Render::MyTexture> _playersTextures;

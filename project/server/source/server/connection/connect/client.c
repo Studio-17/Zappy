@@ -17,7 +17,7 @@
 #include "server/server.h"
 #include "server/communication/request/request.h"
 
-static void send_new_player_connected_to_gui(zappy_t *zappy)
+static void send_new_player_connected_to_gui(zappy_t *zappy, int player_index)
 {
     post_header(zappy->server->gui, (payload_header_t){
         .id = SERVER,
@@ -26,16 +26,23 @@ static void send_new_player_connected_to_gui(zappy_t *zappy)
     );
 
     post_response_player_connected(zappy->server->gui, (response_payload_player_connected_t){
-        .id = zappy->server->clients,
-        .level = zappy->client[zappy->server->clients].player.level,
-        .orientation = zappy->client[zappy->server->clients].player.orientation,
-        .position = zappy->client[zappy->server->clients].player.position,
+        .id = player_index,
+        .level = zappy->client[player_index].player.level,
+        .orientation = zappy->client[player_index].player.orientation,
+        .position = zappy->client[player_index].player.position,
     });
+}
+
+static void create_player(zappy_t *zappy, int socket)
+{
+    player_t player = (player_t) {.id = zappy->server->clients, .level = 1, .orientation = 0, .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height}};
+    zappy->client[zappy->server->clients] = (ai_client_t){socket, zappy->server->clients, AI, player};
 }
 
 void connect_client(zappy_t *zappy)
 {
     int client_socket;
+    int saved_index = 0;
 
     if (FD_ISSET(zappy->server->server_socket->server, &zappy->server->socket_descriptor->readfd))
     {
@@ -45,23 +52,26 @@ void connect_client(zappy_t *zappy)
             perror("accept");
             exit(EXIT_FAILURE);
         }
-        for (int index = 0; index < zappy->server->server_socket->max_client; index += 1) {
-            if (zappy->client[index].socket == 0) {
-                zappy->client[index].socket = client_socket;
-                zappy->server->server_socket->client[index] = client_socket;
-                break;
+        if (!greeting_protocol(zappy, client_socket)) {
+            for (int index = 0; index < zappy->server->server_socket->max_client; index += 1) {
+                if (zappy->client[index].socket == 0) {
+                    saved_index = index;
+                    zappy->client[index].socket = client_socket;
+                    zappy->server->server_socket->client[index] = client_socket;
+                    break;
+                }
             }
+
+            create_player(zappy, client_socket);
+            zappy->server->clients += 1;
+            if (zappy->server->is_gui_connected)
+                send_new_player_connected_to_gui(zappy, saved_index);
         }
-        greeting_protocol(zappy, client_socket);
+
     }
         // add_client_to_server(zappy->server, client_socket);
 
-    //     // create_player();
-
     // setup_non_blocking_sockets(client_socket);
-
-    // if (zappy->server->is_gui_connected)
-        // send_new_player_connected_to_gui(zappy);
 
     listen_clients(zappy);
 }
