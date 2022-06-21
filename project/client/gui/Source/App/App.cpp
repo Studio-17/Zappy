@@ -12,10 +12,17 @@ extern "C" {
     #include "netlib.h"
     #include "protocol/player.h"
     #include "protocol/greeting.h"
+    #include "protocol/map.h"
 }
 
 static std::vector<std::pair<COMMANDS_GUI, void(App::*)(char *)>> _commandsMap = {
-            std::make_pair(MAP_SIZE, &App::handleAddPlayer)
+                std::make_pair(MAP_SIZE, nullptr),
+            std::make_pair(PLAYER_CONNECTED, &App::handleAddPlayer),
+            std::make_pair(PLAYER_POSITION, &App::handlePlayerPosition),
+            std::make_pair(PLAYER_LEVEL, &App::handlePlayerLevel),
+            std::make_pair(PLAYER_INVENTORY, &App::handlePlayerInventory),
+            std::make_pair(CONTENT_TILE, &App::handleContentTile),
+            std::make_pair(CONTENT_MAP, &App::handleContentMap)
 };
 
 App::App(std::string const &name, int width, int height) : _window(width, height, name), _camera(), _client(), _game()
@@ -83,8 +90,11 @@ void App::handleOptions()
 
 void App::updateInformations(char *data, int type)
 {
-    if (type == PLAYER_CONNECTED)
-        handleAddPlayer(data);
+    // if (type == PLAYER_CONNECTED)
+    //     handleAddPlayer(data);
+    for (auto &command : _commandsMap)
+        if (command.first == type)
+            (this->*command.second)(data);
 }
 
 void App::handleAddPlayer(char *data)
@@ -101,5 +111,51 @@ void App::handlePlayerPosition(char *data)
     response_payload_player_position_t *playerPos;
 
     playerPos = (response_payload_player_position_t*)data;
-    _game.handlePlayerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y);
+    _game.playerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y);
+}
+
+void App::handlePlayerLevel(char *data)
+{
+    response_payload_player_level_t *playerLevel;
+
+    playerLevel = (response_payload_player_level_t*)data;
+    _game.playerLevel(playerLevel->player_id, playerLevel->level);
+}
+
+void App::handlePlayerInventory(char *data)
+{
+    response_payload_player_inventory_t *playerInventory = (response_payload_player_inventory_t*)data;
+    std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> resources;
+
+    resources.emplace_back(Object::PLAYER_RESSOURCES::FOOD, playerInventory->food);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::LINEMATE, playerInventory->linemate);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::DERAUMERE, playerInventory->deraumere);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::SIBUR, playerInventory->sibur);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::MENDIANE, playerInventory->mendiane);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::PHIRAS, playerInventory->phiras);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::THYSTAME, playerInventory->thystame);
+
+    _game.playerInventory(playerInventory->player_id, resources);
+}
+
+void App::handleContentTile(char *data)
+{
+    response_payload_content_tile_t *contentTile = (response_payload_content_tile_t *)data;
+    std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> resources;
+
+    resources.emplace_back(Object::PLAYER_RESSOURCES::FOOD, contentTile->food);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::LINEMATE, contentTile->linemate);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::DERAUMERE, contentTile->deraumere);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::SIBUR, contentTile->sibur);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::MENDIANE, contentTile->mendiane);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::PHIRAS, contentTile->phiras);
+    resources.emplace_back(Object::PLAYER_RESSOURCES::THYSTAME, contentTile->thystame);
+
+    _game.contentTile(Position(contentTile->position.x, 0, contentTile->position.y), resources);
+}
+
+void App::handleContentMap(char *data)
+{
+    response_payload_content_map_t *contentMap = (response_payload_content_map_t *)data;
+    _game.contentMap(contentMap->content);
 }

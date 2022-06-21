@@ -10,6 +10,7 @@
 
 #include "netlib.h"
 
+/* PLAYER_CONNECTED */
 typedef struct request_payload_player_connected_s {
     int data; // I DONT KNOW
 } request_payload_player_connected_t;
@@ -29,7 +30,7 @@ response_payload_player_connected_t get_response_player_connected(int socket);
 void post_response_player_connected(int socket, response_payload_player_connected_t response);
 
 
-
+/* PLAYER_POSITION */
 typedef struct request_payload_player_position_s {
     int player_id;
 } request_payload_player_position_t;
@@ -46,7 +47,7 @@ request_payload_player_position_t get_request_player_position(int socket);
 void post_request_player_position(int socket, request_payload_player_position_t request);
 
 
-
+/* PLAYER_LEVEL */
 typedef struct request_payload_player_level_s {
     int player_id;
 } request_payload_player_level_t;
@@ -63,7 +64,7 @@ request_payload_player_level_t get_request_player_level(int socket);
 void post_request_player_level(int socket, request_payload_player_level_t request);
 
 
-
+/* PLAYER_INVENTORY */
 typedef struct request_payload_player_inventory_s {
     int player_id;
 } request_payload_player_inventory_t;
@@ -71,7 +72,13 @@ typedef struct request_payload_player_inventory_s {
 typedef struct response_payload_player_inventory_s {
     bool status;
     int player_id;
-    // inventory_t inventory; // TO BE DEFINED
+    int linemate;
+    int deraumere;
+    int sibur;
+    int mendiane;
+    int phiras;
+    int thystame;
+    int food;
 } response_payload_player_inventory_t;
 
 void post_response_player_inventory(int socket, response_payload_player_inventory_t response);

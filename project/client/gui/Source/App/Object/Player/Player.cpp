@@ -13,6 +13,7 @@ Object::Player::Player(std::pair<std::string, std::string> const &pathToRessourc
 {
     _scale = 7.0f;
     _speed = 0.6f;
+    _level = 1;
 }
 
 Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId) :
@@ -21,6 +22,7 @@ Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyT
     _scale = 7.0f;
     _speed = 0.6f;
     _playerId = playerId;
+    _level = 1;
 }
 
 Object::Player::~Player()
@@ -65,4 +67,14 @@ void Object::Player::setSpeed(bool addSpeed)
         if (_speed > _defaultSpeed.first)
             _speed -= 0.1f;
     }
+}
+
+void Object::Player::setLevel(int level)
+{
+    _level = level;
+}
+
+void Object::Player::setInventory(std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory)
+{
+    _inventory = inventory;
 }

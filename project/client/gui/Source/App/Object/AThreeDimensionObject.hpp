@@ -19,6 +19,20 @@
 
 namespace Object
 {
+
+    /**
+     * @brief enum for the player's ressources
+     */
+    enum class PLAYER_RESSOURCES {
+        FOOD,
+        LINEMATE,
+        DERAUMERE,
+        SIBUR,
+        MENDIANE,
+        PHIRAS,
+        THYSTAME
+    };
+
     /**
      * @brief An abstract class of every three dimensional object
      */
@@ -43,6 +57,15 @@ namespace Object
          * @param type map object type
          */
         AThreeDimensionObject(Object::Render::MyModel pathToModel, Object::Render::MyTexture pathToTexture, Position const &position, Object::MAP_OBJECTS type);
+
+        /**
+         * @brief Construct a new AThreeDimensionObject object
+         *
+         * @param pathToModel path to ressource model
+         * @param position 3 dimensional Position
+         * @param type map object type
+         */
+        AThreeDimensionObject(Object::Render::MyModel pathToModel, Position const &position, Object::MAP_OBJECTS type);
 
         // Animated
         /**

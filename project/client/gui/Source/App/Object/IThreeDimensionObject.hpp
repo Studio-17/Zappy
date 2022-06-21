@@ -18,7 +18,14 @@ namespace Object
     enum class MAP_OBJECTS {
         TILES,
         PLAYER,
-        RESSOURCES
+        RESSOURCES,
+        FOOD,
+        LINEMATE,
+        DERAUMERE,
+        SIBUR,
+        MENDIANE,
+        PHIRAS,
+        THYSTAME
     };
 
     /**
