@@ -62,6 +62,7 @@ class App : public IListener {
 
         int _mapHeight = 10;
         int _mapWidth = 10;
+        std::string _mapDimension;
 };
 
 #endif /* !APP_HPP_ */
