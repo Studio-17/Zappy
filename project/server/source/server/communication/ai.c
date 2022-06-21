@@ -83,6 +83,55 @@ void ai_left_request(zappy_t *zappy, void *data)
     ai_response_ok_ko(socket, true);
 }
 
+static char *get_resource_from_request(char *target)
+{
+    char **request_content = my_strtok(target, ' ');
+    char *resource_set[] = {
+        "Food",
+        "Linemate",
+        "Deraumere",
+        "Sibur",
+        "Mendiane",
+        "Phiras",
+        "Thystame",
+        NULL
+    };
+
+    for (int index = 0; resource_set[index]; index += 1) {
+        if (strcmp(request_content[1], resource_set[index]) == 0) {
+            printf("Took %s\n", resource_set[index]);
+            return (resource_set[index]);
+        }
+    }
+    return (NULL);
+}
+
+void ai_take_request(zappy_t *zappy, void *data)
+{
+    char *request = *(char *)data;
+    char *resource = get_resource_from_request(request);
+
+    if (resource == NULL)
+        ai_response_ok_ko(zappy->server->sd->socket_descriptor, false);
+    else {
+        // code here handler
+        ai_response_ok_ko(zappy->server->sd->socket_descriptor, true);
+    }
+}
+
+void ai_set_request(zappy_t *zappy, void *data)
+{
+    char *request = *(char *)data;
+    char *resource = get_resource_from_request(request);
+
+    if (resource == NULL)
+        ai_response_ok_ko(zappy->server->sd->socket_descriptor, false);
+    else {
+        // code here handler
+        ai_response_ok_ko(zappy->server->sd->socket_descriptor, true);
+    }
+}
+
 static const ai_request_t ai_request_to_handle[] = {
     {
         .request = "Forward\n",
@@ -137,12 +186,12 @@ static const ai_request_t ai_request_to_handle[] = {
     {
         .request = "Take\n",
         .command = TAKE_OBJECT,
-        .handler = &ai_base_request
+        .handler = &ai_take_request
     },
     {
         .request = "Set\n",
         .command = SET_OBJECT,
-        .handler = &ai_base_request
+        .handler = &ai_set_request
     },
     {
         .request = "Incantation\n",
@@ -170,7 +219,8 @@ void ai_handle_request(zappy_t *zappy)
 
         if (strncmp(request_data, ai_request_to_handle[index].request, strlen(ai_request_to_handle[index].request) - 1) == 0) {
 
-            ai_request_to_handle[index].handler(zappy, NULL);
+            ai_request_to_handle[index].handler(zappy, request_data);
+
             return;
         }
 
