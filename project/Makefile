@@ -31,7 +31,7 @@ fclean:	clean
 	make fclean -C server/
 
 tests_run:
-	all
+	make tests_run -C server/
 
 re:	fclean all
 
