@@ -68,7 +68,7 @@ void ai_forward_request(zappy_t *zappy, void *data, int player_index)
 
     post_player_movement(zappy, player_index);
 
-    ai_response_ok_ko(socket, true);
+    ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, true);
 }
 
 void ai_right_request(zappy_t *zappy, void *data, int player_index)
@@ -86,7 +86,7 @@ void ai_right_request(zappy_t *zappy, void *data, int player_index)
 
     post_player_movement(zappy, player_index);
 
-    ai_response_ok_ko(socket, true);
+    ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, true);
 }
 
 void ai_left_request(zappy_t *zappy, void *data, int player_index)
@@ -105,7 +105,7 @@ void ai_left_request(zappy_t *zappy, void *data, int player_index)
 
     post_player_movement(zappy, player_index);
 
-    ai_response_ok_ko(socket, true);
+    ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, true);
 }
 
 static char *get_resource_from_request(char *target)

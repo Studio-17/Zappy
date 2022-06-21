@@ -153,6 +153,7 @@ void App::handleUpdateContentTile(char *data)
 
 void App::handleUpdateContentMap(char *data)
 {
+    std::cout << "content map" << std::endl;
     response_payload_content_map_t *contentMap = (response_payload_content_map_t *)data;
     _game.updateContentMap(contentMap->content);
 }
