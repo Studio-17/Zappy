@@ -46,11 +46,22 @@ static void post_welcome(zappy_t *zappy, int socket)
 static void get_team_name(zappy_t *zappy, int socket)
 {
     char team_name[256];
+    bool valid_team_name = false;;
 
     if (read(socket, &team_name, sizeof(team_name)) < 0)
         perror("get_team_name read");
-    
-    printf("%s", team_name);
+
+    for (int index = 0; zappy->options->team_names[index]; index += 1) {
+        if (strncmp(zappy->options->team_names[index], team_name, strlen(zappy->options->team_names[index]) - 1) == 0
+        || strcmp(team_name, "GRAPHIC\n") == 0) {
+            valid_team_name = true;
+            printf("%s", team_name);
+            break;
+        }
+    }
+
+    if (!valid_team_name)
+        dprintf(socket, "ko\n");
 }
 
 static void post_client_num(zappy_t *zappy, int socket)

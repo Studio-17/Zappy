@@ -16,6 +16,7 @@ void setup_options(options_t *options)
     options->width = -1;
     options->height = -1;
     options->names = NULL;
+    options->team_names = NULL;
     options->clients_nb = -1;
     options->freq = 100;
 }
