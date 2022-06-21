@@ -66,7 +66,7 @@ void Game::addPlayer(std::string const &team, int playerId, int x, int y)
     std::cout << "player " << playerId << " was added" << std::endl;
 }
 
-void Game::playerPosition(int playerId, int x, int y)
+void Game::updatePlayerPosition(int playerId, int x, int y)
 {
     Position playerPosition(x, 0, y);
     for (auto &player : _players) {
@@ -76,7 +76,7 @@ void Game::playerPosition(int playerId, int x, int y)
     std::cout << "player " << playerId << " moved " << x << y << std::endl;
 }
 
-void Game::playerLevel(int playerId, int level)
+void Game::updatePlayerLevel(int playerId, int level)
 {
     for (auto &player : _players) {
         if (player->getPlayerId() == playerId)
@@ -85,7 +85,7 @@ void Game::playerLevel(int playerId, int level)
     std::cout << "player " << playerId << " level is " << level << std::endl;
 }
 
-void Game::playerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory)
+void Game::updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory)
 {
     for (auto &player : _players) {
         if (player->getPlayerId() == playerId)
@@ -93,7 +93,7 @@ void Game::playerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RE
     }
 }
 
-void Game::contentMap(response_payload_content_tile_t **content)
+void Game::updateContentMap(response_payload_content_tile_t **content)
 {
     std::size_t cpt = 0;
     std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> resources;
@@ -123,7 +123,7 @@ std::shared_ptr<Object::Tile> Game::getTileByPosition(Position const &position)
 }
 
 
-void Game::contentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &resources)
+void Game::updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &resources)
 {
     getTileByPosition(tilePosition)->setResources(resources);
 }
