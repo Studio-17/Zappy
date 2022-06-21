@@ -19,6 +19,20 @@
 
 namespace Object
 {
+
+    /**
+     * @brief enum for the player's ressources
+     */
+    enum class PLAYER_RESSOURCES {
+        FOOD,
+        LINEMATE,
+        DERAUMERE,
+        SIBUR,
+        MENDIANE,
+        PHIRAS,
+        THYSTAME
+    };
+
     /**
      * @brief An abstract class of every three dimensional object
      */
