@@ -24,7 +24,7 @@ resources_t *setup_resources(int width, int height)
             return NULL;
         resource[index].density = density[index];
         resource[index].item = items[index];
-        resource[index].quantity = RESSOURCE_QUANTITY(width, height, resource[index].density);
+        resource[index].quantity = RESOURCE_QUANTITY(width, height, resource[index].density);
     }
     return resource;
 }

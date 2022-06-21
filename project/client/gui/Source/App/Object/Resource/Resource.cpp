@@ -2,12 +2,12 @@
 ** EPITECH PROJECT, 2022
 ** project
 ** File description:
-** Ressource
+** Resource
 */
 
 #include "Resource.hpp"
 
-Object::Resource::Resource(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Position const &position, Object::MAP_OBJECTS type, int quantity) : AThreeDimensionObject(pathToModel, pathToRessources, position, type), _quantity(quantity)
+Object::Resource::Resource(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Position const &position, Object::MAP_OBJECTS type, int quantity) : AThreeDimensionObject(pathToModel, pathToResources, position, type), _quantity(quantity)
 {
 }
 

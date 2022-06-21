@@ -32,7 +32,7 @@
     #include "server/connection/setup/setup.h"
 
 
-    #define RESSOURCE_QUANTITY(width, height, density) (width * height * density)
+    #define RESOURCE_QUANTITY(width, height, density) (width * height * density)
 
 enum ITEM {
     FOOD,

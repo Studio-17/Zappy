@@ -46,8 +46,8 @@ void Ia::mainLoop()
     while (true) {
         usleep(1);
         response = _client.handleAction("Forward");
-        if (response == "ok")
-            std::cout << "IA received: " << response<< std::endl;
+        if (response.compare("ok"))
+            std::cout << "IA received: " << response << std::endl;
         else
             std::cout << "Bad response from the IA: " << response << std::endl;
     }

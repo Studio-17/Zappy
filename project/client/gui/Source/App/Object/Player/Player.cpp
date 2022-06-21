@@ -8,16 +8,16 @@
 #include "Player.hpp"
 #include "raymath.h"
 
-Object::Player::Player(std::pair<std::string, std::string> const &pathToRessources, std::string const pathToAnimation, unsigned int nbAnimation, Position const &position, Object::MAP_OBJECTS type) :
-    AThreeDimensionObject(pathToRessources, pathToAnimation, nbAnimation, position, type)
+Object::Player::Player(std::pair<std::string, std::string> const &pathToResources, std::string const pathToAnimation, unsigned int nbAnimation, Position const &position, Object::MAP_OBJECTS type) :
+    AThreeDimensionObject(pathToResources, pathToAnimation, nbAnimation, position, type)
 {
     _scale = 7.0f;
     _speed = 0.6f;
     _level = 1;
 }
 
-Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation) :
-    AThreeDimensionObject(pathToModel, pathToRessources, pathToAnimation, numberOfAnimations, position, type)
+Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation) :
+    AThreeDimensionObject(pathToModel, pathToResources, pathToAnimation, numberOfAnimations, position, type)
 {
     _scale = 7.0f;
     _speed = 0.6f;
@@ -86,7 +86,7 @@ void Object::Player::setLevel(int level)
     _level = level;
 }
 
-void Object::Player::setInventory(std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &inventory)
+void Object::Player::setInventory(std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &inventory)
 {
     _inventory = inventory;
 }

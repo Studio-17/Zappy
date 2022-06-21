@@ -14,13 +14,13 @@
 namespace Object {
     class Tile : public AThreeDimensionObject {
         public:
-            Tile(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources,  std::vector<Object::Render::MyModel> resourcesModels, Position const &position, Object::MAP_OBJECTS type);
+            Tile(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources,  std::vector<Object::Render::MyModel> resourcesModels, Position const &position, Object::MAP_OBJECTS type);
             ~Tile();
 
             void draw() override;
 
             std::vector<std::shared_ptr<Object::Resource>> getResources() const;
-            void setResources(std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> const &resources);
+            void setResources(std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &resources);
 
             Position getPosition() const { return _position; }
             void setPosition(Position const &position) { _position = position; }

@@ -7,11 +7,11 @@
 
 #include "AThreeDimensionObject.hpp"
 
-Object::AThreeDimensionObject::AThreeDimensionObject(std::pair<std::string, std::string> const &pathToRessources, Position const &position, Object::MAP_OBJECTS type) : 
+Object::AThreeDimensionObject::AThreeDimensionObject(std::pair<std::string, std::string> const &pathToResources, Position const &position, Object::MAP_OBJECTS type) : 
     _isEnable(true),
     _position(position), _type(type),
-    _model(LoadModel(pathToRessources.first.c_str())),
-    _texture(LoadTexture(pathToRessources.second.c_str())),
+    _model(LoadModel(pathToResources.first.c_str())),
+    _texture(LoadTexture(pathToResources.second.c_str())),
     _isAnimated(false), _scale(0.5f)
 {
     _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
@@ -37,11 +37,11 @@ Object::AThreeDimensionObject::AThreeDimensionObject(Object::Render::MyModel pat
     // _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
 }
 
-Object::AThreeDimensionObject::AThreeDimensionObject(std::pair<std::string, std::string> const &pathToRessources, std::string const &pathToAnimation, unsigned int nbAnimation, Position const &position, Object::MAP_OBJECTS type) :
+Object::AThreeDimensionObject::AThreeDimensionObject(std::pair<std::string, std::string> const &pathToResources, std::string const &pathToAnimation, unsigned int nbAnimation, Position const &position, Object::MAP_OBJECTS type) :
     _isEnable(true), _position(position),
     _type(type),
-    _model(LoadModel(pathToRessources.first.c_str())),
-    _texture(LoadTexture(pathToRessources.second.c_str())),
+    _model(LoadModel(pathToResources.first.c_str())),
+    _texture(LoadTexture(pathToResources.second.c_str())),
     _animsCount(nbAnimation),
     _anims(LoadModelAnimations(pathToAnimation.c_str(), &_animsCount)),
     _isAnimated(true)
@@ -49,11 +49,11 @@ Object::AThreeDimensionObject::AThreeDimensionObject(std::pair<std::string, std:
     SetMaterialTexture(&_model.materials[0], MATERIAL_MAP_DIFFUSE, _texture);
 }
 
-Object::AThreeDimensionObject::AThreeDimensionObject(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToRessources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type) :
+Object::AThreeDimensionObject::AThreeDimensionObject(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type) :
     _isEnable(true), _position(position),
     _type(type),
     _model(pathToModel.getModel()),
-    _texture(pathToRessources.getTexture()),
+    _texture(pathToResources.getTexture()),
     _animsCount(numberOfAnimations),
     _anims(pathToAnimation.getAnimation()),
     _isAnimated(true)

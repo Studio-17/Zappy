@@ -21,9 +21,9 @@ namespace Object
 {
 
     /**
-     * @brief enum for the player's ressources
+     * @brief enum for the player's resources
      */
-    enum class PLAYER_RESSOURCES {
+    enum class PLAYER_RESOURCES {
         FOOD,
         LINEMATE,
         DERAUMERE,
@@ -43,16 +43,16 @@ namespace Object
         /**
          * @brief Construct a new AThreeDimensionObject object (non animated)
          *
-         * @param pathToRessources pair of path to ressources texture and model
+         * @param pathToResources pair of path to resources texture and model
          * @param position 3 dimensional Position
          * @param type map object type
          */
-        AThreeDimensionObject(std::pair<std::string, std::string> const &pathToRessources, Position const &position, Object::MAP_OBJECTS type);
+        AThreeDimensionObject(std::pair<std::string, std::string> const &pathToResources, Position const &position, Object::MAP_OBJECTS type);
         /**
          * @brief Construct a new AThreeDimensionObject object (non animated)
          *
-         * @param pathToModel path to ressource model
-         * @param pathToTexture path to ressource texture
+         * @param pathToModel path to resource model
+         * @param pathToTexture path to resource texture
          * @param position 3 dimensional Position
          * @param type map object type
          */
@@ -61,7 +61,7 @@ namespace Object
         /**
          * @brief Construct a new AThreeDimensionObject object
          *
-         * @param pathToModel path to ressource model
+         * @param pathToModel path to resource model
          * @param position 3 dimensional Position
          * @param type map object type
          */
@@ -71,19 +71,19 @@ namespace Object
         /**
          * @brief Construct a new AThreeDimensionObject object (animated)
          *
-         * @param pathToRessources pair of path to ressources texture and model
-         * @param pathToAnimation  path to ressource animation
+         * @param pathToResources pair of path to resources texture and model
+         * @param pathToAnimation  path to resource animation
          * @param nbAnimation number of animation
          * @param position 3 dimensional Position
          * @param type map object type
          */
-        AThreeDimensionObject(std::pair<std::string, std::string> const &pathToRessources, std::string const &pathToAnimation, unsigned int nbAnimation, Position const &position, Object::MAP_OBJECTS type);
+        AThreeDimensionObject(std::pair<std::string, std::string> const &pathToResources, std::string const &pathToAnimation, unsigned int nbAnimation, Position const &position, Object::MAP_OBJECTS type);
         /**
          * @brief Construct a new AThreeDimensionObject object (animated)
          *
-         * @param pathToModel path to ressource model
-         * @param pathToTexture path to ressource texture
-         * @param pathToAnimation path to ressource animation
+         * @param pathToModel path to resource model
+         * @param pathToTexture path to resource texture
+         * @param pathToAnimation path to resource animation
          * @param numberOfAnimations number of animation
          * @param position 3 dimensional Position
          * @param type map object type

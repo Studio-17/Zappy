@@ -122,15 +122,15 @@ void App::handleUpdatePlayerLevel(char *data)
 void App::handleUpdatePlayerInventory(char *data)
 {
     response_payload_player_inventory_t *playerInventory = (response_payload_player_inventory_t*)data;
-    std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> resources;
+    std::vector<std::pair<Object::PLAYER_RESOURCES, int>> resources;
 
-    resources.emplace_back(Object::PLAYER_RESSOURCES::FOOD, playerInventory->food);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::LINEMATE, playerInventory->linemate);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::DERAUMERE, playerInventory->deraumere);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::SIBUR, playerInventory->sibur);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::MENDIANE, playerInventory->mendiane);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::PHIRAS, playerInventory->phiras);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::THYSTAME, playerInventory->thystame);
+    resources.emplace_back(Object::PLAYER_RESOURCES::FOOD, playerInventory->food);
+    resources.emplace_back(Object::PLAYER_RESOURCES::LINEMATE, playerInventory->linemate);
+    resources.emplace_back(Object::PLAYER_RESOURCES::DERAUMERE, playerInventory->deraumere);
+    resources.emplace_back(Object::PLAYER_RESOURCES::SIBUR, playerInventory->sibur);
+    resources.emplace_back(Object::PLAYER_RESOURCES::MENDIANE, playerInventory->mendiane);
+    resources.emplace_back(Object::PLAYER_RESOURCES::PHIRAS, playerInventory->phiras);
+    resources.emplace_back(Object::PLAYER_RESOURCES::THYSTAME, playerInventory->thystame);
 
     _game.updatePlayerInventory(playerInventory->player_id, resources);
 }
@@ -138,15 +138,15 @@ void App::handleUpdatePlayerInventory(char *data)
 void App::handleUpdateContentTile(char *data)
 {
     response_payload_content_tile_t *contentTile = (response_payload_content_tile_t *)data;
-    std::vector<std::pair<Object::PLAYER_RESSOURCES, int>> resources;
+    std::vector<std::pair<Object::PLAYER_RESOURCES, int>> resources;
 
-    resources.emplace_back(Object::PLAYER_RESSOURCES::FOOD, contentTile->food);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::LINEMATE, contentTile->linemate);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::DERAUMERE, contentTile->deraumere);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::SIBUR, contentTile->sibur);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::MENDIANE, contentTile->mendiane);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::PHIRAS, contentTile->phiras);
-    resources.emplace_back(Object::PLAYER_RESSOURCES::THYSTAME, contentTile->thystame);
+    resources.emplace_back(Object::PLAYER_RESOURCES::FOOD, contentTile->food);
+    resources.emplace_back(Object::PLAYER_RESOURCES::LINEMATE, contentTile->linemate);
+    resources.emplace_back(Object::PLAYER_RESOURCES::DERAUMERE, contentTile->deraumere);
+    resources.emplace_back(Object::PLAYER_RESOURCES::SIBUR, contentTile->sibur);
+    resources.emplace_back(Object::PLAYER_RESOURCES::MENDIANE, contentTile->mendiane);
+    resources.emplace_back(Object::PLAYER_RESOURCES::PHIRAS, contentTile->phiras);
+    resources.emplace_back(Object::PLAYER_RESOURCES::THYSTAME, contentTile->thystame);
 
     _game.updateContentTile(Position(contentTile->position.x, 0, contentTile->position.y), resources);
 }
