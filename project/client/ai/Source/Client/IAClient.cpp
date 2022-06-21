@@ -106,3 +106,16 @@ std::string IAClient::getMapSize() const
     return _mapSize;
 }
 
+int IAClient::getSocket() const
+{
+    return _socket;
+}
+
+std::string IAClient::handleAction(std::string const &action)
+{
+    std::string string;
+
+    postRequest(_socket, action);
+    string = getRequest(_socket);
+    return string;
+}
