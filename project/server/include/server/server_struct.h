@@ -27,8 +27,8 @@ typedef struct server_s {
     int port;
     struct sockaddr_in address;
     int address_length;
-    server_socket_t *ss;
-    server_socket_descriptor_t *sd;
+    server_socket_t *server_socket;
+    server_socket_descriptor_t *socket_descriptor;
 
     int clients;
 

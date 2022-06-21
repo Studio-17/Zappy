@@ -21,7 +21,7 @@ void setup_options(options_t *options)
     options->freq = 100;
 }
 
-int get_options(int ac, char **av, options_t *options)
+bool get_options(int ac, char const * const *av, options_t *options)
 {
     int opt = 0;
 
@@ -43,7 +43,7 @@ int get_options(int ac, char **av, options_t *options)
         {
         case 'h':
             print_usage(OPTIONS_ERROR_NONE);
-            return (EXIT_FAILURE);
+            return false;
         case 'p':
             options->port = my_atoi(optarg);
             break;
@@ -64,27 +64,27 @@ int get_options(int ac, char **av, options_t *options)
             break;
         default:
             print_usage(INVALID_OPTION);
-            return (EXIT_FAILURE);
+            return false;
         }
     }
-    return (EXIT_SUCCESS);
+    return true;
 }
 
-int handle_options(options_t *options)
+bool handle_options(options_t *options)
 {
     if (options->port == -1 || options->width == -1 ||
         options->height == -1 || options->names == NULL ||
         options->clients_nb == -1)
     {
         print_usage(MISSING_OPTION);
-        return (EXIT_FAILURE);
+        return false;
     }
     if (options->port == 0 || options->width == 0 ||
         options->height == 0 || options->names == NULL ||
         options->clients_nb == 0)
     {
         print_usage(INVALID_OPTION);
-        return (EXIT_FAILURE);
+        return false;
     }
 
     int count = 1;
@@ -95,9 +95,9 @@ int handle_options(options_t *options)
     }
     if (count != options->clients_nb) {
         print_usage(INVALID_OPTION);
-        return (EXIT_FAILURE);
+        return false;
     }
-    return (EXIT_SUCCESS);
+    return true;
 }
 
 void debug_options(options_t *options)

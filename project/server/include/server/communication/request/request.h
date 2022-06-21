@@ -39,7 +39,7 @@ enum COMMANDS_AI {
 
 // REQUEST
 
-typedef void (*ai_request_handler)(zappy_t *, void *);
+typedef void (*ai_request_handler)(zappy_t *, void *, int);
 
 typedef struct ai_request_s {
     char *request;

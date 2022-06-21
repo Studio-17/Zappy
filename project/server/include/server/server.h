@@ -38,7 +38,10 @@ typedef struct zappy_s {
     resources_t *resources;
 } zappy_t;
 
+zappy_t *init_zappy(void);
+
 void create_server(zappy_t *zappy);
+void server_loop(zappy_t *zappy);
 void client_deconnected(zappy_t *zappy, int client_socketn);
 
 void configure_socket_type(server_t *server);
@@ -61,7 +64,7 @@ void listen_clients(zappy_t *zappy);
 void *gui_get_generic_request(int client_socket, int size_to_read);
 
 void gui_handle_request(zappy_t *zappy);
-void ai_handle_request(zappy_t *zappy);
+void ai_handle_request(zappy_t *zappy, int player_index);
 
 void create_player(zappy_t *zappy);
 

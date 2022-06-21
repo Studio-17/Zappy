@@ -47,7 +47,7 @@ static bool get_team_name(zappy_t *zappy, int socket)
 
 static void post_client_num(zappy_t *zappy, int socket)
 {
-    dprintf(socket, "%d\n", zappy->server->sd->socket_descriptor);
+    dprintf(socket, "%d\n", zappy->server->socket_descriptor->socket_descriptor);
 }
 
 static void post_map_dimensions(zappy_t *zappy, int socket)
