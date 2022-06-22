@@ -30,7 +30,8 @@ namespace Object
         SIBUR,
         MENDIANE,
         PHIRAS,
-        THYSTAME
+        THYSTAME,
+        NB_RESOURCES
     };
 
     /**
