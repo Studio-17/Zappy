@@ -36,6 +36,7 @@ SOURCE	=	source/server/communication/communication.c				\
 			source/server/connection/setup/setup.c					\
 			source/options/options.c								\
 			source/options/usage.c									\
+			source/zappy/list.c										\
 			source/zappy/map.c										\
 			source/zappy/resources.c								\
 			source/zappy/zappy.c									\
@@ -76,7 +77,6 @@ LDFLAGS	+=	-lm
 LDFLAGS	+=	-L ../library/
 LDFLAGS	+=	-l criterion --coverage
 
-LDLIBS	+=	-llist
 LDLIBS	+=	-lmini
 LDLIBS	+=	-lnet
 

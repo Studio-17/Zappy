@@ -45,6 +45,7 @@ typedef struct ai_request_s {
     char *request;
     enum COMMANDS_AI command;
     ai_request_handler handler;
+    int time_limit;
 } ai_request_t;
 
 enum COMMANDS_AI get_command_ai(char *request);
@@ -142,5 +143,21 @@ typedef struct gui_request_s {
     int type;
     gui_request_handler handler;
 } gui_request_t;
+
+// REQUEST HANDLER (with queue)
+
+typedef struct argument_handler_s {
+    zappy_t *structure;
+    void *data;
+    int index;
+} argument_handler_t;
+
+typedef struct data_s {
+    ai_request_handler request;
+    argument_handler_t arguments;
+
+    int request_time;
+    clock_t clock;
+} data_t;
 
 #endif /* !REQUEST_H_ */

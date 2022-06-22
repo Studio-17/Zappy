@@ -74,7 +74,13 @@ static void create_player(zappy_t *zappy, int socket)
         player.resource_inventory[index].quantity = 0;
     }
 
-    zappy->client[zappy->server->clients] = (ai_client_t){socket, zappy->server->clients, AI, player};
+    zappy->client[zappy->server->clients] = (ai_client_t){
+        .socket = socket,
+        .client_nb = zappy->server->clients,
+        .type = AI,
+        .player = player,
+        .list = NULL
+    };
 }
 
 bool connect_client(zappy_t *zappy)

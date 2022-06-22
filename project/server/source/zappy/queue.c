@@ -249,7 +249,7 @@ bool list_del_elem_at_position(list_t *front_ptr, unsigned int position)
 // BEGIN
 
 
-typedef void (*ai_request_handler)(void *, void *, int);
+typedef void (*request_handler)(void *, void *, int);
 
 void ai_forward_request(void *structure, void *data, int index)
 {
@@ -283,7 +283,7 @@ void ai_incantation_request(void *structure, void *data, int index)
 
 typedef struct ai_request_s {
     char *request;
-    ai_request_handler handler;
+    request_handler handler;
     int time;
 } ai_request_t;
 
@@ -320,15 +320,15 @@ static const ai_request_t request_table[] = {
     },
 };
 
-typedef struct handler_arguments_s {
+typedef struct argument_handler_s {
     void *structure;
     void *data;
     int index;
-} handler_arguments_t;
+} argument_handler_t;
 
 typedef struct data_s {
-    ai_request_handler request;
-    handler_arguments_t arguments;
+    request_handler request;
+    argument_handler_t arguments;
 
     int request_time;
     clock_t clock;
@@ -397,6 +397,11 @@ int main(void)
             data_t new_data = {
                 .request = request_table[saved_index].handler,
                 .request_time = request_table[saved_index].time,
+                .arguments = {
+                    .data = NULL,
+                    .structure = NULL,
+                    .index = 1,
+                },
                 .clock = clock(),
             };
 
