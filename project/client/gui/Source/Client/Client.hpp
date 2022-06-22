@@ -46,8 +46,14 @@ class Client {
         std::pair<int, int> getMapDimension();
         EventsHandler _eventsHandler;
 
-
         bool checkConnection();
+
+
+        std::string getMachine() const { return _options->getMachine(); };
+        int getPort() const { return _options->getPort(); };
+
+        void setMachine(std::string &machine);
+        void setPort(int port);
 
     protected:
     private:
@@ -57,6 +63,7 @@ class Client {
         std::unique_ptr<Options> _options;
         int _clientNumber;
         std::string _mapDimension;
+        bool _isConnected = false;
 };
 
 #endif /* !CLIENT_HPP_ */

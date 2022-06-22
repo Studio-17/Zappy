@@ -49,7 +49,7 @@ namespace Object {
              * @param jsonData path to JSON file
              */
 
-            ~Button();
+            ~Button() override;
 
             /**
              * @brief draw a two dimensional object

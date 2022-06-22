@@ -32,12 +32,17 @@ void Client::setup()
     _server.sin_family = AF_INET;
     _server.sin_addr.s_addr = inet_addr(_options->getMachine().c_str());
     _server.sin_port = htons(_options->getPort());
+    std::cout << "client started function setup" << std::endl;
 }
 
 bool Client::checkConnection()
 {
     if (connect(_socket, (struct sockaddr *)&_server, sizeof(_server)) != 0)
-        throw ClientErrors("Connect failed");
+        _isConnected = false;
+
+    else
+        _isConnected = true;
+    return (_isConnected);
 }
 
 void Client::connection()
@@ -139,3 +144,15 @@ void Client::listen()
     _eventsHandler.eventReceive(data, header.type);
     free(data);
 }
+
+void Client::setMachine(std::string &machine)
+{
+    _options->setMachine(machine);
+}
+
+void Client::setPort(int port)
+{
+    _options->setPort(port);
+}
+
+

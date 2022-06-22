@@ -15,22 +15,16 @@ extern "C" {
     #include "protocol/map.h"
 }
 
-static std::vector<std::pair<COMMANDS_GUI, void(App::*)(char *)>> _commandsMap = {
-    std::make_pair(PLAYER_CONNECTED, &App::handleAddPlayer),
-    std::make_pair(PLAYER_POSITION, &App::handleUpdatePlayerPosition),
-    std::make_pair(PLAYER_LEVEL, &App::handleUpdatePlayerLevel),
-    std::make_pair(PLAYER_INVENTORY, &App::handleUpdatePlayerInventory),
-    std::make_pair(CONTENT_TILE, &App::handleUpdateContentTile),
-    std::make_pair(CONTENT_MAP, &App::handleUpdateContentMap)
-};
 
-App::App(std::string const &name, int width, int height) : _window(width, height, name), _camera(), _client(std::make_shared<Client>()), _game()
+
+App::App(std::string const &name, int width, int height) : _window(width, height, name), _client(std::make_shared<Client>())
 {
-    _camera.setPosition(Position(65, 230, 266));
-    _camera.setTarget(Position(65, 0, 65));
-    _camera.setFovy(45.0f);
-    _camera.setUp(Position(0, 1, 0));
-    _camera.setProjection(CAMERA_PERSPECTIVE);
+    _camera = std::make_shared<RayLib::CinematicCamera>();
+    _camera->setPosition(Position(65, 230, 266));
+    _camera->setTarget(Position(65, 0, 65));
+    _camera->setFovy(45.0f);
+    _camera->setUp(Position(0, 1, 0));
+    _camera->setProjection(CAMERA_PERSPECTIVE);
 }
 
 App::~App()
@@ -39,45 +33,26 @@ App::~App()
 
 void App::startApp()
 {
-    _menuScenes.emplace(Scenes::MAIN_MENU, std::make_shared<MainMenu>(_client));
-    _menuScenes.emplace(Scenes::GAME, std::make_shared<Game>(_client));
-    try {
-        _client->setup();
-        _client->connection();
-    } catch (ClientErrors const &ClientError) {
-        std::cerr << ClientError.what() << std::endl;
-    }
-    startConnection();
+    std::shared_ptr<Game> game = std::make_shared<Game>(_client, _camera);
+    _menuScenes.emplace(Scenes::GAME, game);
+    _menuScenes.emplace(Scenes::MAIN_MENU, std::make_shared<MainMenu>(_client, std::bind(&Game::getAndSetUpMapTiles, game)));
+    _activeScene = Scenes::MAIN_MENU;
+    _client->_eventsHandler.addNewListener(_menuScenes.at(Scenes::GAME).get());
     startMainLoop();
-}
-
-void App::startConnection()
-{
-    std::pair<int, int> mapDimension(0, 0);
-
-    _client->_eventsHandler.addNewListener(this);
-    mapDimension = _client->getMapDimension();
-    _game.sendMapSize(mapDimension.first, mapDimension.second);
-    _game.setUpGameMap();
 }
 
 void App::startMainLoop()
 {
     while (!_window.windowShouldClose()) {
-        _client->listen();
-        draw();
-    }
-}
+        _window.startDrawing();
+        _window.clearBackground(DARKGRAY);
 
-void App::draw()
-{
-    _window.startDrawing();
-    _window.clearBackground(DARKGRAY);
-    _camera.startMode3D();
-    DrawGrid(100, 10);
-    _game.drawTiles();
-    _camera.endMode3D();
-    _window.endDrawing();
+        _activeScene = _menuScenes.at(_activeScene)->handleEvent();
+        if (_activeScene == Scenes::QUIT)
+            break;
+        _menuScenes.at(_activeScene)->draw();
+        _window.endDrawing();
+    }
 }
 
 void App::setupOptions(int ac, char **av)
@@ -90,73 +65,4 @@ void App::handleOptions()
     _client->handleOptions();
 }
 
-void App::updateInformations(char *data, int type)
-{
-    for (auto &command : _commandsMap)
-        if (command.first == type)
-            (this->*command.second)(data);
-}
 
-void App::handleAddPlayer(char *data)
-{
-    response_payload_player_connected_t *addPlayer;
-
-    addPlayer = (response_payload_player_connected_t *)data;
-
-    _game.addPlayer("hello", addPlayer->id, addPlayer->position.x, addPlayer->position.y, (Object::ORIENTATION)addPlayer->orientation);
-}
-
-void App::handleUpdatePlayerPosition(char *data)
-{
-    response_payload_player_position_t *playerPos;
-
-    playerPos = (response_payload_player_position_t*)data;
-    _game.updatePlayerPosition(playerPos->player_id, playerPos->position.y, playerPos->position.x);
-}
-
-void App::handleUpdatePlayerLevel(char *data)
-{
-    response_payload_player_level_t *playerLevel;
-
-    playerLevel = (response_payload_player_level_t*)data;
-    _game.updatePlayerLevel(playerLevel->player_id, playerLevel->level);
-}
-
-void App::handleUpdatePlayerInventory(char *data)
-{
-    response_payload_player_inventory_t *playerInventory = (response_payload_player_inventory_t*)data;
-    std::vector<std::pair<Object::PLAYER_RESOURCES, int>> resources;
-
-    resources.emplace_back(Object::PLAYER_RESOURCES::FOOD, playerInventory->food);
-    resources.emplace_back(Object::PLAYER_RESOURCES::LINEMATE, playerInventory->linemate);
-    resources.emplace_back(Object::PLAYER_RESOURCES::DERAUMERE, playerInventory->deraumere);
-    resources.emplace_back(Object::PLAYER_RESOURCES::SIBUR, playerInventory->sibur);
-    resources.emplace_back(Object::PLAYER_RESOURCES::MENDIANE, playerInventory->mendiane);
-    resources.emplace_back(Object::PLAYER_RESOURCES::PHIRAS, playerInventory->phiras);
-    resources.emplace_back(Object::PLAYER_RESOURCES::THYSTAME, playerInventory->thystame);
-
-    _game.updatePlayerInventory(playerInventory->player_id, resources);
-}
-
-void App::handleUpdateContentTile(char *data)
-{
-    response_payload_content_tile_t *contentTile = (response_payload_content_tile_t *)data;
-    std::vector<std::pair<Object::PLAYER_RESOURCES, int>> resources;
-
-    resources.emplace_back(Object::PLAYER_RESOURCES::FOOD, contentTile->food);
-    resources.emplace_back(Object::PLAYER_RESOURCES::LINEMATE, contentTile->linemate);
-    resources.emplace_back(Object::PLAYER_RESOURCES::DERAUMERE, contentTile->deraumere);
-    resources.emplace_back(Object::PLAYER_RESOURCES::SIBUR, contentTile->sibur);
-    resources.emplace_back(Object::PLAYER_RESOURCES::MENDIANE, contentTile->mendiane);
-    resources.emplace_back(Object::PLAYER_RESOURCES::PHIRAS, contentTile->phiras);
-    resources.emplace_back(Object::PLAYER_RESOURCES::THYSTAME, contentTile->thystame);
-
-    _game.updateContentTile(Position(contentTile->position.x * 10, -10, contentTile->position.y * 10), resources);
-}
-
-void App::handleUpdateContentMap(char *data)
-{
-    std::cout << "content map" << std::endl;
-    response_payload_content_map_t *contentMap = (response_payload_content_map_t *)data;
-    _game.updateContentMap(contentMap->content);
-}

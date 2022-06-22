@@ -20,10 +20,26 @@
     #include "protocol/map.h"
     #include "AScene.hpp"
     #include "Client.hpp"
+    #include "IListener.hpp"
+    #include "Camera.hpp"
+
+enum COMMANDS_GUI {
+    MAP_SIZE,
+    CONTENT_TILE, // STRUCT DONE
+    CONTENT_MAP, // STRUCT DONE
+    NAME_OF_TEAMS,
+    PLAYER_CONNECTED, // STRUCT DONE
+    PLAYER_POSITION, // STRUCT DONE
+    PLAYER_LEVEL, // STRUCT DONE
+    PLAYER_INVENTORY, // STRUCT DONE
+    TIME_UNIT,
+    TIME_UNIT_MODIFICATION,
+    NB_COMMANDS_GUI,
+};
 
 class Game : public AScene {
     public:
-        Game(std::shared_ptr<Client> client);
+        Game(std::shared_ptr<Client> client, std::shared_ptr<RayLib::CinematicCamera> camera);
         Game();
         ~Game();
 
@@ -42,9 +58,19 @@ class Game : public AScene {
         void updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &resources);
         void updateContentMap(response_payload_content_tile_t **content);
 
+        void handleAddPlayer(char *data);
+        void handleUpdatePlayerPosition(char *data);
+        void handleUpdatePlayerLevel(char *data);
+        void handleUpdatePlayerInventory(char *data);
+        void handleUpdateContentTile(char *data);
+        void handleUpdateContentMap(char *data);
+
         std::shared_ptr<Object::Tile> getTileByPosition(Position const &position);
 
         void loadResourcesModels();
+
+        void updateInformations(char *data, int type) override;
+        void getAndSetUpMapTiles();
 
     protected:
     private:
@@ -63,6 +89,8 @@ class Game : public AScene {
 
         Object::Render::MyAnimation _playersAnimation;
         std::shared_ptr<Client> _client;
+
+        std::shared_ptr<RayLib::CinematicCamera> _camera;
 };
 
 #endif /* !GAME_HPP_ */

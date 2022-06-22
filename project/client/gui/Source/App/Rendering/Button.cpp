@@ -10,7 +10,7 @@
 Object::Button::Button(std::string const &buttonPath, int nbFrame, Position const &position) : _isEnable(true), 
     _isClickable(true),
     _nbFrame(nbFrame), _state(Default), _position(position), _buttonTexture(LoadTexture(buttonPath.c_str())), _frameHeight((float)_buttonTexture.height/_nbFrame), _isAudio(false),
-    _sourceRec({ 0, 0, (float)_buttonTexture.width, _frameHeight }),
+    _sourceRec({ 0, 0, (float)_buttonTexture.width, (float)_buttonTexture.height / _nbFrame }),
     _buttonRect({ _position.getX(),  _position.getY(), (float)_buttonTexture.width, (float)_buttonTexture.height / _nbFrame}),
     _callBack(nullptr)
 {
@@ -18,8 +18,8 @@ Object::Button::Button(std::string const &buttonPath, int nbFrame, Position cons
 
 Object::Button::Button(std::string const &buttonPath, int nbFrame, std::function<void(void)> callBack, Position const &position) : _isEnable(true),
     _isClickable(true),
-    _nbFrame(nbFrame), _position(position), _buttonTexture(LoadTexture(buttonPath.c_str())), _frameHeight((float)_buttonTexture.height/_nbFrame), _isAudio(true), _callBack(callBack),
-    _sourceRec({ 0, 0, (float)_buttonTexture.width, _frameHeight }),
+    _nbFrame(nbFrame), _position(position), _buttonTexture(LoadTexture(buttonPath.c_str())), _frameHeight((float)_buttonTexture.height/_nbFrame), _isAudio(false), _callBack(callBack),
+    _sourceRec({ 0, 0, (float)_buttonTexture.width, (float)_buttonTexture.height / _nbFrame }),
     _buttonRect({ _position.getX(),  _position.getY(), (float)_buttonTexture.width, (float)_buttonTexture.height / _nbFrame})
 {
 }

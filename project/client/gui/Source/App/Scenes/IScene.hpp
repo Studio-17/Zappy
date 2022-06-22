@@ -8,6 +8,8 @@
 #ifndef ISCENE_HPP_
     #define ISCENE_HPP_
 
+    #include "IListener.hpp"
+
 /**
  * @brief A namesapce grouping every scene of the game
  */
@@ -31,7 +33,7 @@
     /**
      * @brief An interface of every scene of the game
      */
-    class IScene {
+    class IScene : public IListener {
         public:
             /**
              * @brief Construct a new IScene object
