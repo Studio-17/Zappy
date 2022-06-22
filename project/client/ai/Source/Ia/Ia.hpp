@@ -26,38 +26,33 @@ class Ia {
         INCANTATION,
     };
 
-    enum class OBJECTS {
-        FOOD,
-        LINEMATE,
-        DERAUMERE,
-        SIBUR,
-        MENDIANE,
-        PHIRAS,
-        THYSTAME,
-        DEFAULT
-    };
-
     public:
         Ia();
         ~Ia();
 
         void startIa();
 
-        void setUpOptions(int ac, char **av);
-        void handleOptions();
+        void setUpOptions(int ac, char **av) { _client.setupOptions(ac, av); };
+        void handleOptions() { _client.handleOptions(); };
 
-        std::string takeObject(OBJECTS object);
-        std::string setObject(OBJECTS object);
-        std::string doAction(ACTIONS action);
+        std::string takeObject(std::string object) { return ("Take " + transformRessourceToAction(object) + "\n"); }; // Take object
+        std::string setObject(std::string object) { return ("Set " + transformRessourceToAction(object) + "\n"); }; // Set object
+        std::string doAction(ACTIONS action) { return (_actionCommands.at(action)); };
 
         std::string replaceCharacters(std::string str, const std::string& from, const std::string& to); // change all strings to another string in a string
 
-        std::string transformObjectToAction(std::string object); // transform a basic object to an action ex: 'food' to 'Food'
-        std::vector<std::vector<std::string>> parseLook(std::string response); // Function to parse the look string
-        OBJECTS wantToTakeAnObject(std::string response); // Check if in the tiles there is a cool object
-        std::vector<ACTIONS> moveToTile(int tile, OBJECTS object); // tranform a tile position to a vector of movements to go to the tile and take the object
+        std::string transformRessourceToAction(std::string object); // transform a basic object to an action ex: 'food' to 'Food'
+        std::vector<std::map<std::string, bool>> parseLook(std::string response); // Function to parse the look string
+
+        bool searchGem(std::string const &gem);
+        bool wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objects); // Check if in the tiles there is a cool object
+
+        int getCenteredTile(int level) { return (level * (level + 1)); }; // Get the position of the centered tile of the ia vue
+        std::vector<ACTIONS> moveToTile(int tile); // tranform a tile position to a vector of movements to go to the tile and take the object
 
         void mainLoop();
+
+
 
 
     protected:
@@ -65,9 +60,13 @@ class Ia {
         IAClient _client;
         std::string _mapSize;
         std::map<ACTIONS, std::string> _actionCommands;
-        std::map<OBJECTS, std::string> _objectCommands;
+        std::map<std::size_t, std::map<std::string, int>> _levelsToObtain;
 
+        int _level;
+        std::map<std::string, int> _inventory;
         std::string _action;
+
+        std::pair<int, std::string> _objectToTake;
 };
 
 #endif /* !IA_HPP_ */
