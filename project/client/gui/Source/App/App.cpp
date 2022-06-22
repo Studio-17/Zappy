@@ -72,6 +72,7 @@ void App::draw()
     _window.startDrawing();
     _window.clearBackground(DARKGRAY);
     _camera.startMode3D();
+    DrawGrid(100, 10);
     _game.drawTiles();
     _camera.endMode3D();
     _window.endDrawing();
@@ -148,7 +149,7 @@ void App::handleUpdateContentTile(char *data)
     resources.emplace_back(Object::PLAYER_RESOURCES::PHIRAS, contentTile->phiras);
     resources.emplace_back(Object::PLAYER_RESOURCES::THYSTAME, contentTile->thystame);
 
-    _game.updateContentTile(Position(contentTile->position.x, 0, contentTile->position.y), resources);
+    _game.updateContentTile(Position(contentTile->position.x * 10, -10, contentTile->position.y * 10), resources);
 }
 
 void App::handleUpdateContentMap(char *data)
