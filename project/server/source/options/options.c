@@ -21,10 +21,9 @@ void setup_options(options_t *options)
     options->freq = 100;
 }
 
-bool get_options(int ac, char const * const *av, options_t *options)
+bool get_options(int ac, char * const *av, options_t *options)
 {
     int opt = 0;
-
     static struct option long_options[] = {
         {"help", no_argument, 0, 'h'},
         {"port", required_argument, 0, 'p'},
@@ -34,8 +33,8 @@ bool get_options(int ac, char const * const *av, options_t *options)
         {"clients_nb", required_argument, 0, 'c'},
         {"freq", optional_argument, 0, 'f'},
         {0, 0, 0, 0}};
-
     int long_index = 0;
+
     while ((opt = getopt_long(ac, av, "hp:x:y:n:c:f:",
                               long_options, &long_index)) != -1)
     {
@@ -112,5 +111,6 @@ void debug_options(options_t *options)
 
 void free_options(options_t *options)
 {
+    free_arr(options->team_names);
     free(options);
 }

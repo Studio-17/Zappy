@@ -21,7 +21,7 @@ enum CLIENT_TYPE {
 enum ORIENTATION {
     DEFAULT = -1,
     NORTH = 0,
-    EST = 1,
+    EAST = 1,
     SOUTH = 2,
     WEST = 3,
     OUTOFRANGE

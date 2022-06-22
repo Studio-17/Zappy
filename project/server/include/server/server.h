@@ -8,13 +8,13 @@
 #ifndef SERVER_H_
     #define SERVER_H_
 
-    #include <stdio.h>
-    #include <string.h>
-    #include <stdlib.h>
-    #include <errno.h>
-    #include <unistd.h>
-    #include <sys/types.h>
-    #include <sys/socket.h>
+    // #include <stdio.h>
+    // #include <string.h>
+    // #include <stdlib.h>
+    // #include <errno.h>
+    // #include <unistd.h>
+    // #include <sys/types.h>
+    // #include <sys/socket.h>
 
     #include <math.h>
 
@@ -88,15 +88,18 @@ typedef struct zappy_s {
 } zappy_t;
 
 zappy_t *init_zappy(void);
+bool setup_zappy_content(zappy_t *zappy);
+
+void free_zappy(zappy_t *zappy);
 
 void create_server(zappy_t *zappy);
-void server_loop(zappy_t *zappy);
+bool server_loop(zappy_t *zappy);
 void client_deconnected(zappy_t *zappy, int client_socketn);
 
 void configure_socket_type(server_t *server);
 void bind_socket_to_server(server_t *server);
 
-void connect_client(zappy_t *zappy);
+bool connect_client(zappy_t *zappy);
 void clear_socket_set(server_t *server);
 void add_server_socket_to_set(server_t *server);
 void add_client_socket_to_set(server_t *server);
@@ -109,13 +112,13 @@ void setup_non_blocking_sockets(int client_socket);
 void get_client_team_name(zappy_t *zappy, int client_socket);
 void get_map_informations(zappy_t *zappy, int client_socket);
 
-void listen_clients(zappy_t *zappy);
+bool listen_clients(zappy_t *zappy);
 void *gui_get_generic_request(int client_socket, int size_to_read);
 
 void gui_handle_request(zappy_t *zappy);
-void ai_handle_request(zappy_t *zappy, int player_index);
+bool ai_handle_request(zappy_t *zappy, int player_index);
 
-void debug_server(zappy_t *zappy);
-void free_server(zappy_t *zappy);
+void debug_server(server_t *server);
+void free_server(server_t *server);
 
 #endif /* !SERVER_H_ */

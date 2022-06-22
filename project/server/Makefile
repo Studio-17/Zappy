@@ -17,19 +17,27 @@ DELETE_DIR	=	$(DELETE) -r
 
 MAIN_SOURCE	=	source/main.c			\
 
-SOURCE	=	source/server/communication/communication.c			\
-			source/server/communication/ai.c					\
-			source/server/communication/gui.c					\
-			source/server/server.c								\
-			source/server/connection/connect/client.c			\
-			source/server/connection/connect/greeting.c			\
-			source/server/connection/connect/server.c			\
-			source/server/connection/setup/setup.c				\
-			source/options/options.c							\
-			source/options/usage.c								\
-			source/zappy/map/map.c								\
-			source/zappy/map/resources.c						\
-			source/zappy/map/zappy.c						\
+SOURCE	=	source/server/communication/communication.c				\
+			source/server/communication/ai.c						\
+			source/server/communication/ai/forward_request.c		\
+			source/server/communication/ai/right_request.c			\
+			source/server/communication/ai/left_request.c			\
+			source/server/communication/ai/look_request.c			\
+			source/server/communication/ai/take_request.c			\
+			source/server/communication/ai/set_request.c			\
+			source/server/communication/ai/tools/response.c			\
+			source/server/communication/ai/tools/get_resource.c		\
+			source/server/communication/gui.c						\
+			source/server/server.c									\
+			source/server/connection/connect/client.c				\
+			source/server/connection/connect/greeting.c				\
+			source/server/connection/connect/server.c				\
+			source/server/connection/setup/setup.c					\
+			source/options/options.c								\
+			source/options/usage.c									\
+			source/zappy/map.c										\
+			source/zappy/resources.c								\
+			source/zappy/zappy.c									\
 
 TEST_SOURCE	=	../tests/test.c
 
@@ -40,6 +48,7 @@ OBJ	=	$(SOURCE:.c=.o)
 TEST_OBJ	=	$(TEST_SOURCE:.c=.o)
 
 INCLUDE_DIRS	+=	-I ../library/include/
+INCLUDE_DIRS	+=	-I ../library/include/protocol/
 INCLUDE_DIRS	+=	-I include/
 INCLUDE_DIRS	+=	-I include/server/
 INCLUDE_DIRS	+=	-I include/server/communication/
@@ -49,6 +58,7 @@ INCLUDE_DIRS	+=	-I include/server/client/
 INCLUDE_DIRS	+=	-I include/server/connection/
 INCLUDE_DIRS	+=	-I include/server/connection/connect/
 INCLUDE_DIRS	+=	-I include/server/connection/setup/
+INCLUDE_DIRS	+=	-I include/request/
 INCLUDE_DIRS	+=	-I include/errors/
 INCLUDE_DIRS	+=	-I include/options/
 INCLUDE_DIRS	+=	-I include/zappy/

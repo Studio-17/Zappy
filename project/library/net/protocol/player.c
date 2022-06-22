@@ -37,7 +37,10 @@ void post_response_player_connected(int socket, response_payload_player_connecte
     write(socket, &response, sizeof(response_payload_player_connected_t));
 }
 
-
+void post_response_data(int socket, void *response)
+{
+    write(socket, response, sizeof(response));
+}
 
 void post_response_player_position(int socket, response_payload_player_position_t response)
 {
