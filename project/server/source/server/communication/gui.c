@@ -9,7 +9,6 @@
 #include "protocol/greeting.h"
 
 #include "server/server.h"
-#include "server/communication/communication.h"
 #include "server/communication/request/request.h"
 
 static const gui_request_t gui_request_to_handle[] = {
