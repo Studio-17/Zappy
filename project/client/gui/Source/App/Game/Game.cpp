@@ -7,7 +7,14 @@
 
 #include "Game.hpp"
 
-Game::Game() : _tilesModel("Resources/Tiles/wall_side.obj"), _playersModel("Resources/Players/player.iqm"), _tilesTexture("Resources/Tiles/wall_side.png"), _playersAnimation("Resources/Players/player.iqm", 1)
+Game::Game(std::shared_ptr<Client> client) : _tilesModel("Resources/Tiles/wall_side.obj"), _playersModel("Resources/Players/player.iqm"), _tilesTexture("Resources/Tiles/wall_side.png"), _playersAnimation("Resources/Players/player.iqm", 1), AScene()
+{
+    _playersTextures.emplace_back("Resources/Players/cyan.png");
+    loadResourcesModels();
+    _client = client;
+}
+
+Game::Game() : _tilesModel("Resources/Tiles/wall_side.obj"), _playersModel("Resources/Players/player.iqm"), _tilesTexture("Resources/Tiles/wall_side.png"), _playersAnimation("Resources/Players/player.iqm", 1), AScene()
 {
     _playersTextures.emplace_back("Resources/Players/cyan.png");
     loadResourcesModels();
@@ -53,6 +60,10 @@ void Game::drawTiles()
 {
     for (auto &tile : _tiles)
         tile->draw();
+}
+
+void Game::drawPlayers()
+{
     for (auto &player : _players)
         player->draw();
 }
@@ -127,4 +138,16 @@ std::shared_ptr<Object::Tile> Game::getTileByPosition(Position const &position)
 void Game::updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &resources)
 {
     getTileByPosition(tilePosition)->setResources(resources);
+}
+
+void Game::draw()
+{
+    drawPlayers();
+    drawTiles();
+}
+
+Scenes Game::handleEvent()
+{
+    _nextScene = Scenes::GAME;
+    return _nextScene;
 }

@@ -34,6 +34,12 @@ void Client::setup()
     _server.sin_port = htons(_options->getPort());
 }
 
+bool Client::checkConnection()
+{
+    if (connect(_socket, (struct sockaddr *)&_server, sizeof(_server)) != 0)
+        throw ClientErrors("Connect failed");
+}
+
 void Client::connection()
 {
     if (connect(_socket, (struct sockaddr *)&_server, sizeof(_server)) != 0)

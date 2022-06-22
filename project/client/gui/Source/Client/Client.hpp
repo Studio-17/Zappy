@@ -46,6 +46,9 @@ class Client {
         std::pair<int, int> getMapDimension();
         EventsHandler _eventsHandler;
 
+
+        bool checkConnection();
+
     protected:
     private:
         int _socket;

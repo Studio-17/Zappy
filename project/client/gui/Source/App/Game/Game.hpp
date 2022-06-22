@@ -18,15 +18,22 @@
     #include "netlib.h"
     #include "protocol/player.h"
     #include "protocol/map.h"
+    #include "AScene.hpp"
+    #include "Client.hpp"
 
-class Game {
+class Game : public AScene {
     public:
+        Game(std::shared_ptr<Client> client);
         Game();
         ~Game();
+
+        Scenes handleEvent() override;
+        void draw() override;
 
         void sendMapSize(int width, int height);
         void setUpGameMap();
         void drawTiles();
+        void drawPlayers();
 
         void addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation);
         void updatePlayerPosition(int playerId, int x, int y);
@@ -55,6 +62,7 @@ class Game {
         std::vector<Object::Render::MyTexture> _playersTextures;
 
         Object::Render::MyAnimation _playersAnimation;
+        std::shared_ptr<Client> _client;
 };
 
 #endif /* !GAME_HPP_ */

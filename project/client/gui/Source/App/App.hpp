@@ -11,6 +11,7 @@
     #include <iostream>
     #include <functional>
     #include <map>
+    #include <unordered_map>
 
     #include "Window.hpp"
     #include "Camera.hpp"
@@ -18,6 +19,7 @@
     #include "Client.hpp"
     #include "Game.hpp"
     #include "IListener.hpp"
+    #include "IScene.hpp"
     #include "netlib.h"
 
 enum COMMANDS_GUI {
@@ -60,7 +62,7 @@ class App : public IListener {
 
     protected:
     private:
-        Client _client;
+        // Client _client;
         Options _options{};
         RayLib::Window _window;
         RayLib::CinematicCamera _camera;
@@ -69,6 +71,10 @@ class App : public IListener {
         int _mapHeight = 10;
         int _mapWidth = 10;
         std::string _mapDimension;
+
+        std::unordered_map<Scenes, std::shared_ptr<IScene>> _menuScenes; ///< Menu scenes
+        std::shared_ptr<Client> _client;
+
 };
 
 #endif /* !APP_HPP_ */

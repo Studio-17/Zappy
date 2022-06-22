@@ -6,7 +6,7 @@
 */
 
 #include "App.hpp"
-
+#include "MainMenu.hpp"
 
 extern "C" {
     #include "netlib.h"
@@ -24,7 +24,7 @@ static std::vector<std::pair<COMMANDS_GUI, void(App::*)(char *)>> _commandsMap =
     std::make_pair(CONTENT_MAP, &App::handleUpdateContentMap)
 };
 
-App::App(std::string const &name, int width, int height) : _window(width, height, name), _camera(), _client(), _game()
+App::App(std::string const &name, int width, int height) : _window(width, height, name), _camera(), _client(std::make_shared<Client>()), _game()
 {
     _camera.setPosition(Position(65, 230, 266));
     _camera.setTarget(Position(65, 0, 65));
@@ -39,9 +39,11 @@ App::~App()
 
 void App::startApp()
 {
+    _menuScenes.emplace(Scenes::MAIN_MENU, std::make_shared<MainMenu>(_client));
+    _menuScenes.emplace(Scenes::GAME, std::make_shared<Game>(_client));
     try {
-        _client.setup();
-        _client.connection();
+        _client->setup();
+        _client->connection();
     } catch (ClientErrors const &ClientError) {
         std::cerr << ClientError.what() << std::endl;
     }
@@ -53,8 +55,8 @@ void App::startConnection()
 {
     std::pair<int, int> mapDimension(0, 0);
 
-    _client._eventsHandler.addNewListener(this);
-    mapDimension = _client.getMapDimension();
+    _client->_eventsHandler.addNewListener(this);
+    mapDimension = _client->getMapDimension();
     _game.sendMapSize(mapDimension.first, mapDimension.second);
     _game.setUpGameMap();
 }
@@ -62,7 +64,7 @@ void App::startConnection()
 void App::startMainLoop()
 {
     while (!_window.windowShouldClose()) {
-        _client.listen();
+        _client->listen();
         draw();
     }
 }
@@ -80,12 +82,12 @@ void App::draw()
 
 void App::setupOptions(int ac, char **av)
 {
-    _client.setupOptions(ac, av);
+    _client->setupOptions(ac, av);
 }
 
 void App::handleOptions()
 {
-    _client.handleOptions();
+    _client->handleOptions();
 }
 
 void App::updateInformations(char *data, int type)
