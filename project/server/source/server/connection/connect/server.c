@@ -20,7 +20,7 @@ void bind_socket_to_server(server_t *server)
         perror("bind");
         exit(EXIT_FAILURE);
     }
-    printf("listener on port %d", server->port);
+
     if (listen(server->server_socket->server, server->server_socket->max_client) < 0) {
         perror("listen");
         exit(EXIT_FAILURE);

@@ -64,13 +64,15 @@ static void create_player(zappy_t *zappy, int socket)
         .level = 1,
         .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height},
         .orientation = NORTH,
-        // .resource_inventory = NULL,
+        .resource_inventory = malloc(sizeof(inventory_resource_t) * NB_ITEMS),
     };
 
-    // for (int index = 0; index < NB_ITEMS; index += 1) {
-    //     player.resource_inventory[index].resource = (enum ITEM)index;
-    //     player.resource_inventory[index].quantity = 1;
-    // }
+    player.resource_inventory[FOOD].resource = FOOD;
+    player.resource_inventory[FOOD].quantity = 10;
+    for (int index = 1; index < NB_ITEMS; index += 1) {
+        player.resource_inventory[index].resource = (enum ITEM)index;
+        player.resource_inventory[index].quantity = 0;
+    }
 
     zappy->client[zappy->server->clients] = (ai_client_t){socket, zappy->server->clients, AI, player};
 }

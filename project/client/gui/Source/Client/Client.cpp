@@ -52,16 +52,16 @@ void Client::handle()
     std::string graphic = "GRAPHIC";
 
     welcomeString = getRequest(_socket);
-    std::cout << welcomeString << std::endl;
+    std::cout << welcomeString;
 
     postRequest(_socket, graphic);
 
     clientNumString = getRequest(_socket);
-    std::cout << clientNumString << std::endl;
+    std::cout << clientNumString;
 
 
     coordString = getRequest(_socket);
-    std::cout << coordString << std::endl;
+    std::cout << coordString;
     _mapDimension = coordString;
 
     // UNBLOCK SOCKET
@@ -76,7 +76,7 @@ void Client::postRequest(int socketId, std::string const &request)
 
 std::string Client::getRequest(int socketId)
 {
-    std::cout << "getRequest" << std::endl;
+    // std::cout << "getRequest";
     std::string response;
     response.resize(1024);
     int result = 0;

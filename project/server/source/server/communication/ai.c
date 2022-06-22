@@ -80,7 +80,6 @@ void ai_right_request(zappy_t *zappy, void *data, int player_index)
 {
     int socket = zappy->server->socket_descriptor->socket_descriptor;
 
-    printf("position of player before: %dx, %dy\n", zappy->client[player_index].player.position.x, zappy->client[player_index].player.position.y);
     zappy->client[player_index].player.orientation += 1;
     if (zappy->client[player_index].player.orientation > WEST)
         zappy->client[player_index].player.orientation = NORTH;
@@ -91,7 +90,6 @@ void ai_left_request(zappy_t *zappy, void *data, int player_index)
 {
     int socket = zappy->server->socket_descriptor->socket_descriptor;
 
-    printf("position of player before: %dx, %dy\n", zappy->client[player_index].player.position.x, zappy->client[player_index].player.position.y);
     if (zappy->client[player_index].player.orientation < NORTH)
         zappy->client[player_index].player.orientation = WEST;
     else
@@ -157,9 +155,10 @@ void ai_look_request(zappy_t *zappy, void *data, int player_index)
     dprintf(socket, "]\n");
 }
 
-static char *get_resource_from_request(char *target)
+static int get_resource_from_request(char *target)
 {
     char **request_content = my_strtok(target, ' ');
+    int length = strlen(request_content[1]);
     char *resource_set[] = {
         "Food",
         "Linemate",
@@ -171,24 +170,33 @@ static char *get_resource_from_request(char *target)
         NULL
     };
 
+
     for (int index = 0; resource_set[index]; index += 1) {
-        if (strcmp(request_content[1], resource_set[index]) == 0) {
-            printf("Took %s\n", resource_set[index]);
-            return (resource_set[index]);
+
+        if (strncmp(request_content[1], resource_set[index], length - 2) == 0) {
+            return (index);
         }
+
     }
-    return (NULL);
+    return (-1);
 }
 
 void ai_take_request(zappy_t *zappy, void *data, int player_index)
 {
     char *request = (char *)data;
-    char *resource = get_resource_from_request(request);
+    enum ITEM resource = (enum ITEM)get_resource_from_request(request);
 
-    if (resource == NULL)
+    if (resource == -1)
         ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, false);
     else {
-        // code here handler
+
+        zappy->client[player_index].player.resource_inventory[resource].quantity += 1;
+
+        int x = zappy->client[player_index].player.position.x;
+        int y = zappy->client[player_index].player.position.y;
+
+        zappy->map->tiles[x][y].resources[resource].quantity -= 1;
+
         ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, true);
     }
 }
@@ -196,79 +204,88 @@ void ai_take_request(zappy_t *zappy, void *data, int player_index)
 void ai_set_request(zappy_t *zappy, void *data, int player_index)
 {
     char *request = (char *)data;
-    char *resource = get_resource_from_request(request);
+    enum ITEM resource = (enum ITEM)get_resource_from_request(request);
 
-    if (resource == NULL)
+    if (resource == -1)
         ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, false);
     else {
-        // code here handler
-        ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, true);
+
+        if (zappy->client[player_index].player.resource_inventory[resource].quantity > 0) {
+            zappy->client[player_index].player.resource_inventory[resource].quantity -= 1;
+
+            int x = zappy->client[player_index].player.position.x;
+            int y = zappy->client[player_index].player.position.y;
+
+            zappy->map->tiles[x][y].resources[resource].quantity += 1;
+            ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, true);
+        } else
+            ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, false);
     }
 }
 
 static const ai_request_t ai_request_to_handle[] = {
     {
-        .request = "Forward\n",
+        .request = "Forward",
         .command = FORWARD,
         .handler = &ai_forward_request
     },
     {
-        .request = "Right\n",
+        .request = "Right",
         .command = RIGHT,
         .handler = &ai_right_request
     },
     {
-        .request = "Left\n",
+        .request = "Left",
         .command = LEFT,
         .handler = &ai_left_request
     },
     {
-        .request = "Look\n",
+        .request = "Look",
         .command = LOOK,
         .handler = &ai_look_request
     },
     {
-        .request = "Inventory\n",
+        .request = "Inventory",
         .command = INVENTORY,
         .handler = &ai_base_request
     },
     {
-        .request = "Broadcast text\n",
+        .request = "Broadcast text",
         .command = BROADCAST_TEXT,
         .handler = &ai_base_request
     },
     {
-        .request = "Connect_nbr\n",
+        .request = "Connect_nbr",
         .command = CONNECT_NBR,
         .handler = &ai_base_request
     },
     {
-        .request = "Fork\n",
+        .request = "Fork",
         .command = FORK,
         .handler = &ai_base_request
     },
     {
-        .request = "Eject\n",
+        .request = "Eject",
         .command = EJECT,
         .handler = &ai_base_request
     },
     {
-        .request = "-\n",
+        .request = "-",
         .command = DEATH,
         .handler = &ai_base_request
     },
     {
-        .request = "Take\n",
+        .request = "Take",
         .command = TAKE_OBJECT,
         .handler = &ai_take_request
     },
     {
-        .request = "Set\n",
+        .request = "Set",
         .command = SET_OBJECT,
         .handler = &ai_set_request
     },
     {
-        .request = "Incantation\n",
+        .request = "Incantation",
         .command = INCANTATION,
         .handler = &ai_base_request
     },
@@ -276,8 +293,9 @@ static const ai_request_t ai_request_to_handle[] = {
 
 char *ai_get_generic_request(int client_socket, zappy_t *zappy, int player_index)
 {
-    char *data = malloc(sizeof(16));
-    int read_value = read(client_socket, data, sizeof(data));
+    char data[24];
+    bzero(data, sizeof(data));
+    int read_value = read(client_socket, &data, sizeof(data));
 
     if (read_value < 0)
         perror("ai_get_generic_request read");
@@ -285,7 +303,11 @@ char *ai_get_generic_request(int client_socket, zappy_t *zappy, int player_index
         close(client_socket);
         zappy->server->server_socket->client[player_index] = 0;
     }
-    return (data);
+
+    char *buffer = malloc(sizeof(data));
+    strcpy(buffer, data);
+
+    return (buffer);
 }
 
 void ai_handle_request(zappy_t *zappy, int player_index)
@@ -293,10 +315,13 @@ void ai_handle_request(zappy_t *zappy, int player_index)
     char *request_data = ai_get_generic_request(zappy->server->socket_descriptor->socket_descriptor, zappy, player_index);
 
     for (int index = 0; index < NB_COMMANDS_AI; index += 1) {
-        if (strncmp(request_data, ai_request_to_handle[index].request, strlen(ai_request_to_handle[index].request) - 1) == 0) {
+
+        if (strncmp(request_data, ai_request_to_handle[index].request, strlen(ai_request_to_handle[index].request)) == 0) {
+
+            printf("handler called: %s\n", ai_request_to_handle[index].request);
+
             ai_request_to_handle[index].handler(zappy, request_data, player_index);
             return;
         }
-
     }
 }
