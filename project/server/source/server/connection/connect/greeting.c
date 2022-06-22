@@ -71,7 +71,6 @@ static void post_map_dimensions(zappy_t *zappy, int socket)
 bool greeting_protocol(zappy_t *zappy, int client_socket)
 {
     post_welcome(zappy, client_socket);
-    printf("Greetin protocol socket: %d\n", client_socket);
     bool is_gui = false;
 
     if (get_team_name(zappy, client_socket, &is_gui)) {

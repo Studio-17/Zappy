@@ -41,7 +41,7 @@ typedef struct options_s {
 } options_t;
 
 void setup_options(options_t *options);
-bool get_options(int ac, char const * const *av, options_t *options);
+bool get_options(int ac, char * const *av, options_t *options);
 bool handle_options(options_t *options);
 void debug_options(options_t *options);
 void free_options(options_t *options);

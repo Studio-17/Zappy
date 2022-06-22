@@ -21,7 +21,7 @@ void sigint_handler(__attribute__((unused)) int sig)
     exit(0);
 }
 
-int main(int ac, char const * const *av)
+int main(int ac, char * const *av)
 {
     zappy_t *zappy = init_zappy();
 

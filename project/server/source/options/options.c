@@ -21,7 +21,7 @@ void setup_options(options_t *options)
     options->freq = 100;
 }
 
-bool get_options(int ac, char const * const *av, options_t *options)
+bool get_options(int ac, char * const *av, options_t *options)
 {
     int opt = 0;
 

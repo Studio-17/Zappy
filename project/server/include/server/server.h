@@ -45,6 +45,26 @@ enum ITEM {
     NB_ITEMS,
 };
 
+typedef struct inventory_resource_s {
+    enum ITEM resource;
+    int quantity;
+} inventory_resource_t;
+
+typedef struct player_t {
+    int id;
+    int level;
+    position_t position;
+    enum ORIENTATION orientation;
+    inventory_resource_t *resource_inventory;
+} player_t;
+
+typedef struct ai_client_s {
+    int socket;
+    int client_nb;
+    enum CLIENT_TYPE type;
+    player_t player;
+} ai_client_t;
+
 typedef struct resources_s {
     char *name;
     enum ITEM item;
