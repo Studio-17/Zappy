@@ -45,6 +45,24 @@ enum ITEM {
     NB_ITEMS,
 };
 
+#define LEVEL_MAX 4
+
+typedef struct elevation_resources_s {
+    enum ITEM type;
+    int quantity_needed;
+} elevation_resources_t;
+
+typedef struct elevation_step_s {
+    int from_level;
+    int to_level;
+    int player_needed;
+    elevation_resources_t *resource;
+} elevation_step_t;
+
+typedef struct elevations_s {
+    elevation_step_t *elevation_step;
+} elevations_t;
+
 typedef struct inventory_resource_s {
     enum ITEM resource;
     int quantity;
@@ -105,6 +123,7 @@ typedef struct zappy_s {
     map_t *map;
     ai_client_t *client;
     resources_t *resources;
+    elevations_t *elevation;
 } zappy_t;
 
 zappy_t *init_zappy(void);

@@ -21,6 +21,57 @@ void sigint_handler(__attribute__((unused)) int sig)
     exit(0);
 }
 
+static void initialize_elevation_processus(zappy_t *zappy)
+{
+    elevations_t *elevation_processus = malloc(sizeof(elevation_step_t) * LEVEL_MAX);
+
+    for (int index = 0; index < LEVEL_MAX; index += 1) {
+        elevation_processus[index].elevation_step = malloc(sizeof(elevation_step_t));
+        elevation_processus[index].elevation_step->resource = malloc(sizeof(elevation_resources_t) * NB_ITEMS);
+
+        // elevation_processus[index].elevation_step->from_level = 1;
+        // elevation_processus[index].elevation_step->to_level = 2;
+        // elevation_processus[index].elevation_step->player_needed = 1;
+
+        // for (int resource = 0; resource < NB_ITEMS; resource += 1) {
+        //     elevation_processus[index].elevation_step->resource[index].type = (enum ITEM)index;
+        //     elevation_processus[index].elevation_step->resource[index].quantity_needed = -1;
+        // }
+    }
+
+    elevation_processus[0].elevation_step->from_level = 1;
+    elevation_processus[0].elevation_step->to_level = 2;
+    elevation_processus[0].elevation_step->player_needed = 1;
+    elevation_processus[0].elevation_step->resource[LINEMATE].quantity_needed = 1;
+    elevation_processus[0].elevation_step->resource[DERAUMERE].quantity_needed = 0;
+    elevation_processus[0].elevation_step->resource[SIBUR].quantity_needed = 0;
+    elevation_processus[0].elevation_step->resource[MENDIANE].quantity_needed = 0;
+    elevation_processus[0].elevation_step->resource[PHIRAS].quantity_needed = 0;
+    elevation_processus[0].elevation_step->resource[THYSTAME].quantity_needed = 0;
+
+    elevation_processus[1].elevation_step->from_level = 2;
+    elevation_processus[1].elevation_step->to_level = 3;
+    elevation_processus[1].elevation_step->player_needed = 2;
+    elevation_processus[1].elevation_step->resource[LINEMATE].quantity_needed = 1;
+    elevation_processus[1].elevation_step->resource[DERAUMERE].quantity_needed = 1;
+    elevation_processus[1].elevation_step->resource[SIBUR].quantity_needed = 1;
+    elevation_processus[1].elevation_step->resource[MENDIANE].quantity_needed = 0;
+    elevation_processus[1].elevation_step->resource[PHIRAS].quantity_needed = 0;
+    elevation_processus[1].elevation_step->resource[THYSTAME].quantity_needed = 0;
+
+    elevation_processus[2].elevation_step->from_level = 3;
+    elevation_processus[2].elevation_step->to_level = 4;
+    elevation_processus[2].elevation_step->player_needed = 2;
+    elevation_processus[2].elevation_step->resource[LINEMATE].quantity_needed = 2;
+    elevation_processus[2].elevation_step->resource[DERAUMERE].quantity_needed = 0;
+    elevation_processus[2].elevation_step->resource[SIBUR].quantity_needed = 1;
+    elevation_processus[2].elevation_step->resource[MENDIANE].quantity_needed = 0;
+    elevation_processus[2].elevation_step->resource[PHIRAS].quantity_needed = 2;
+    elevation_processus[2].elevation_step->resource[THYSTAME].quantity_needed = 0;
+
+    zappy->elevation = elevation_processus;
+}
+
 int main(int ac, char * const *av)
 {
     zappy_t *zappy = init_zappy();
@@ -46,6 +97,9 @@ int main(int ac, char * const *av)
         number_of_resources += zappy->resources[index].quantity;
     zappy->map->ratio = number_of_resources / zappy->map->size;
     fill_map(zappy->map, zappy->resources);
+
+    zappy->elevation = malloc(sizeof(elevations_t));
+    initialize_elevation_processus(zappy);
 
     create_server(zappy);
     server_loop(zappy);
