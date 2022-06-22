@@ -33,6 +33,8 @@ file(GLOB SOURCES
     Source/App/Object/Tile/*.cpp
     Source/App/Game/*.cpp
     Source/Events/*.cpp
+    Source/App/Scenes/*.cpp
+    Source/App/Scenes/Menu/*.cpp
 )
 
 # specify the headers
@@ -56,6 +58,8 @@ include_directories(
     Source/App/Object/Tile/
     Source/App/Game/
     Source/App/Events/
+    Source/App/Scenes/
+    Source/App/Scenes/Menu
 )
 
 add_executable(zappy_gui ${SOURCES})
