@@ -118,8 +118,10 @@ char *ai_get_generic_request(int client_socket, zappy_t *zappy, int player_index
 
 static void execute_player_request(list_t list)
 {
+    data_t *request_data = malloc(sizeof(data_t));
+
     while (list_get_size(list) != 0) {
-        data_t *request_data = malloc(sizeof(data_t));
+
         request_data = list_get_elem_at_front(list);
 
         clock_t timer = clock();
@@ -151,22 +153,22 @@ bool ai_handle_request(zappy_t *zappy, int player_index)
 
             printf("handler called: %s\n", ai_request_to_handle[index].request);
 
-            data_t request_data = {
-                .request = ai_request_to_handle[index].handler,
-                .arguments = {
-                    .structure = zappy,
-                    .data = request_command,
-                    .index = player_index,
-                },
-                .request_time = ai_request_to_handle[index].time_limit,
-                .clock = clock(),
-            };
+            // data_t request_data = {
+            //     .request = ai_request_to_handle[index].handler,
+            //     .arguments = {
+            //         .structure = zappy,
+            //         .data = request_command,
+            //         .index = player_index,
+            //     },
+            //     .request_time = ai_request_to_handle[index].time_limit,
+            //     .clock = clock(),
+            // };
 
-            list_add_elem_at_back(&zappy->client[player_index].list, &request_data);
+            // list_add_elem_at_back(&zappy->client[player_index].list, &request_data);
 
-            execute_player_request(zappy->client[player_index].list);
+            // execute_player_request(zappy->client[player_index].list);
 
-            // ai_request_to_handle[index].handler(zappy, request_command, player_index);
+            ai_request_to_handle[index].handler(zappy, request_command, player_index);
 
             return true;
         }
