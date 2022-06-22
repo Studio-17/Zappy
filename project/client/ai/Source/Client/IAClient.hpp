@@ -6,19 +6,23 @@
 */
 
 #ifndef IACLIENT_HPP_
-#define IACLIENT_HPP_
+    #define IACLIENT_HPP_
 
-#include <cstring>
+    #include <cstring>
 
-#include <memory>
+    #include <memory>
 
-#include <netdb.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
+    #include <netdb.h>
+    #include <sys/socket.h>
+    #include <arpa/inet.h>
+    #include <map>
+    #include <vector>
+    #include<iostream>
+    #include<algorithm>
 
-#include "Errors/ErrorsModules/Client/ClientErrors.hpp"
+    #include "Errors/ErrorsModules/Client/ClientErrors.hpp"
 
-#include "Options/IAOptions.hpp"
+    #include "Options/IAOptions.hpp"
 
     class IAClient {
         public:
