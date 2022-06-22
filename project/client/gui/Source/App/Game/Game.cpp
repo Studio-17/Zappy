@@ -116,9 +116,10 @@ void Game::updateContentMap(response_payload_content_tile_t **content)
 
 std::shared_ptr<Object::Tile> Game::getTileByPosition(Position const &position)
 {
-    for (auto &tile : _tiles)
+    for (auto &tile : _tiles) {
         if (tile->getPosition() == position)
             return (tile);
+    }
     return nullptr;
 }
 

@@ -13,7 +13,7 @@ Object::Resource::Resource(Object::Render::MyModel &pathToModel, Object::Render:
 
 Object::Resource::Resource(Object::Render::MyModel &pathToModel, Position const &position, Object::MAP_OBJECTS type, int quantity) : AThreeDimensionObject(pathToModel, position, type), _quantity(quantity)
 {
-
+    type == MAP_OBJECTS::FOOD ? _scale = 0.1 : _scale = 4;
 }
 
 Object::Resource::~Resource()
@@ -27,7 +27,7 @@ void Object::Resource::draw()
         getPosition().getY(),
         getPosition().getZ()
     };
-    if (_isEnable)
+    if (_isEnable && _quantity > 0)
         DrawModel(_model, modelPosition, _scale, WHITE);
 }
 

@@ -9,9 +9,10 @@
 
 #include "minilib.h"
 
-char *get_resource_from_request(char *target)
+int get_resource_from_request(char *target)
 {
     char **request_content = my_strtok(target, ' ');
+    int length = strlen(request_content[1]);
     char *resource_set[] = {
         "Food",
         "Linemate",
@@ -27,11 +28,8 @@ char *get_resource_from_request(char *target)
         return (NULL);
     if (my_arrlen(request_content) != 2)
         return (NULL);
-    for (int index = 0; resource_set[index]; index += 1) {
-        if (strcmp(request_content[1], resource_set[index]) == 0) {
-            printf("Took %s\n", resource_set[index]);
-            return (resource_set[index]);
-        }
-    }
-    return (NULL);
+    for (int index = 0; resource_set[index]; index += 1)
+        if (strncmp(request_content[1], resource_set[index], length - 2) == 0)
+            return (index);
+    return (-1);
 }

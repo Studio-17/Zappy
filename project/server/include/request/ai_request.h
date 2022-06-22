@@ -16,10 +16,11 @@
     void ai_look_request(zappy_t *zappy, void *data, int player_index);
     void ai_take_request(zappy_t *zappy, void *data, int player_index);
     void ai_set_request(zappy_t *zappy, void *data, int player_index);
+    void ai_incantation_request(zappy_t *zappy, void *data, int player_index);
 
 
     // Tools //
-    char *get_resource_from_request(char *target);
+    int get_resource_from_request(char *target);
     void ai_response_ok_ko(int socket, bool status);
 
 

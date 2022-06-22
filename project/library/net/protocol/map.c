@@ -7,6 +7,10 @@
 
 #include "protocol/map.h"
 
+void post_response_content_tile(int socket, response_payload_content_tile_t response)
+{
+    write(socket, &response, sizeof(response_payload_content_tile_t));
+}
 
 void post_response_content_map(int socket, response_payload_content_map_t response)
 {
