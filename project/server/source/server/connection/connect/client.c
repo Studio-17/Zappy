@@ -33,9 +33,45 @@ static void send_new_player_connected_to_gui(zappy_t *zappy, int player_index)
     });
 }
 
+static void send_content_map_tile(zappy_t *zappy, int player_index)
+{
+    post_header(zappy->server->gui, (payload_header_t){
+        .id = SERVER,
+        .size = sizeof(response_payload_content_tile_t),
+        .type = CONTENT_TILE,
+    });
+
+    int x = 0;
+    int y = 0;
+
+    post_response_content_tile(zappy->server->gui, (response_payload_content_tile_t){
+        .position.x = x,
+        .position.y = y,
+        .food = zappy->map->tiles[x][y].resources[FOOD].quantity,
+        .linemate = zappy->map->tiles[x][y].resources[LINEMATE].quantity,
+        .deraumere = zappy->map->tiles[x][y].resources[DERAUMERE].quantity,
+        .sibur = zappy->map->tiles[x][y].resources[SIBUR].quantity,
+        .mendiane = zappy->map->tiles[x][y].resources[MENDIANE].quantity,
+        .phiras = zappy->map->tiles[x][y].resources[PHIRAS].quantity,
+        .thystame = zappy->map->tiles[x][y].resources[THYSTAME].quantity,
+    });
+}
+
 static void create_player(zappy_t *zappy, int socket)
 {
-    player_t player = (player_t) {.id = zappy->server->clients, .level = 1, .orientation = 0, .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height}};
+    player_t player = (player_t){
+        .id = zappy->server->clients,
+        .level = 1,
+        .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height},
+        .orientation = NORTH,
+        .resource_inventory = NULL,
+    };
+
+    // for (int index = 0; index < NB_ITEMS; index += 1) {
+    //     player.resource_inventory[index].resource = (enum ITEM)index;
+    //     player.resource_inventory[index].quantity = 1;
+    // }
+
     zappy->client[zappy->server->clients] = (ai_client_t){socket, zappy->server->clients, AI, player};
 }
 
