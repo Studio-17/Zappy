@@ -39,8 +39,8 @@ bool setup_zappy_content(zappy_t *zappy)
         return false;
     if (!setup_elevation_processus(zappy))
         return false;
-    zappy->map = create_map(10, 10);
-    zappy->resources = setup_resources(10, 10);
+    zappy->map = create_map(zappy->options->width, zappy->options->height);
+    zappy->resources = setup_resources(zappy->options->width, zappy->options->height);
     if (!setup_server(zappy->server, zappy->options))
         return false;
     return true;
