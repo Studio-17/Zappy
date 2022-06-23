@@ -42,22 +42,27 @@
             std::map<std::string, int> getTimeLimit() { return _timeLimit; };
             void setTimeLimit(std::map<std::string, int> timeLimit) { _timeLimit = timeLimit; };
 
+            void createMap(int mapHeight, int mapWidth);
+            std::map<std::string, int> createTile();
+
             std::vector<std::vector<std::map<std::string, int>>> getContentOfMap() { return _contentOfMap; };
 
-            void createMap(int mapHeight, int mapWidth); // Pas fait
-            std::map<std::string, int> createTile(); // Pas fait
-            void setContentTile(std::map<std::string, int>, int x, int y); // Pas fait
+            void setContentTile(std::map<std::string, int> contentOfTile, int x, int y) { _contentOfMap.at(y).at(x) = contentOfTile; };
+            std::map<std::string, int> getContentOfATile(int x, int y) { return _contentOfMap.at(y).at(x); };
 
-            void setupOptions(int ac, char **av);
-            void handleOptions();
+            void PutAResourceDown(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource)++; };
+            void GrabAResource(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource)--; };
 
-            void postRequest(int socketId, std::string const &request);
+            void setupOptions(int ac, char **av) { _options->setupOptions(ac, av); };
+            void handleOptions() { _options->handleOptions(); };
+
+            void postRequest(int socketId, std::string const &request) { dprintf(socketId, "%s\n", request.c_str()); };
             std::string getRequest(int socketId);
 
             std::pair<int, int> getMapSize() { return _mapSize; };
             void setMapSize(std::string str);
 
-            int getSocket() const;
+            int getSocket() const { return _socket; };
 
             std::string handleAction(std::string const &action);
 
