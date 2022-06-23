@@ -61,7 +61,7 @@ static const ai_request_t ai_request_to_handle[] = {
     {
         .request = "Eject",
         .command = EJECT,
-        .handler = &ai_base_request
+        .handler = &ai_eject_request
     },
     {
         .request = "-",
