@@ -11,6 +11,8 @@
     #include <utility>
 
     #include "AThreeDimensionObject.hpp"
+    #include "Text.hpp"
+    #include "Camera.hpp"
 
 namespace Object {
     /**
@@ -46,7 +48,7 @@ namespace Object {
              * @param position 3 dimensional Position
              * @param type map object type
              */
-            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation, std::string teamName);
+            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation, std::string teamName, std::shared_ptr<RayLib::CinematicCamera> camera);
             /**
              * @brief Destroy the Player object
              */
@@ -157,6 +159,7 @@ namespace Object {
             std::vector<std::pair<PLAYER_RESOURCES, int>> _inventory;
             ORIENTATION _playerOrientation;
             std::string _teamName;
+            std::shared_ptr<RayLib::CinematicCamera> _camera;
     };
 }
 
