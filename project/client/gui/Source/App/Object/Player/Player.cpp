@@ -16,7 +16,7 @@ Object::Player::Player(std::pair<std::string, std::string> const &pathToResource
     _level = 1;
 }
 
-Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation, std::string teamName) :
+Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation, std::string teamName, std::shared_ptr<RayLib::CinematicCamera> camera) :
     AThreeDimensionObject(pathToModel, pathToResources, pathToAnimation, numberOfAnimations, position, type)
 {
     _scale = 7.0f;
@@ -25,6 +25,7 @@ Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyT
     _level = 1;
     _playerOrientation = playerOrientation;
     _teamName = teamName;
+    _camera = camera;
     setOrientation(_playerOrientation);
 }
 
@@ -66,6 +67,10 @@ void Object::Player::setOrientation(Object::ORIENTATION orientation)
 
 void Object::Player::draw()
 {
+    Vector2 textPosition = GetWorldToScreen((Vector3){_position.getX(), _position.getY() + 30, _position.getZ()}, _camera->getCamera());
+    _camera->endMode3D();
+    DrawText(_teamName.c_str(), (int)textPosition.x - MeasureText(_teamName.c_str(), 20)/2, (int)textPosition.y, 20, BLACK);
+    _camera->startMode3D();
     if (_isEnable)
         DrawModel(_model, getPosition().getVector3(), _scale, WHITE);
 }
