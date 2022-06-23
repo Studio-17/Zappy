@@ -14,48 +14,10 @@
 
 #include <fcntl.h>
 
+#include "gui_update.h"
+
 #include "server/server.h"
 #include "server/communication/request/request.h"
-
-static void send_new_player_connected_to_gui(zappy_t *zappy, int player_index)
-{
-    post_header(zappy->server->gui, (payload_header_t){
-        .id = SERVER,
-        .size = sizeof(response_payload_player_connected_t),
-        .type = PLAYER_CONNECTED}
-    );
-
-    post_response_player_connected(zappy->server->gui, (response_payload_player_connected_t){
-        .id = player_index,
-        .level = zappy->client[player_index].player.level,
-        .orientation = zappy->client[player_index].player.orientation,
-        .position = zappy->client[player_index].player.position,
-    });
-}
-
-static void send_content_map_tile(zappy_t *zappy, int player_index)
-{
-    post_header(zappy->server->gui, (payload_header_t){
-        .id = SERVER,
-        .size = sizeof(response_payload_content_tile_t),
-        .type = CONTENT_TILE,
-    });
-
-    int x = 4;
-    int y = 4;
-
-    post_response_content_tile(zappy->server->gui, (response_payload_content_tile_t){
-        .position.x = x,
-        .position.y = y,
-        .food = 0,
-        .linemate = 0,
-        .deraumere = 0,
-        .sibur = 0,
-        .mendiane = 0,
-        .phiras = 0,
-        .thystame = 1,
-    });
-}
 
 static void create_player(zappy_t *zappy, int socket)
 {
@@ -64,6 +26,7 @@ static void create_player(zappy_t *zappy, int socket)
         .level = 1,
         .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height},
         .orientation = NORTH,
+        .elevation_status = NONE,
         .resource_inventory = malloc(sizeof(inventory_resource_t) * NB_ITEMS),
     };
 
@@ -104,7 +67,7 @@ bool connect_client(zappy_t *zappy)
 
             zappy->server->clients += 1;
             if (zappy->server->is_gui_connected)
-                send_new_player_connected_to_gui(zappy, saved_index);
+                update_player_connected(zappy, saved_index);
         } else {
             int cpt = 0;
             printf("%d, %d\n", zappy->options->height, zappy->options->width);
