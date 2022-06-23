@@ -56,7 +56,7 @@ class Game : public AScene {
         void updatePlayerLevel(int playerId, int level);
         void updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &inventory);
         void updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &resources);
-        void updateContentMap(response_payload_content_tile_t **content);
+        void updateContentMap(response_payload_content_tile_t *content);
 
         void handleAddPlayer(char *data);
         void handleUpdatePlayerPosition(char *data);

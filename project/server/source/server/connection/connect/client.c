@@ -14,48 +14,10 @@
 
 #include <fcntl.h>
 
+#include "gui_update.h"
+
 #include "server/server.h"
 #include "server/communication/request/request.h"
-
-static void send_new_player_connected_to_gui(zappy_t *zappy, int player_index)
-{
-    post_header(zappy->server->gui, (payload_header_t){
-        .id = SERVER,
-        .size = sizeof(response_payload_player_connected_t),
-        .type = PLAYER_CONNECTED}
-    );
-
-    post_response_player_connected(zappy->server->gui, (response_payload_player_connected_t){
-        .id = player_index,
-        .level = zappy->client[player_index].player.level,
-        .orientation = zappy->client[player_index].player.orientation,
-        .position = zappy->client[player_index].player.position,
-    });
-}
-
-static void send_content_map_tile(zappy_t *zappy, int player_index)
-{
-    post_header(zappy->server->gui, (payload_header_t){
-        .id = SERVER,
-        .size = sizeof(response_payload_content_tile_t),
-        .type = CONTENT_TILE,
-    });
-
-    int x = 4;
-    int y = 4;
-
-    post_response_content_tile(zappy->server->gui, (response_payload_content_tile_t){
-        .position.x = x,
-        .position.y = y,
-        .food = 0,
-        .linemate = 0,
-        .deraumere = 0,
-        .sibur = 0,
-        .mendiane = 0,
-        .phiras = 0,
-        .thystame = 1,
-    });
-}
 
 static void create_player(zappy_t *zappy, int socket)
 {
@@ -64,6 +26,7 @@ static void create_player(zappy_t *zappy, int socket)
         .level = 1,
         .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height},
         .orientation = NORTH,
+        .elevation_status = NONE,
         .resource_inventory = malloc(sizeof(inventory_resource_t) * NB_ITEMS),
     };
 
@@ -104,39 +67,32 @@ bool connect_client(zappy_t *zappy)
 
             zappy->server->clients += 1;
             if (zappy->server->is_gui_connected)
-                send_new_player_connected_to_gui(zappy, saved_index);
+                update_player_connected(zappy, saved_index);
         } else {
-            // response_payload_content_tile_t **map_tiles = malloc(sizeof(response_payload_content_tile_t) * zappy->options->height);
-            // for (int map_height = 0; map_height < zappy->options->height; map_height += 1) {
-
-            //     map_tiles[map_height] = malloc(sizeof(response_payload_content_tile_t) * zappy->options->width);
-
-            //     for (int map_width = 0; map_width < zappy->options->width; map_width += 1) {
-
-            //         map_tiles[map_height][map_width].position.x = map_width;
-            //         map_tiles[map_height][map_width].position.y = map_height;
-            //         map_tiles[map_height][map_width].food = zappy->map->tiles[map_height][map_width].resources[FOOD].quantity;
-            //         map_tiles[map_height][map_width].linemate = zappy->map->tiles[map_height][map_width].resources[LINEMATE].quantity;
-            //         map_tiles[map_height][map_width].deraumere = zappy->map->tiles[map_height][map_width].resources[DERAUMERE].quantity;
-            //         map_tiles[map_height][map_width].sibur = zappy->map->tiles[map_height][map_width].resources[SIBUR].quantity;
-            //         map_tiles[map_height][map_width].mendiane = zappy->map->tiles[map_height][map_width].resources[MENDIANE].quantity;
-            //         map_tiles[map_height][map_width].phiras = zappy->map->tiles[map_height][map_width].resources[PHIRAS].quantity;
-            //         map_tiles[map_height][map_width].thystame = zappy->map->tiles[map_height][map_width].resources[THYSTAME].quantity;
-
-            //     }
-            // }
-            // post_header(zappy->server->gui, (payload_header_t){
-            //     .id = SERVER,
-            //     .size = sizeof(request_payload_content_map_t),
-            //     .type = CONTENT_MAP
-            // });
-            // // sleep(5);
-
-            // post_response_content_map(zappy->server->gui, (response_payload_content_map_t){
-            //     .content = map_tiles,
-            // });
-            usleep(300);
-            send_content_map_tile(zappy, saved_index);
+            int cpt = 0;
+            printf("%d, %d\n", zappy->options->height, zappy->options->width);
+            response_payload_content_tile_t *map_tiles = malloc(sizeof(response_payload_content_tile_t) * zappy->options->height * zappy->options->width);
+            for (int map_height = 0; map_height < zappy->options->height; map_height += 1) {
+                for (int map_width = 0; map_width < zappy->options->width; map_width += 1) {
+                    map_tiles[cpt].position.x = map_width;
+                    map_tiles[cpt].position.y = map_height;
+                    map_tiles[cpt].food = zappy->map->tiles[map_height][map_width].resources[FOOD].quantity;
+                    map_tiles[cpt].linemate = zappy->map->tiles[map_height][map_width].resources[LINEMATE].quantity;
+                    map_tiles[cpt].deraumere = zappy->map->tiles[map_height][map_width].resources[DERAUMERE].quantity;
+                    map_tiles[cpt].sibur = zappy->map->tiles[map_height][map_width].resources[SIBUR].quantity;
+                    map_tiles[cpt].mendiane = zappy->map->tiles[map_height][map_width].resources[MENDIANE].quantity;
+                    map_tiles[cpt].phiras = zappy->map->tiles[map_height][map_width].resources[PHIRAS].quantity;
+                    map_tiles[cpt].thystame = zappy->map->tiles[map_height][map_width].resources[THYSTAME].quantity;
+                    cpt++;
+                }
+            }
+            usleep(3000);
+            post_header(zappy->server->gui, (payload_header_t){
+                .id = SERVER,
+                .size = sizeof(response_payload_content_tile_t) * zappy->options->height * zappy->options->width,
+                .type = CONTENT_MAP
+            });
+            post_response_content_map(zappy->server->gui, map_tiles, sizeof(response_payload_content_tile_t) * zappy->options->height * zappy->options->width);
         }
 
     }

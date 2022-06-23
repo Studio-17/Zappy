@@ -41,7 +41,7 @@ static const ai_request_t ai_request_to_handle[] = {
     {
         .request = "Inventory",
         .command = INVENTORY,
-        .handler = &ai_base_request
+        .handler = &ai_inventory_request
     },
     {
         .request = "Broadcast text",
@@ -61,12 +61,7 @@ static const ai_request_t ai_request_to_handle[] = {
     {
         .request = "Eject",
         .command = EJECT,
-        .handler = &ai_base_request
-    },
-    {
-        .request = "-",
-        .command = DEATH,
-        .handler = &ai_base_request
+        .handler = &ai_eject_request
     },
     {
         .request = "Take",
@@ -107,18 +102,21 @@ char *ai_get_generic_request(int client_socket, zappy_t *zappy, int player_index
 bool ai_handle_request(zappy_t *zappy, int player_index)
 {
     char *request_data = ai_get_generic_request(zappy->server->socket_descriptor->socket_descriptor, zappy, player_index);
+    bool valid_request = false;
 
     if (!request_data)
-        return false;
+        return (false);
     for (int index = 0; index < NB_COMMANDS_AI; index += 1) {
 
         if (strncmp(request_data, ai_request_to_handle[index].request, strlen(ai_request_to_handle[index].request)) == 0) {
 
-            printf("handler called: %s\n", ai_request_to_handle[index].request);
-
             ai_request_to_handle[index].handler(zappy, request_data, player_index);
-            return true;
+            valid_request = true;
+            return (true);
         }
     }
-    return true;
+    if (!valid_request)
+        ai_response_ok_ko(zappy->client[player_index].socket, false);
+
+    return (true);
 }
