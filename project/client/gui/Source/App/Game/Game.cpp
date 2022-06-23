@@ -200,7 +200,7 @@ void Game::handleUpdatePlayerPosition(char *data)
     response_payload_player_position_t *playerPos;
 
     playerPos = (response_payload_player_position_t*)data;
-    this->updatePlayerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y);
+    this->updatePlayerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y, playerPos->orientation);
 }
 
 void Game::handleUpdatePlayerLevel(char *data)
