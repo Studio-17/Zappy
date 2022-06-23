@@ -160,4 +160,8 @@ bool ai_handle_request(zappy_t *zappy, int player_index);
 void debug_server(server_t *server);
 void free_server(server_t *server);
 
+bool setup_elevation_processus(zappy_t *zappy);
+void free_elevation(elevations_t *elevation);
+void debug_elevation(elevations_t *elevation);
+
 #endif /* !SERVER_H_ */

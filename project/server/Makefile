@@ -39,6 +39,7 @@ SOURCE	=	source/server/communication/communication.c				\
 			source/zappy/map.c										\
 			source/zappy/resources.c								\
 			source/zappy/zappy.c									\
+			source/zappy/elevation.c								\
 
 TEST_SOURCE	=	../tests/test.c
 
