@@ -57,16 +57,16 @@ class Ia {
 
     protected:
     private:
-        IAClient _client;
-        std::string _mapSize;
-        std::map<ACTIONS, std::string> _actionCommands;
-        std::map<std::size_t, std::map<std::string, int>> _levelsToObtain;
+        IAClient _client; //!< IAClient
+        std::string _mapSize; //!< Map size
+        std::map<ACTIONS, std::string> _actionCommands; //!< Map of the action commands
+        std::map<std::size_t, std::map<std::string, int>> _levelsToObtain; //!< Map of the levels to obtain
 
-        int _level;
-        std::map<std::string, int> _inventory;
-        std::string _action;
+        int _actualLevel; //!< actual level of the ia
+        std::map<std::string, int> _inventory; //!< Map of the inventory
+        std::string _action; //!< Action to do
 
-        std::pair<int, std::string> _objectToTake;
+        std::pair<int, std::string> _objectToTake; //!< Object to take
 };
 
 #endif /* !IA_HPP_ */

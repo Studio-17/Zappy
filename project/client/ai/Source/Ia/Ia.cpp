@@ -111,7 +111,7 @@ Ia::Ia() : _client()
         }
     };
 
-    _level = 1;
+    _actualLevel = 1;
 }
 
 Ia::~Ia()
@@ -217,7 +217,7 @@ std::vector<Ia::ACTIONS> Ia::moveToTile(int tile)
 
 bool Ia::searchGem(std::string const &gem)
 {
-    for (auto &[gemInLevelToObtain, quantity] : _levelsToObtain.at(_level))
+    for (auto &[gemInLevelToObtain, quantity] : _levelsToObtain.at(_actualLevel))
         if (_inventory.at(gem) <= quantity)
             return true;
     return false;

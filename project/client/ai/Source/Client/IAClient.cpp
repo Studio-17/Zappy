@@ -15,6 +15,29 @@ extern "C" {
 IAClient::IAClient()
 {
     _options = std::make_unique<IAOptions>();
+    _inventory = {
+        {"food", 10},
+        {"linemate", 0},
+        {"deraumere", 0},
+        {"sibur", 0},
+        {"mendiane", 0},
+        {"phiras", 0},
+        {"thystame", 0}
+    };
+    _timeLimit = {
+        {"Forward\n", 7},
+        {"Right\n", 7},
+        {"Left\n", 7},
+        {"Look\n", 7},
+        {"Inventory\n", 1},
+        {"Broadcast text\n", 7},
+        {"Connect_nbr\n", 0},
+        {"Fork\n", 42},
+        {"Eject\n", 7},
+        {"Take ", 7},
+        {"Set ", 7},
+        {"Incantation\n", 300},
+    };
 }
 
 IAClient::~IAClient()

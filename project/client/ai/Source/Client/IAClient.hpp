@@ -36,6 +36,12 @@
 
             void serverSentResponse();
 
+            std::map<std::string, int> getInvetory() { return _inventory; };
+            void setInventory(std::map<std::string, int> inventory) { _inventory = inventory; };
+
+            std::map<std::string, int> getTimeLimit() { return _timeLimit; };
+            void setTimeLimit(std::map<std::string, int> timeLimit) { _timeLimit = timeLimit; };
+
             void setupOptions(int ac, char **av);
             void handleOptions();
 
@@ -55,6 +61,8 @@
 
             std::unique_ptr<IAOptions> _options;
             std::string _mapSize;
+            std::map<std::string, int> _inventory;
+            std::map<std::string, int> _timeLimit;
     };
 
 #endif /* !IACLIENT_HPP_ */
