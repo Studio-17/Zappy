@@ -11,19 +11,6 @@
 
 Ia::Ia() : _client()
 {
-    _actionCommands = {
-        {ACTIONS::FORWARD, "Forward\n"},
-        {ACTIONS::RIGHT, "Right\n"},
-        {ACTIONS::LEFT, "Left\n"},
-        {ACTIONS::LOOK, "Look\n"},
-        {ACTIONS::INVENTORY, "Inventory\n"},
-        {ACTIONS::BROADCAST_TEXT, "Broadcast text\n"},
-        {ACTIONS::CONNECT_NBR, "Connect_nbr\n"},
-        {ACTIONS::FORK, "Fork\n"},
-        {ACTIONS::EJECT, "Eject\n"},
-        {ACTIONS::INCANTATION, "Incantation\n"},
-    };
-
     _levelsToObtain = {
         {2,
             {
@@ -118,52 +105,6 @@ Ia::~Ia()
 {
 }
 
-std::vector<std::map<std::string, bool>> Ia::parseLook(std::string response)
-{
-    size_t pos = 0;
-    std::string token;
-    std::string comaDelimiter = ",";
-    std::string spaceDelimiter = " ";
-    std::vector<std::string> contentOfTile;
-    std::vector<std::map<std::string, bool>> contentOfMap;
-    std::map<std::string, bool> contentOfTileMap = {
-        {"food", false},
-        {"linemate", false},
-        {"deraumere", false},
-        {"sibur", false},
-        {"mendiane", false},
-        {"phiras", false},
-        {"thystame", false},
-        {"player", false},
-    };
-
-    response.erase(remove(response.begin(), response.end(), '['), response.end());
-    response.erase(remove(response.begin(), response.end(), ']'), response.end());
-
-    while ((pos = response.find(comaDelimiter)) != std::string::npos) {
-        token = response.substr(0, pos);
-        contentOfTile.push_back(token);
-        response.erase(0, pos + comaDelimiter.length());
-    }
-    for (std::size_t index = 0; index < contentOfTile.size(); index ++) {
-        std::vector<std::string> tmp;
-        while ((pos = contentOfTile.at(index).find(spaceDelimiter)) != std::string::npos) {
-        token = response.substr(0, pos);
-        tmp.push_back(token);
-        response.erase(0, pos + comaDelimiter.length());
-        }
-        std::map<std::string, bool> tmpContentMap = contentOfTileMap;
-        for (auto &resource : tmp) {
-            if (tmpContentMap.find(resource) != tmpContentMap.end()) {
-                tmpContentMap[resource] = true;
-            }
-        }
-        contentOfMap.push_back(tmpContentMap);
-    }
-
-    return contentOfMap;
-}
-
 void Ia::startIa()
 {
     try {
@@ -193,9 +134,9 @@ std::string Ia::transformRessourceToAction(std::string object)
     return object;
 }
 
-std::vector<Ia::ACTIONS> Ia::moveToTile(int tile)
+std::vector<ACTIONS> Ia::moveToTile(int tile)
 {
-    std::vector<Ia::ACTIONS> actions;
+    std::vector<ACTIONS> actions;
     int centeredTile;
     bool isInGoodFloor = false;
 
@@ -218,7 +159,7 @@ std::vector<Ia::ACTIONS> Ia::moveToTile(int tile)
 bool Ia::searchGem(std::string const &gem)
 {
     for (auto &[gemInLevelToObtain, quantity] : _levelsToObtain.at(_actualLevel))
-        if (_inventory.at(gem) <= quantity)
+        if (_client.getInvetory().at(gem) <= quantity)
             return true;
     return false;
 }
@@ -248,20 +189,21 @@ bool Ia::wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objectsPer
 // 6- elle demande au serveur 'inventory' et si tout et bon elle pose les objetcs qu'il faut et fait l'incantation
 void Ia::mainLoop()
 {
-    std::string response;
+    std::pair<ACTIONS, std::string> response;
     std::string object;
-    std::vector<std::map<std::string, bool>> allObjInTile;
+    // std::vector<std::map<std::string, bool>> allObjInTile;
 
     while (true) {
         sleep(1);
-        response = _client.handleAction(doAction(Ia::ACTIONS::LOOK));
-        allObjInTile = parseLook(response);
-        if (wantToTakeAnyObject(allObjInTile)) {
-            moveToTile(_objectToTake.first);
-            std::cout << "move to tile" << std::endl;
-            // takeObject()
-        } else
-            response = _client.handleAction(doAction(Ia::ACTIONS::LEFT));
+        // response = _client.handleAction(doAction(ACTIONS::LOOK));
+        // response = _client.handleAction(ACTIONS::LOOK);
+        // // allObjInTile = _client.parseLook(response);
+        // if (wantToTakeAnyObject(_client.getAllObjPerTile())) {
+        //     moveToTile(_objectToTake.first);
+        //     std::cout << "move to tile" << std::endl;
+        //     // takeObject()
+        // } else
+            response = _client.handleAction(ACTIONS::FORWARD);
         // response = _client.handleAction(doAction(ACTIONS::FORWARD));
         // if (response.compare("ok"))
         //     std::cout << "IA received: " << response << std::endl;

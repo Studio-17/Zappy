@@ -11,21 +11,6 @@
     #include "IAClient.hpp"
 
 class Ia {
-    enum class ACTIONS {
-        FORWARD,
-        RIGHT,
-        LEFT,
-        LOOK,
-        INVENTORY,
-        BROADCAST_TEXT,
-        CONNECT_NBR,
-        FORK,
-        EJECT,
-        TAKE_OBJECT,
-        SET_OBJECT,
-        INCANTATION,
-    };
-
     public:
         Ia();
         ~Ia();
@@ -37,7 +22,7 @@ class Ia {
 
         std::string takeObject(std::string object) { return ("Take " + transformRessourceToAction(object) + "\n"); }; // Take object
         std::string setObject(std::string object) { return ("Set " + transformRessourceToAction(object) + "\n"); }; // Set object
-        std::string doAction(ACTIONS action) { return (_actionCommands.at(action)); };
+        // std::string doAction(ACTIONS action) { return (_actionCommands.at(action)); };
 
         std::string replaceCharacters(std::string str, const std::string& from, const std::string& to); // change all strings to another string in a string
 
@@ -59,11 +44,11 @@ class Ia {
     private:
         IAClient _client; //!< IAClient
         std::string _mapSize; //!< Map size
-        std::map<ACTIONS, std::string> _actionCommands; //!< Map of the action commands
+        // std::map<ACTIONS, std::string> _actionCommands; //!< Map of the action commands
         std::map<std::size_t, std::map<std::string, int>> _levelsToObtain; //!< Map of the levels to obtain
 
         int _actualLevel; //!< actual level of the ia
-        std::map<std::string, int> _inventory; //!< Map of the inventory
+        // std::map<std::string, int> _inventory; //!< Map of the inventory
         std::string _action; //!< Action to do
 
         std::pair<int, std::string> _objectToTake; //!< Object to take

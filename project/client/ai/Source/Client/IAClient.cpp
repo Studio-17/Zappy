@@ -25,23 +25,59 @@ IAClient::IAClient()
         {"thystame", 0}
     };
     _timeLimit = {
-        {"Forward\n", 7},
-        {"Right\n", 7},
-        {"Left\n", 7},
-        {"Look\n", 7},
-        {"Inventory\n", 1},
-        {"Broadcast text\n", 7},
-        {"Connect_nbr\n", 0},
-        {"Fork\n", 42},
-        {"Eject\n", 7},
+        {"Forward", 7},
+        {"Right", 7},
+        {"Left", 7},
+        {"Look", 7},
+        {"Inventory", 1},
+        {"Broadcast text", 7},
+        {"Connect_nbr", 0},
+        {"Fork", 42},
+        {"Eject", 7},
         {"Take ", 7},
         {"Set ", 7},
-        {"Incantation\n", 300},
+        {"Incantation", 300},
+    };
+    _actionCommands = {
+        {ACTIONS::FORWARD, "Forward\n"},
+        {ACTIONS::RIGHT, "Right\n"},
+        {ACTIONS::LEFT, "Left\n"},
+        {ACTIONS::LOOK, "Look\n"},
+        {ACTIONS::INVENTORY, "Inventory\n"},
+        {ACTIONS::BROADCAST_TEXT, "Broadcast text\n"},
+        {ACTIONS::CONNECT_NBR, "Connect_nbr\n"},
+        {ACTIONS::FORK, "Fork\n"},
+        {ACTIONS::EJECT, "Eject\n"},
+        {ACTIONS::INCANTATION, "Incantation\n"},
     };
 }
 
 IAClient::~IAClient()
 {
+}
+
+void IAClient::postRequest(int socketId, std::string const &request)
+{
+    dprintf(socketId, "%s\n", request.c_str());
+}
+
+std::string IAClient::getRequest(int socketId)
+{
+    std::string response;
+    response.resize(100);
+    int result = 0;
+
+    if ((result = read(socketId, (void *)response.c_str(), 100)) < 0)
+        perror("AIClient: getRequest");
+    response.resize(result);
+    return (response);
+}
+
+void IAClient::serverSentResponse()
+{
+    // CODE HERE ALL RESPONSES RELATED FUNCTIONS
+
+    return;
 }
 
 void IAClient::setup()
@@ -90,29 +126,6 @@ void IAClient::handle()
     _mapSize = coordString;
 }
 
-void IAClient::serverSentResponse()
-{
-    // CODE HERE ALL RESPONSES RELATED FUNCTIONS
-
-    return;
-}
-
-void IAClient::postRequest(int socketId, std::string const &request)
-{
-    dprintf(socketId, "%s\n", request.c_str());
-}
-
-std::string IAClient::getRequest(int socketId)
-{
-    std::string response;
-    response.resize(100);
-    int result = 0;
-
-    if ((result = read(socketId, (void *)response.c_str(), 100)) < 0)
-        perror("AIClient: getRequest");
-    response.resize(result);
-    return (response);
-}
 
 void IAClient::setupOptions(int ac, char **av)
 {
@@ -124,21 +137,105 @@ void IAClient::handleOptions()
     _options->handleOptions();
 }
 
-std::string IAClient::getMapSize() const
+std::vector<std::map<std::string, bool>> IAClient::parseLook(std::string response)
 {
-    return _mapSize;
+    std::size_t pos = 0;
+    std::string token;
+    std::string comaDelimiter = ",";
+    std::string spaceDelimiter = " ";
+    std::vector<std::string> contentOfTile;
+    std::vector<std::map<std::string, bool>> contentOfMap;
+    std::map<std::string, bool> contentOfTileMap = {
+        {"food", false},
+        {"linemate", false},
+        {"deraumere", false},
+        {"sibur", false},
+        {"mendiane", false},
+        {"phiras", false},
+        {"thystame", false},
+        {"player", false},
+    };
+
+    response.erase(remove(response.begin(), response.end(), '['), response.end());
+    response.erase(remove(response.begin(), response.end(), ']'), response.end());
+
+    while ((pos = response.find(comaDelimiter)) != std::string::npos) {
+        token = response.substr(0, pos);
+        contentOfTile.push_back(token);
+        response.erase(0, pos + comaDelimiter.length());
+    }
+    for (std::size_t index = 0; index < contentOfTile.size(); index ++) {
+        std::vector<std::string> tmp;
+        while ((pos = contentOfTile.at(index).find(spaceDelimiter)) != std::string::npos) {
+        token = response.substr(0, pos);
+        tmp.push_back(token);
+        response.erase(0, pos + comaDelimiter.length());
+        }
+        std::map<std::string, bool> tmpContentMap = contentOfTileMap;
+        for (auto &resource : tmp) {
+            if (tmpContentMap.find(resource) != tmpContentMap.end()) {
+                tmpContentMap[resource] = true;
+            }
+        }
+        contentOfMap.push_back(tmpContentMap);
+    }
+
+    return contentOfMap;
 }
 
-int IAClient::getSocket() const
+static bool checkKoResponse(std::string const &response)
 {
-    return _socket;
+    if (response == "ko\n")
+        return true;
+    return false;
 }
 
-std::string IAClient::handleAction(std::string const &action)
+std::pair<ACTIONS, std::string> IAClient::handleAction(ACTIONS action)
 {
-    std::string string;
+    std::pair<ACTIONS, std::string> response;
 
-    postRequest(_socket, action);
-    string = getRequest(_socket);
-    return string;
+    response.first = action;
+    postRequest(_socket, _actionCommands.at(action));
+    response.second = getRequest(_socket);
+
+    if (checkKoResponse(response.second))
+        return response;
+
+    switch (action) {
+        case ACTIONS::FORWARD:
+            forward();
+            break;
+        case ACTIONS::LEFT:
+            turnLeft();
+            break;
+        case ACTIONS::RIGHT:
+            turnRight();
+            break;
+        case ACTIONS::LOOK:
+            look();
+            break;
+        default:
+            break;
+    }
+    return response;
+}
+
+void IAClient::forward()
+{
+    _inventory.at("food") -= _timeLimit.at("Forward");
+}
+
+void IAClient::turnLeft()
+{
+    _inventory.at("food") -= _timeLimit.at("Left");
+}
+
+void IAClient::turnRight()
+{
+    _inventory.at("food") -= _timeLimit.at("Right");
+}
+
+void IAClient::look()
+{
+    _inventory.at("food") -= _timeLimit.at("Look");
 }
