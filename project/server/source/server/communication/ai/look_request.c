@@ -57,7 +57,7 @@ void ai_look_request(zappy_t *zappy, void *data, int player_index)
     for (int i = 0; i <= zappy->client[player_index].player.level; i++)
         nb_tiles += 1 + (i * 2);
     bool first = true;
-    dprintf(socket, "[");
+    dprintf(socket, "[ ");
     for (int i = 0; i <= zappy->client[player_index].player.level; i++) {
         for (int index = -i; index <= i; index++) {
             if (!first)
@@ -82,5 +82,5 @@ void ai_look_request(zappy_t *zappy, void *data, int player_index)
                 first = false;
         }
     }
-    dprintf(socket, "]\n");
+    dprintf(socket, " ]\n");
 }
