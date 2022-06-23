@@ -104,24 +104,25 @@ void Game::addPlayerToTeam(std::string const &teamName, int playerId)
     _teamsToPlayerId[teamName].push_back(playerId);
 }
 
-void Game::addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation, std::string const &teamName)
+void Game::addPlayer(int playerId, int x, int y, Object::ORIENTATION orientation, std::string const &teamName)
 {
     Position playerPos((float)x, 0, (float)y);
-    (void)team;
 
     _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation, teamName));
     addPlayerToTeam(teamName, playerId);
     std::cout << "player " << playerId << " was added with position of" << playerPos << " and orientation of " << (int)orientation << " and team name: " << teamName << std::endl;
 }
 
-void Game::updatePlayerPosition(int playerId, int x, int y)
+void Game::updatePlayerPosition(int playerId, int x, int y, int orientation)
 {
     Position playerPosition(x, 0, y);
     for (auto &player : _players) {
-        if (player->getPlayerId() == playerId)
+        if (player->getPlayerId() == playerId) {
             player->setPosition(playerPosition * 10);
+            player->setOrientation((Object::ORIENTATION)orientation);
+        }
     }
-    std::cout << "player " << playerId << " moved " << x << " " << y << std::endl;
+    std::cout << "player " << playerId << " moved " << x << " " << y << "with orientation: " << orientation << std::endl;
 }
 
 void Game::updatePlayerLevel(int playerId, int level)
@@ -188,7 +189,7 @@ void Game::handleAddPlayer(char *data)
 
     addPlayer = (response_payload_player_connected_t *)data;
 
-    this->addPlayer("hello", addPlayer->id, addPlayer->position.x, addPlayer->position.y, (Object::ORIENTATION)addPlayer->orientation, "Victor");
+    this->addPlayer(addPlayer->id, addPlayer->position.x, addPlayer->position.y, (Object::ORIENTATION)addPlayer->orientation, addPlayer->team_name);
 }
 
 void Game::handleUpdatePlayerPosition(char *data)
@@ -197,7 +198,7 @@ void Game::handleUpdatePlayerPosition(char *data)
 
     playerPos = (response_payload_player_position_t*)data;
     printf("%d %d\n", playerPos->position.x, playerPos->position.y);
-    this->updatePlayerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y);
+    this->updatePlayerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y, playerPos->orientation);
 }
 
 void Game::handleUpdatePlayerLevel(char *data)

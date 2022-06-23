@@ -52,8 +52,8 @@ class Game : public AScene {
         void drawTiles();
         void drawPlayers();
 
-        void addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation, std::string const &teamName);
-        void updatePlayerPosition(int playerId, int x, int y);
+        void addPlayer(int playerId, int x, int y, Object::ORIENTATION orientation, std::string const &teamName);
+        void updatePlayerPosition(int playerId, int x, int y, int orientation);
         void updatePlayerLevel(int playerId, int level);
         void updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &inventory);
         void updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &resources);
