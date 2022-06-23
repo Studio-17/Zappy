@@ -14,13 +14,13 @@ int get_resource_from_request(char *target)
     char **request_content = my_strtok(target, ' ');
     int length = strlen(request_content[1]);
     char *resource_set[] = {
-        "Food",
-        "Linemate",
-        "Deraumere",
-        "Sibur",
-        "Mendiane",
-        "Phiras",
-        "Thystame",
+        "food",
+        "linemate",
+        "deraumere",
+        "sibur",
+        "mendiane",
+        "phiras",
+        "thystame",
         NULL
     };
 
