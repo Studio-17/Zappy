@@ -86,8 +86,44 @@ void IAClient::handle()
         std::cout << clientNumString;
 
     coordString = getRequest(_socket);
-    std::cout  << "Map Size: " << coordString;
-    _mapSize = coordString;
+    setMapSize(coordString);
+    createMap(_mapSize.first, _mapSize.second);
+}
+
+void IAClient::createMap(int mapHeight, int mapWidth)
+{
+    std::vector<std::map<std::string, int>> tmp;
+
+    for (std::size_t line = 0; line < mapWidth; line++) {
+        for (size_t col = 0; col < mapHeight; col++)
+            tmp.emplace_back(createTile());
+        _contentOfMap.emplace_back(tmp);
+        tmp.clear();
+    }
+}
+
+std::map<std::string, int> IAClient::createTile()
+{
+    std::map<std::string, int> tile;
+    tile.emplace("food", 0);
+    tile.emplace("linemate", 0);
+    tile.emplace("deraumere", 0);
+    tile.emplace("sibur", 0);
+    tile.emplace("mendiane", 0);
+    tile.emplace("phiras", 0);
+    tile.emplace("thystame", 0);
+    return tile;
+}
+
+void IAClient::setMapSize(std::string str)
+{
+    std::string delimiter = " ";
+    size_t pos = str.find(delimiter);
+    std::string token = str.substr(0, pos);
+
+    _mapSize.first = std::stoi(token);
+    str.erase(0, pos + delimiter.length());
+    _mapSize.second = std::stoi(str);
 }
 
 void IAClient::serverSentResponse()
@@ -122,11 +158,6 @@ void IAClient::setupOptions(int ac, char **av)
 void IAClient::handleOptions()
 {
     _options->handleOptions();
-}
-
-std::string IAClient::getMapSize() const
-{
-    return _mapSize;
 }
 
 int IAClient::getSocket() const

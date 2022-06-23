@@ -59,7 +59,6 @@ class Ia {
     protected:
     private:
         IAClient _client; //!< IAClient
-        std::string _mapSize; //!< Map size
         std::map<ACTIONS, std::string> _actionCommands; //!< Map of the action commands
         std::map<std::size_t, std::map<std::string, int>> _levelsToObtain; //!< Map of the levels to obtain
 

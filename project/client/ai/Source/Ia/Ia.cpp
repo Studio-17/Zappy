@@ -137,8 +137,8 @@ std::vector<std::map<std::string, bool>> Ia::parseLook(std::string response)
         {"player", false},
     };
 
-    response.erase(remove(response.begin(), response.end(), '['), response.end());
-    response.erase(remove(response.begin(), response.end(), ']'), response.end());
+    response = replaceCharacters(response, "[ ", "");
+    response = replaceCharacters(response, " ]", "");
 
     while ((pos = response.find(comaDelimiter)) != std::string::npos) {
         token = response.substr(0, pos);
@@ -169,7 +169,6 @@ void Ia::startIa()
     try {
         _client.setup();
         _client.connection();
-        _mapSize = _client.getMapSize();
     } catch (ClientErrors const &ClientError) {
         std::cerr << ClientError.what() << std::endl;
     }
@@ -239,13 +238,6 @@ bool Ia::wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objectsPer
     return false;
 }
 
-
-// 1- Le but est de look et si un objet l'intéresse il se déplace jusqu'à la case et prend l'objet
-// 2- Si aucun objet l'intéresse alors elle tourne left / right et refait la ligne 1
-// 3- Si rien ne l'intérresse alors q'elle a tourné sur elle même 3 fois dans le meme sens alors elle s'avance d'une case et reviens au 1
-// 4- Si sur la case + dans son inventory elle a tout ce qu'il faut pour faire incantation alors elle lance l'incantation
-// 5- elle recupere tout les objets sur la case et les met dans son inventaire
-// 6- elle demande au serveur 'inventory' et si tout et bon elle pose les objetcs qu'il faut et fait l'incantation
 void Ia::mainLoop()
 {
     std::string response;
