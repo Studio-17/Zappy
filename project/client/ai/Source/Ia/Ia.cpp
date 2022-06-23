@@ -262,10 +262,5 @@ void Ia::mainLoop()
             // takeObject()
         } else
             response = _client.handleAction(doAction(Ia::ACTIONS::LEFT));
-        // response = _client.handleAction(doAction(ACTIONS::FORWARD));
-        // if (response.compare("ok"))
-        //     std::cout << "IA received: " << response << std::endl;
-        // else
-        //     std::cout << "Bad response from the IA: " << response << std::endl;
     }
 }

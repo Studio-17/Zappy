@@ -42,6 +42,14 @@
             std::map<std::string, int> getTimeLimit() { return _timeLimit; };
             void setTimeLimit(std::map<std::string, int> timeLimit) { _timeLimit = timeLimit; };
 
+            void setContentOfMap(std::vector<std::vector<std::map<std::string, int>>> contentOfMap) { _contentOfMap = contentOfMap; };
+            std::vector<std::vector<std::map<std::string, int>>> getContentOfMap() { return _contentOfMap; };
+            void createMap(int height, int width);
+
+            void setContentOfTile(std::map<std::string, int> contentOfTile) { _contentOfTile = contentOfTile; };
+            std::map<std::string, int> getContentOfTile() { return _contentOfTile; };
+            void createTile(std::map<std::string, int>, int x, int y);
+
             void setupOptions(int ac, char **av);
             void handleOptions();
 
@@ -63,6 +71,8 @@
             std::string _mapSize;
             std::map<std::string, int> _inventory;
             std::map<std::string, int> _timeLimit;
+            std::map<std::string, int> _contentOfTile;
+            std::vector<std::vector<std::map<std::string, int>>> _contentOfMap;
     };
 
 #endif /* !IACLIENT_HPP_ */

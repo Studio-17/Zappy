@@ -86,7 +86,7 @@ void IAClient::handle()
         std::cout << clientNumString;
 
     coordString = getRequest(_socket);
-    std::cout << coordString;
+    std::cout  << "Map Size: " << coordString;
     _mapSize = coordString;
 }
 

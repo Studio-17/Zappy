@@ -9,6 +9,7 @@
 #define IA_HPP_
 
     #include "IAClient.hpp"
+    #include <queue>
 
 class Ia {
     enum class ACTIONS {
@@ -67,6 +68,10 @@ class Ia {
         std::string _action; //!< Action to do
 
         std::pair<int, std::string> _objectToTake; //!< Object to take
+
+        std::queue<std::string> requestListToSend; //!< Queue of the requests to send
+        std::queue<std::string> requestListSent; //!< Queue of the requests sent
+        std::queue<std::string> requestListReceived; //!< Queue of the requests received
 };
 
 #endif /* !IA_HPP_ */
