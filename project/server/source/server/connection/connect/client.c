@@ -77,7 +77,7 @@ static void create_player(zappy_t *zappy, int socket)
     zappy->client[zappy->server->clients] = (ai_client_t){socket, zappy->server->clients, AI, player};
 }
 
-void connect_client(zappy_t *zappy)
+bool connect_client(zappy_t *zappy)
 {
     int client_socket;
     int saved_index = 0;
@@ -92,9 +92,9 @@ void connect_client(zappy_t *zappy)
         }
         if (!greeting_protocol(zappy, client_socket)) {
             for (int index = 0; index < zappy->server->server_socket->max_client; index += 1) {
-                if (zappy->client[index].socket == 0) {
+                if (zappy->server->server_socket->client[index] == 0) {
                     saved_index = index;
-                    zappy->client[index].socket = client_socket;
+                    // zappy->client[index].socket = client_socket;
                     zappy->server->server_socket->client[index] = client_socket;
                     break;
                 }
@@ -140,9 +140,7 @@ void connect_client(zappy_t *zappy)
         }
 
     }
-
-
-    listen_clients(zappy);
+    return (listen_clients(zappy));
 }
 
 void clear_socket_set(server_t *server)

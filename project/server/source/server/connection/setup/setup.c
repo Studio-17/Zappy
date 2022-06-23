@@ -7,19 +7,22 @@
 
 #include "server/server.h"
 
-void setup_server(server_t *server, options_t *options)
+bool setup_server(server_t *server, options_t *options)
 {
     server->port = options->port;
-
     server->socket_descriptor = malloc(sizeof(server_socket_descriptor_t));
+    if (!server->socket_descriptor)
+        return false;
     server->server_socket = malloc(sizeof(server_socket_t));
-
+    if (!server->server_socket)
+        return false;
     server->server_socket->client = malloc(sizeof(int) * options->clients_nb);
+    if (!server->server_socket->client)
+        return false;
     server->server_socket->max_client = options->clients_nb;
-
     server->clients = 0;
-
     server->is_gui_connected = false;
+    return true;
 }
 
 void initialise_all_clients_sockets(server_t *server)

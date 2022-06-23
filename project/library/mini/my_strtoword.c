@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 static int count_words(char *str, char sep)
 {
@@ -22,7 +23,7 @@ static int count_words(char *str, char sep)
     return (count);
 }
 
-static int alloc_my_words(char *str, char **array, char sep)
+static bool alloc_my_words(char *str, char **array, char sep)
 {
     int x = 0;
     int j = 0;
@@ -33,13 +34,15 @@ static int alloc_my_words(char *str, char **array, char sep)
         if ((str[i] != sep && str[i + 1] == sep) ||
             (str[i] != sep && str[i + 1] == 0)) {
             array[j] = malloc(sizeof(char) * (x + 1));
+            if (!array[j])
+                return false;
             x = 0;
             j++;
         }
         if (j > 0 && !array[j - 1])
-            return (84);
+            return false;
     }
-    return (0);
+    return true;
 }
 
 static void copy_my_words(char *str, char **array, char sep)
@@ -71,7 +74,7 @@ char **my_strtok(char *str, char sep)
     array[nb_words] = NULL;
     for (int i = 0; i < nb_words + 1; i++)
         array[i] = NULL;
-    if (alloc_my_words(str, array, sep) != 0)
+    if (!alloc_my_words(str, array, sep))
         return (NULL);
     copy_my_words(str, array, sep);
     return (array);
