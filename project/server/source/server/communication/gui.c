@@ -5,160 +5,158 @@
 ** gui
 */
 
-#include "protocol/player.h"
 #include "protocol/greeting.h"
+#include "protocol/map.h"
+#include "protocol/player.h"
 
-#include "server/server.h"
-#include "server/communication/request/request.h"
+#include "server.h"
+#include "gui_update.h"
 
-static const gui_request_t gui_request_to_handle[] = {
+static const gui_update_t gui_request_to_handle[] = {
     {
         .type = MAP_SIZE,
-        .handler = &request_map_size
+        .handler = &update_map_size
     },
     {
         .type = CONTENT_TILE,
-        .handler = &request_tile_content
+        .handler = &update_tile_content
     },
     {
         .type = NAME_OF_TEAMS,
-        .handler = &request_team_names
+        .handler = &update_team_names
     },
     {
         .type = PLAYER_CONNECTED,
-        .handler = &request_player_connected
+        .handler = &update_player_connected
     },
     {
         .type = PLAYER_POSITION,
-        .handler = &request_player_position
+        .handler = &update_player_position
     },
     {
         .type = PLAYER_LEVEL,
-        .handler = &request_player_level
+        .handler = &update_player_level
     },
     {
         .type = PLAYER_INVENTORY,
-        .handler = &request_player_inventory
-    },
-    {
-        .type = TIME_UNIT,
-        .handler = &request_time_unit
-    },
-    {
-        .type = TIME_UNIT_MODIFICATION,
-        .handler = &request_time_unit_modification
+        .handler = &update_player_inventory
     },
 };
 
-void *gui_get_generic_request(int client_socket, int size_to_read)
+void update_map_size(zappy_t *zappy)
 {
-    void *data = malloc(size_to_read);
-
-    if (read(client_socket, data, size_to_read) < 0)
-        perror("gui_get_generic_request read");
-
-    return (data);
-}
-
-void gui_handle_request(zappy_t *zappy)
-{
-    // payload_header_t header = get_header(zappy->server->socket_descriptor->socket_descriptor);
-
-    // void *request_data = gui_get_generic_request(zappy->server->socket_descriptor->socket_descriptor, header.size);
-
-    // gui_request_to_handle[header.type].handler(zappy, request_data);
-}
-
-void request_map_size(zappy_t *zappy, void *request_data)
-{
-    int socket = zappy->server->socket_descriptor->socket_descriptor;
-
     post_header(zappy->server->gui, (payload_header_t){
         .id = SERVER,
         .size = sizeof(response_payload_map_t),
         .type = MAP_SIZE
     });
 
-    request_payload_t payload = *(request_payload_t *)request_data;
-    post_response_map(socket, (response_payload_map_t) {
+    post_response_map(zappy->server->gui, (response_payload_map_t) {
         .status = true,
         .width = zappy->map->width,
         .height = zappy->map->height,
     });
 }
 
-void request_tile_content(zappy_t *zappy, void *request_data)
+void update_map_content(zappy_t *zappy)
 {
-
+    return;
 }
 
-void request_team_names(zappy_t *zappy, void *request_data)
+void update_tile_content(zappy_t *zappy, position_t tile)
 {
+    int x = tile.x;
+    int y = tile.y;
 
+    post_header(zappy->server->gui, (payload_header_t){
+        .id = SERVER,
+        .size = sizeof(response_payload_content_tile_t),
+        .type = CONTENT_TILE,
+    });
+
+    post_response_content_tile(zappy->server->gui, (response_payload_content_tile_t){
+        .position.x = x,
+        .position.y = y,
+        .food = zappy->map->tiles[y][x].resources[FOOD].quantity,
+        .linemate = zappy->map->tiles[y][x].resources[LINEMATE].quantity,
+        .deraumere = zappy->map->tiles[y][x].resources[DERAUMERE].quantity,
+        .sibur = zappy->map->tiles[y][x].resources[SIBUR].quantity,
+        .mendiane = zappy->map->tiles[y][x].resources[MENDIANE].quantity,
+        .phiras = zappy->map->tiles[y][x].resources[PHIRAS].quantity,
+        .thystame = zappy->map->tiles[y][x].resources[THYSTAME].quantity,
+    });
 }
 
-void request_player_connected(zappy_t *zappy, void *request_data)
+void update_team_names(zappy_t *zappy)
 {
-    int socket = zappy->server->socket_descriptor->socket_descriptor;
+    return;
+}
 
-    post_header(socket, (payload_header_t){
+void update_player_connected(zappy_t *zappy, int updated_data)
+{
+    post_header(zappy->server->gui, (payload_header_t){
         .id = SERVER,
         .size = sizeof(response_payload_player_connected_t),
-        .type = PLAYER_CONNECTED
-    });
+        .type = PLAYER_CONNECTED}
+    );
 
-    post_response_player_connected(socket, (response_payload_player_connected_t){
-        .id = zappy->server->clients,
-        .level = zappy->client[zappy->server->clients].player.level,
-        .orientation = zappy->client[zappy->server->clients].player.orientation,
-        .position = zappy->client[zappy->server->clients].player.position,
-    });
-}
-
-void request_player_position(zappy_t *zappy, void *request_data)
-{
-    int socket = zappy->server->socket_descriptor->socket_descriptor;
-
-    post_header(socket, (payload_header_t){
-        .id = SERVER,
-        .size = sizeof(response_payload_player_connected_t),
-        .type = PLAYER_CONNECTED
-    });
-
-    post_response_player_position(socket, (response_payload_player_position_t){
+    post_response_player_connected(zappy->server->gui, (response_payload_player_connected_t){
         .status = true,
-        .player_id = zappy->server->clients,
-        .position = zappy->client[zappy->server->clients].player.position,
+        .id = updated_data,
+        .level = zappy->client[updated_data].player.level,
+        .orientation = zappy->client[updated_data].player.orientation,
+        .position = zappy->client[updated_data].player.position,
+        .team_name = "not implemented",
     });
 }
 
-void request_player_inventory(zappy_t *zappy, void *request_data)
+void update_player_position(zappy_t *zappy, int player_index)
 {
-}
-
-void request_player_level(zappy_t *zappy, void *request_data)
-{
-    int socket = zappy->server->socket_descriptor->socket_descriptor;
-
-    post_header(socket, (payload_header_t){
+    post_header(zappy->server->gui, (payload_header_t){
         .id = SERVER,
         .size = sizeof(response_payload_player_connected_t),
         .type = PLAYER_CONNECTED
     });
 
-    post_response_player_level(socket, (response_payload_player_level_t){
+    post_response_player_position(zappy->server->gui, (response_payload_player_position_t){
         .status = true,
-        .player_id = zappy->server->clients,
-        .level = zappy->client[zappy->server->clients].player.level,
+        .player_id = player_index,
+        .position = zappy->client[player_index].player.position,
     });
 }
 
-void request_time_unit(zappy_t *zappy, void *request_data)
+void update_player_inventory(zappy_t *zappy, int player_index)
 {
+    post_header(zappy->server->gui, (payload_header_t){
+        .id = SERVER,
+        .size = sizeof(response_payload_player_inventory_t),
+        .type = PLAYER_INVENTORY
+    });
 
+    post_response_player_inventory(zappy->server->gui, (response_payload_player_inventory_t){
+        .status = true,
+        .player_id = zappy->client[player_index].client_nb,
+        .food = zappy->client[player_index].player.resource_inventory[FOOD].quantity,
+        .linemate = zappy->client[player_index].player.resource_inventory[LINEMATE].quantity,
+        .deraumere = zappy->client[player_index].player.resource_inventory[DERAUMERE].quantity,
+        .sibur = zappy->client[player_index].player.resource_inventory[SIBUR].quantity,
+        .mendiane = zappy->client[player_index].player.resource_inventory[MENDIANE].quantity,
+        .phiras = zappy->client[player_index].player.resource_inventory[PHIRAS].quantity,
+        .thystame = zappy->client[player_index].player.resource_inventory[THYSTAME].quantity,
+    });
 }
 
-void request_time_unit_modification(zappy_t *zappy, void *request_data)
+void update_player_level(zappy_t *zappy, int player_index)
 {
+    post_header(zappy->server->gui, (payload_header_t){
+        .id = SERVER,
+        .size = sizeof(response_payload_player_connected_t),
+        .type = PLAYER_CONNECTED
+    });
 
+    post_response_player_level(zappy->server->gui, (response_payload_player_level_t){
+        .status = true,
+        .player_id = player_index,
+        .level = zappy->client[player_index].player.level,
+    });
 }

@@ -68,11 +68,19 @@ typedef struct inventory_resource_s {
     int quantity;
 } inventory_resource_t;
 
+enum ELEVATION_STEP {
+    FAILED = -1,
+    NONE,
+    BEGIN,
+    END,
+};
+
 typedef struct player_t {
     int id;
     int level;
     position_t position;
     enum ORIENTATION orientation;
+    enum ELEVATION_STEP elevation_status;
     inventory_resource_t *resource_inventory;
 } player_t;
 
@@ -154,7 +162,6 @@ void get_map_informations(zappy_t *zappy, int client_socket);
 bool listen_clients(zappy_t *zappy);
 void *gui_get_generic_request(int client_socket, int size_to_read);
 
-void gui_handle_request(zappy_t *zappy);
 bool ai_handle_request(zappy_t *zappy, int player_index);
 
 void debug_server(server_t *server);

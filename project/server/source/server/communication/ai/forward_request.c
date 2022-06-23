@@ -9,6 +9,8 @@
 #include "request.h"
 #include "ai_request.h"
 
+#include "gui_update.h"
+
 static void post_player_movement(zappy_t *zappy, int player_index)
 {
     post_header(zappy->server->gui, (payload_header_t){

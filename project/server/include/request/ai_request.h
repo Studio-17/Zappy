@@ -21,7 +21,6 @@
     void ai_connect_nbr_request(zappy_t *zappy, void *data, int player_index);
     void ai_fork_request(zappy_t *zappy, void *data, int player_index);
     void ai_eject_request(zappy_t *zappy, void *data, int player_index);
-    void ai_dead_request(zappy_t *zappy, void *data, int player_index);
 
     void ai_take_request(zappy_t *zappy, void *data, int player_index);
     void ai_set_request(zappy_t *zappy, void *data, int player_index);
@@ -32,5 +31,6 @@
     int get_resource_from_request(char *target);
     void ai_response_ok_ko(int socket, bool status);
     void move(zappy_t *zappy, position_t movement, int player_index);
+    bool check_death(zappy_t *zappy, int player_index);
 
 #endif /* !AI_REQUEST_H_ */

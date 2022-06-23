@@ -28,10 +28,12 @@ SOURCE	=	source/server/communication/communication.c				\
 			source/server/communication/ai/take_request.c			\
 			source/server/communication/ai/set_request.c			\
 			source/server/communication/ai/incantation_request.c	\
+			source/server/communication/ai/tools/check_death.c		\
 			source/server/communication/ai/tools/move.c				\
 			source/server/communication/ai/tools/response.c			\
 			source/server/communication/ai/tools/get_resource.c		\
 			source/server/communication/gui.c						\
+			source/server/communication/gui/update_tile.c			\
 			source/server/server.c									\
 			source/server/connection/connect/client.c				\
 			source/server/connection/connect/greeting.c				\
