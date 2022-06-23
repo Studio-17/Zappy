@@ -12,9 +12,9 @@ void post_response_content_tile(int socket, response_payload_content_tile_t resp
     write(socket, &response, sizeof(response_payload_content_tile_t));
 }
 
-void post_response_content_map(int socket, response_payload_content_map_t response)
+void post_response_content_map(int socket, response_payload_content_tile_t *response, size_t size)
 {
-    write(socket, &response, sizeof(response_payload_content_map_t));
+    write(socket, response, size);
 }
 
 request_payload_content_map_t get_request_content_map(int socket)

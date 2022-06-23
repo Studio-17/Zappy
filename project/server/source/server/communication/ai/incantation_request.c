@@ -18,6 +18,12 @@
  *  7->8        6               2           2           2       2           2       1
  */
 
+static void remove_elevation_stones(zappy_t *zappy, int player_index)
+{
+    for (int index = 0; index < NB_ITEMS; index += 1)
+        zappy->map->tiles[zappy->client[player_index].player.position.x][zappy->client[player_index].player.position.y].resources[index].quantity = 0;
+}
+
 static bool check_elevation(zappy_t *zappy, int elevation_index, int player_level, int player_index)
 {
     // PRELIMINARIES
@@ -41,7 +47,7 @@ static bool check_elevation(zappy_t *zappy, int elevation_index, int player_leve
     resources_t *tile_resources = zappy->map->tiles[player_position.x][player_position.y].resources;
 
     // CHECK RESOURCES ON TILE
-    for (int index = 1; index != NB_ITEMS; index += 1) {
+    for (int index = 0; index != NB_ITEMS; index += 1) {
         if (resources_need[index].quantity_needed != tile_resources[index].quantity) {
 
             return (false);
@@ -61,8 +67,15 @@ void ai_incantation_request(zappy_t *zappy, void *data, int player_index)
 
 
     if (check_elevation(zappy, elevation_processus_index, zappy->client[player_index].player.level, player_index)) {
+        if (zappy->client[player_index].player.elevation_status == NONE || zappy->client[player_index].player.elevation_status == FAILED)
+            zappy->client[player_index].player.elevation_status = BEGIN;
+        else if (zappy->client[player_index].player.elevation_status == BEGIN) {
+            zappy->client[player_index].player.elevation_status == END;
+            remove_elevation_stones(zappy, player_index);
+        }
         dprintf(zappy->server->socket_descriptor->socket_descriptor, "Elevation underway\nCurrent level: %d\n", zappy->client[player_index].player.level);
     } else {
+        zappy->client[player_index].player.elevation_status == FAILED;
         ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, false);
     }
 }

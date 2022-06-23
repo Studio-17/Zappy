@@ -6,6 +6,13 @@
 */
 
 #include "server.h"
+#include "ai_request.h"
+
+void death_protocol(zappy_t *zappy, int index)
+{
+    dprintf(zappy->client[index].socket, "dead\n");
+    // disconnect the player
+}
 
 bool listen_clients(zappy_t *zappy)
 {
@@ -15,11 +22,11 @@ bool listen_clients(zappy_t *zappy)
                 continue;
             zappy->server->socket_descriptor->socket_descriptor = zappy->server->server_socket->client[index];
 
-            if (zappy->server->is_gui_connected)
-                gui_handle_request(zappy);
-
             if (!ai_handle_request(zappy, index))
                 return false;
+
+            if (check_death(zappy, index))
+                death_protocol(zappy, index);
         }
     }
     return true;
