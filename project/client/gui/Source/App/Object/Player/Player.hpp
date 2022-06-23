@@ -46,7 +46,7 @@ namespace Object {
              * @param position 3 dimensional Position
              * @param type map object type
              */
-            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation);
+            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation, std::string teamName);
             /**
              * @brief Destroy the Player object
              */
@@ -156,6 +156,7 @@ namespace Object {
 
             std::vector<std::pair<PLAYER_RESOURCES, int>> _inventory;
             ORIENTATION _playerOrientation;
+            std::string _teamName;
     };
 }
 
