@@ -12,7 +12,7 @@ static const position_t direction[] = {
 };
 
 static const position_t row_direction[] = {
-    {1, 0}, {0, 1}, {1, 0}, {0, 1}
+    {1, 0}, {0, -1}, {-1, 0}, {0, 1}
 };
 
 static void print_tile_content(int socket, tile_t const tile, bool player, bool first)

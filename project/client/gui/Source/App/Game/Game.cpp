@@ -188,8 +188,11 @@ void Game::handleAddPlayer(char *data)
     response_payload_player_connected_t *addPlayer;
 
     addPlayer = (response_payload_player_connected_t *)data;
+    std::cout << "handleAddPlayer" << std::endl;
+    std::cout << addPlayer->team_name << std::endl;
 
-    this->addPlayer(addPlayer->id, addPlayer->position.x, addPlayer->position.y, (Object::ORIENTATION)addPlayer->orientation, addPlayer->team_name);
+
+    this->addPlayer(addPlayer->id, addPlayer->position.x, addPlayer->position.y, (Object::ORIENTATION)addPlayer->orientation, std::string(addPlayer->team_name));
 }
 
 void Game::handleUpdatePlayerPosition(char *data)
@@ -197,7 +200,6 @@ void Game::handleUpdatePlayerPosition(char *data)
     response_payload_player_position_t *playerPos;
 
     playerPos = (response_payload_player_position_t*)data;
-    printf("%d %d\n", playerPos->position.x, playerPos->position.y);
     this->updatePlayerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y, playerPos->orientation);
 }
 

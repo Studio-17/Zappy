@@ -17,6 +17,7 @@ void gui_update_player_connected(zappy_t *zappy, int updated_data)
         .size = sizeof(response_payload_player_connected_t),
         .type = PLAYER_CONNECTED
     });
+    char *team_name = "not implemented";
 
     post_response_player_connected(zappy->server->gui, (response_payload_player_connected_t){
         .status = true,

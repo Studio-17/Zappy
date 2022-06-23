@@ -21,7 +21,7 @@ typedef struct response_payload_player_connected_s {
     int level;
     int orientation;
     position_t position;
-    char *team_name;
+    char team_name[50];
 } response_payload_player_connected_t;
 
 request_payload_player_connected_t get_request_player_connected(int socket);
