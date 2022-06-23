@@ -11,6 +11,7 @@
     #include <memory>
     #include <vector>
     #include <map>
+    #include <unordered_map>
 
     #include "Tile.hpp"
     #include "Player.hpp"
@@ -51,7 +52,7 @@ class Game : public AScene {
         void drawTiles();
         void drawPlayers();
 
-        void addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation);
+        void addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation, std::string const &teamName);
         void updatePlayerPosition(int playerId, int x, int y);
         void updatePlayerLevel(int playerId, int level);
         void updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &inventory);
@@ -72,6 +73,8 @@ class Game : public AScene {
         void updateInformations(char *data, int type) override;
         void getAndSetUpMapTiles();
 
+        void addPlayerToTeam(std::string const &teamName, int playerId);
+
     protected:
     private:
         int _mapWidth;
@@ -91,6 +94,8 @@ class Game : public AScene {
         std::shared_ptr<Client> _client;
 
         std::shared_ptr<RayLib::CinematicCamera> _camera;
+
+        std::unordered_map<std::string, std::vector<int>> _teamsToPlayerId;
 };
 
 #endif /* !GAME_HPP_ */

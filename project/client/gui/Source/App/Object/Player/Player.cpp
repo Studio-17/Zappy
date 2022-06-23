@@ -16,7 +16,7 @@ Object::Player::Player(std::pair<std::string, std::string> const &pathToResource
     _level = 1;
 }
 
-Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation) :
+Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation, std::string teamName) :
     AThreeDimensionObject(pathToModel, pathToResources, pathToAnimation, numberOfAnimations, position, type)
 {
     _scale = 7.0f;
@@ -24,6 +24,7 @@ Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyT
     _playerId = playerId;
     _level = 1;
     _playerOrientation = playerOrientation;
+    _teamName = teamName;
     setOrientation(_playerOrientation);
 }
 

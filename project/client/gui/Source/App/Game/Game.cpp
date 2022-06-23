@@ -99,13 +99,19 @@ void Game::drawPlayers()
         player->draw();
 }
 
-void Game::addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation)
+void Game::addPlayerToTeam(std::string const &teamName, int playerId)
+{
+    _teamsToPlayerId[teamName].push_back(playerId);
+}
+
+void Game::addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation, std::string const &teamName)
 {
     Position playerPos((float)y, 0, (float)x);
     (void)team;
 
-    _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation));
-    std::cout << "player " << playerId << " was added with position of" << playerPos << " and orientation of " << (int)orientation << std::endl;
+    _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation, teamName));
+    addPlayerToTeam(teamName, playerId);
+    std::cout << "player " << playerId << " was added with position of" << playerPos << " and orientation of " << (int)orientation << " and team name: " << teamName << std::endl;
 }
 
 void Game::updatePlayerPosition(int playerId, int x, int y)
@@ -182,7 +188,7 @@ void Game::handleAddPlayer(char *data)
 
     addPlayer = (response_payload_player_connected_t *)data;
 
-    this->addPlayer("hello", addPlayer->id, addPlayer->position.x, addPlayer->position.y, (Object::ORIENTATION)addPlayer->orientation);
+    this->addPlayer("hello", addPlayer->id, addPlayer->position.x, addPlayer->position.y, (Object::ORIENTATION)addPlayer->orientation, "Victor");
 }
 
 void Game::handleUpdatePlayerPosition(char *data)
