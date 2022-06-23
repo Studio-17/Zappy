@@ -119,7 +119,7 @@ int execute_tasks(list_t *list)
     }
 }
 
-int queue(void)
+int main(void)
 {
     list_t list = NULL;
     size_t bufsize = 32;

@@ -9,7 +9,6 @@
     #define CLIENT_H_
 
     #include "minilib.h"
-    #include "listlib.h"
     #include "netlib.h"
 
 enum CLIENT_TYPE {

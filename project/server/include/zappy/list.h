@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2022
 ** B-YEP-410-PAR-4-1-zappy-martin.vanaud
 ** File description:
-** listlib
+** list
 */
 
-#ifndef LISTLIB_H_
-    #define LISTLIB_H_
+#ifndef LIST_H_
+#define LIST_H_
 
     #include <stdlib.h>
     #include <stdio.h>

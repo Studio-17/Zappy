@@ -49,7 +49,6 @@ CXXFLAGS	+=	-g3
 LDFLAGS	+=	-lm
 LDFLAGS	+=	-L $(LIBRARIES_PATH)
 
-LDLIBS	+=	-llist
 LDLIBS	+=	-lmini
 LDLIBS	+=	-lnet
 

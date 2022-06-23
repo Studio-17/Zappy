@@ -39,6 +39,7 @@ typedef struct request_payload_player_position_s {
 typedef struct response_payload_player_position_s {
     bool status;
     int player_id;
+    // int orientation;
     position_t position;
 } response_payload_player_position_t;
 

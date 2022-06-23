@@ -8,13 +8,10 @@
 #ifndef SERVER_H_
     #define SERVER_H_
 
-    // #include <stdio.h>
-    // #include <string.h>
-    // #include <stdlib.h>
-    // #include <errno.h>
-    // #include <unistd.h>
-    // #include <sys/types.h>
-    // #include <sys/socket.h>
+    #include <string.h>
+    #include <unistd.h>
+    #include <time.h>
+    #include <stdlib.h>
 
     #include <math.h>
 
@@ -30,6 +27,8 @@
 
     #include "server/client/client.h"
     #include "server/connection/setup/setup.h"
+
+    #include "zappy/list.h"
 
 
     #define RESOURCE_QUANTITY(width, height, density) (width * height * density)
@@ -89,6 +88,7 @@ typedef struct ai_client_s {
     int client_nb;
     enum CLIENT_TYPE type;
     player_t player;
+    list_t list;
 } ai_client_t;
 
 typedef struct resources_s {
