@@ -41,7 +41,7 @@ static const ai_request_t ai_request_to_handle[] = {
     {
         .request = "Inventory",
         .command = INVENTORY,
-        .handler = &ai_base_request
+        .handler = &ai_inventory_request
     },
     {
         .request = "Broadcast text",

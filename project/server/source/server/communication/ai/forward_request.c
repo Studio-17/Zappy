@@ -24,21 +24,6 @@ static void post_player_movement(zappy_t *zappy, int player_index)
     });
 }
 
-static void move(zappy_t *zappy, position_t movement, int player_index)
-{
-    zappy->client[player_index].player.position.x += movement.x;
-    if (zappy->client[player_index].player.position.x < 0)
-        zappy->client[player_index].player.position.x = zappy->map->width - 1;
-    else if (zappy->client[player_index].player.position.x > zappy->map->width - 1)
-        zappy->client[player_index].player.position.x = 0;
-
-    zappy->client[player_index].player.position.y += movement.y;
-    if (zappy->client[player_index].player.position.y < 0)
-        zappy->client[player_index].player.position.y = zappy->map->height - 1;
-    else if (zappy->client[player_index].player.position.y > zappy->map->height - 1)
-        zappy->client[player_index].player.position.y = 0;
-}
-
 void ai_forward_request(zappy_t *zappy, void *data, int player_index)
 {
     const position_t direction[] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};

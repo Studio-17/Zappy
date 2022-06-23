@@ -23,9 +23,11 @@ SOURCE	=	source/server/communication/communication.c				\
 			source/server/communication/ai/right_request.c			\
 			source/server/communication/ai/left_request.c			\
 			source/server/communication/ai/look_request.c			\
+			source/server/communication/ai/inventory_request.c		\
 			source/server/communication/ai/take_request.c			\
 			source/server/communication/ai/set_request.c			\
 			source/server/communication/ai/incantation_request.c	\
+			source/server/communication/ai/tools/move.c				\
 			source/server/communication/ai/tools/response.c			\
 			source/server/communication/ai/tools/get_resource.c		\
 			source/server/communication/gui.c						\
