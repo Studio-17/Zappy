@@ -6,6 +6,7 @@
 */
 
 #include "ai_request.h"
+#include "gui_update.h"
 
 void ai_eject_request(zappy_t *zappy, void *data, int player_index)
 {
@@ -21,7 +22,11 @@ void ai_eject_request(zappy_t *zappy, void *data, int player_index)
         && zappy->client[index].player.position.y == player_position.y) {
 
             move(zappy, player_movement, index);
+
+            gui_update_player_position(zappy, index);
+
             player_on_tile += 1;
+
             dprintf(zappy->client[index].socket, "eject: %d\n", 1);
 
         }

@@ -40,6 +40,7 @@ typedef struct response_payload_player_position_s {
     bool status;
     int player_id;
     position_t position;
+    int orientation;
 } response_payload_player_position_t;
 
 void post_response_player_position(int socket, response_payload_player_position_t response);

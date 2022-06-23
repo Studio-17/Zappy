@@ -6,6 +6,7 @@
 */
 
 #include "ai_request.h"
+#include "gui_update.h"
 
 void ai_right_request(zappy_t *zappy, void *data, int player_index)
 {
@@ -15,5 +16,8 @@ void ai_right_request(zappy_t *zappy, void *data, int player_index)
         zappy->client[player_index].player.orientation = NORTH;
     else
         zappy->client[player_index].player.orientation += 1;
+
+    // gui_update_player_position(zappy, player_index);
+
     ai_response_ok_ko(socket, true);
 }

@@ -101,7 +101,7 @@ void Game::drawPlayers()
 
 void Game::addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation)
 {
-    Position playerPos((float)y, 0, (float)x);
+    Position playerPos((float)x, 0, (float)y);
     (void)team;
 
     _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation));
@@ -115,7 +115,7 @@ void Game::updatePlayerPosition(int playerId, int x, int y)
         if (player->getPlayerId() == playerId)
             player->setPosition(playerPosition * 10);
     }
-    std::cout << "player " << playerId << " moved " << x << y << std::endl;
+    std::cout << "player " << playerId << " moved " << x << " " << y << std::endl;
 }
 
 void Game::updatePlayerLevel(int playerId, int level)
@@ -190,7 +190,8 @@ void Game::handleUpdatePlayerPosition(char *data)
     response_payload_player_position_t *playerPos;
 
     playerPos = (response_payload_player_position_t*)data;
-    this->updatePlayerPosition(playerPos->player_id, playerPos->position.y, playerPos->position.x);
+    printf("%d %d\n", playerPos->position.x, playerPos->position.y);
+    this->updatePlayerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y);
 }
 
 void Game::handleUpdatePlayerLevel(char *data)

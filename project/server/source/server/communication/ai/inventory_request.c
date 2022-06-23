@@ -6,6 +6,7 @@
 */
 
 #include "ai_request.h"
+#include "gui_update.h"
 
 void ai_inventory_request(zappy_t *zappy, void *data, int player_index)
 {
