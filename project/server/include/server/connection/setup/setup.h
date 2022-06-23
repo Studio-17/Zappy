@@ -10,7 +10,7 @@
 
 #include "server/server.h"
 
-void setup_server(server_t *server, options_t *options);
+bool setup_server(server_t *server, options_t *options);
 void initialise_all_clients_sockets(server_t *server);
 void create_server_socket(server_t *server);
 void allow_multiple_connections(server_t *server);

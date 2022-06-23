@@ -29,6 +29,9 @@ class Options {
         int getPort() { return (_port); };
         std::string getMachine() { return (_machine); };
 
+        void setMachine(std::string &machine) { _machine = machine; };
+        void setPort(int port) { _port = port; };
+
     protected:
     private:
         int _port;

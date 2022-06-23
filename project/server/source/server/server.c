@@ -10,7 +10,6 @@
 
 void create_server(zappy_t *zappy)
 {
-    setup_server(zappy->server, zappy->options);
     initialise_all_clients_sockets(zappy->server);
     create_server_socket(zappy->server);
     allow_multiple_connections(zappy->server);
@@ -19,7 +18,7 @@ void create_server(zappy_t *zappy)
     bind_socket_to_server(zappy->server);
 }
 
-void server_loop(zappy_t *zappy)
+bool server_loop(zappy_t *zappy)
 {
     while (1) {
         clear_socket_set(zappy->server);
@@ -29,8 +28,10 @@ void server_loop(zappy_t *zappy)
 
         wait_for_connections(zappy->server);
 
-        connect_client(zappy);
+        if (!connect_client(zappy))
+            return false;
     }
+    return true;
 }
 
 void client_deconnected(zappy_t *zappy, int client_socket)
@@ -39,21 +40,24 @@ void client_deconnected(zappy_t *zappy, int client_socket)
     zappy->server->server_socket->client[client_socket] = 0;
 }
 
-void debug_server(zappy_t *zappy)
+void debug_server(server_t *server)
 {
-    printf("[DEBUG] server->port = %d\n", zappy->server->port);
-    printf("[DEBUG] server->address_length = %d\n", zappy->server->address_length);
+    printf("[DEBUG] server->port = %d\n", server->port);
+    printf("[DEBUG] server->address_length = %d\n", server->address_length);
 
-    printf("[DEBUG] server->server_socket->server = %d\n", zappy->server->server_socket->server);
-    for (int index = 0; index < zappy->server->server_socket->max_client; index += 1)
-        printf("[DEBUG] server->server_socket->client[%d] = %d\n", index, zappy->server->server_socket->client[index]);
-    printf("[DEBUG] server->server_socket->max_client = %d\n", zappy->server->server_socket->max_client);
+    printf("[DEBUG] server->server_socket->server = %d\n", server->server_socket->server);
+    for (int index = 0; index < server->server_socket->max_client; index += 1)
+        printf("[DEBUG] server->server_socket->client[%d] = %d\n", index, server->server_socket->client[index]);
+    printf("[DEBUG] server->server_socket->max_client = %d\n", server->server_socket->max_client);
 
-    printf("[DEBUG] server->socket_descriptor->socket_descriptor = %d\n", zappy->server->socket_descriptor->socket_descriptor);
-    printf("[DEBUG] server->socket_descriptor->max_socket_descriptor = %d\n", zappy->server->socket_descriptor->max_socket_descriptor);
+    printf("[DEBUG] server->socket_descriptor->socket_descriptor = %d\n", server->socket_descriptor->socket_descriptor);
+    printf("[DEBUG] server->socket_descriptor->max_socket_descriptor = %d\n", server->socket_descriptor->max_socket_descriptor);
 }
 
-void free_server(zappy_t *zappy)
+void free_server(server_t *server)
 {
-    free(zappy->server);
+    free(server->socket_descriptor);
+    free(server->server_socket->client);
+    free(server->server_socket);
+    free(server);
 }

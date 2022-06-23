@@ -17,4 +17,7 @@ char *my_itoa(int number);
 
 char **my_strtok(char *str, char sep);
 
+void free_arr(char **arr);
+int my_arrlen(char **arr);
+
 #endif /* !MINILIB_H_ */
