@@ -38,4 +38,15 @@ void *list_get_elem_at_front(list_t list);
 void *list_get_elem_at_back(list_t list);
 void *list_get_elem_at_position(list_t list, unsigned int position);
 
+unsigned int queue_get_size(list_t list);
+bool queue_is_empty(list_t list);
+
+bool queue_push_back(list_t *front_ptr, void *elem, int type_size);
+
+bool queue_pop_front(list_t *front_ptr);
+
+void queue_clear(list_t *front_ptr);
+
+void *queue_get_front(list_t list);
+
 #endif /* !LISTLIB_H_ */

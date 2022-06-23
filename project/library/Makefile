@@ -14,6 +14,7 @@ DELETE_FILE	=	$(DELETE)
 DELETE_DIR	=	$(DELETE) -r
 
 SRC_LISTLIB	=	list/list.c			\
+				list/queue.c		\
 
 SRC_MINILIB	=	mini/my_atoi.c		\
 				mini/my_itoa.c		\
@@ -42,8 +43,8 @@ NETLIB_NAME	=	libnet.a
 
 all: listlib minilib netlib
 
-listlib:
-	@ar rc $(LISTLIB_NAME) $(LISTLIB)
+listlib: $(LISTLIB_OBJ)
+	@ar rc $(LISTLIB_NAME) $(LISTLIB_OBJ)
 
 minilib: $(MINILIB_OBJ)
 	@ar rc $(MINILIB_NAME) $(MINILIB_OBJ)
