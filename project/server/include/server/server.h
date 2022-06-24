@@ -8,13 +8,10 @@
 #ifndef SERVER_H_
     #define SERVER_H_
 
-    // #include <stdio.h>
-    // #include <string.h>
-    // #include <stdlib.h>
-    // #include <errno.h>
-    // #include <unistd.h>
-    // #include <sys/types.h>
-    // #include <sys/socket.h>
+    #include <string.h>
+    #include <unistd.h>
+    #include <time.h>
+    #include <stdlib.h>
 
     #include <math.h>
 
@@ -30,7 +27,10 @@
 
     #include "server/client/client.h"
     #include "server/connection/setup/setup.h"
+    #include "list.h"
 
+    // #include "zappy/list.h"
+    // #include "request.h"
 
     #define RESOURCE_QUANTITY(width, height, density) (width * height * density)
 
@@ -68,19 +68,33 @@ typedef struct inventory_resource_s {
     int quantity;
 } inventory_resource_t;
 
+enum ELEVATION_STEP {
+    FAILED = -1,
+    NONE,
+    BEGIN,
+    END,
+};
+
 typedef struct player_t {
     int id;
     int level;
     position_t position;
     enum ORIENTATION orientation;
+    enum ELEVATION_STEP elevation_status;
     inventory_resource_t *resource_inventory;
 } player_t;
 
 typedef struct ai_client_s {
     int socket;
+
     int client_nb;
     enum CLIENT_TYPE type;
+
     player_t player;
+    list_t list;
+
+    char team_name[50];
+    int team_members;
 } ai_client_t;
 
 typedef struct resources_s {
@@ -91,7 +105,6 @@ typedef struct resources_s {
 } resources_t;
 
 resources_t *setup_resources(int width, int height);
-
 
 void debug_resources(resources_t *resource);
 void free_resources(resources_t *resources);
@@ -153,9 +166,6 @@ void get_map_informations(zappy_t *zappy, int client_socket);
 
 bool listen_clients(zappy_t *zappy);
 void *gui_get_generic_request(int client_socket, int size_to_read);
-
-void gui_handle_request(zappy_t *zappy);
-bool ai_handle_request(zappy_t *zappy, int player_index);
 
 void debug_server(server_t *server);
 void free_server(server_t *server);

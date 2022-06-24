@@ -85,17 +85,6 @@ bool handle_options(options_t *options)
         print_usage(INVALID_OPTION);
         return false;
     }
-
-    int count = 1;
-    for (int index = 0; index < (ssize_t)strlen(options->names); index++){
-        if (options->names[index] == ' ') {
-            count++;
-        }
-    }
-    if (count != options->clients_nb) {
-        print_usage(INVALID_OPTION);
-        return false;
-    }
     return true;
 }
 

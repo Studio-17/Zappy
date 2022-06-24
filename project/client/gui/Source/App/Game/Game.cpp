@@ -10,6 +10,7 @@
 static std::vector<std::pair<COMMANDS_GUI, void(Game::*)(char *)>> _commandsMap = {
     std::make_pair(PLAYER_CONNECTED, &Game::handleAddPlayer),
     std::make_pair(PLAYER_POSITION, &Game::handleUpdatePlayerPosition),
+    std::make_pair(PLAYER_ORIENTATION, &Game::handleUpdatePlayerOrientation),
     std::make_pair(PLAYER_LEVEL, &Game::handleUpdatePlayerLevel),
     std::make_pair(PLAYER_INVENTORY, &Game::handleUpdatePlayerInventory),
     std::make_pair(CONTENT_TILE, &Game::handleUpdateContentTile),
@@ -99,23 +100,39 @@ void Game::drawPlayers()
         player->draw();
 }
 
-void Game::addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation)
+void Game::addPlayerToTeam(std::string const &teamName, int playerId)
 {
-    Position playerPos((float)y, 0, (float)x);
-    (void)team;
-
-    _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation));
-    std::cout << "player " << playerId << " was added with position of" << playerPos << " and orientation of " << (int)orientation << std::endl;
+    _teamsToPlayerId[teamName].push_back(playerId);
 }
 
-void Game::updatePlayerPosition(int playerId, int x, int y)
+void Game::addPlayer(int playerId, int x, int y, Object::ORIENTATION orientation, std::string const &teamName)
+{
+    Position playerPos((float)x, 0, (float)y);
+
+    _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation, teamName, _camera));
+    addPlayerToTeam(teamName, playerId);
+    std::cout << "player " << playerId << " was added with position of" << playerPos << " and orientation of " << (int)orientation << " and team name: " << teamName << std::endl;
+}
+
+void Game::updatePlayerPosition(int playerId, int x, int y, int orientation)
 {
     Position playerPosition(x, 0, y);
     for (auto &player : _players) {
-        if (player->getPlayerId() == playerId)
+        if (player->getPlayerId() == playerId) {
             player->setPosition(playerPosition * 10);
+            // player->setOrientation((Object::ORIENTATION)orientation);
+        }
     }
-    std::cout << "player " << playerId << " moved " << x << y << std::endl;
+    std::cout << "player " << playerId << " moved " << x << " " << y << "with orientation: " << orientation << std::endl;
+}
+
+void Game::updatePlayerOrientation(int playerId, Object::ORIENTATION orientation)
+{
+    for (auto &player : _players) {
+        if (player->getPlayerId() == playerId)
+            player->setOrientation(orientation);
+    }
+    std::cout << "player " << playerId << " set Orientation to : " << (int)orientation << std::endl;
 }
 
 void Game::updatePlayerLevel(int playerId, int level)
@@ -135,24 +152,22 @@ void Game::updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLA
     }
 }
 
-void Game::updateContentMap(response_payload_content_tile_t **content)
+void Game::updateContentMap(response_payload_content_tile_t *content)
 {
     std::size_t cpt = 0;
     std::vector<std::pair<Object::PLAYER_RESOURCES, int>> resources;
 
-    for (std::size_t index = 0; index < _mapWidth; index++) {
-        for (std::size_t index2 = 0; index2 < _mapHeight; index2++) {
-            resources.emplace_back(Object::PLAYER_RESOURCES::FOOD, content[index][index2].food);
-            resources.emplace_back(Object::PLAYER_RESOURCES::LINEMATE, content[index][index2].linemate);
-            resources.emplace_back(Object::PLAYER_RESOURCES::DERAUMERE, content[index][index2].deraumere);
-            resources.emplace_back(Object::PLAYER_RESOURCES::SIBUR, content[index][index2].sibur);
-            resources.emplace_back(Object::PLAYER_RESOURCES::MENDIANE, content[index][index2].mendiane);
-            resources.emplace_back(Object::PLAYER_RESOURCES::PHIRAS, content[index][index2].phiras);
-            resources.emplace_back(Object::PLAYER_RESOURCES::THYSTAME, content[index][index2].thystame);
-            _tiles.at(cpt)->setResources(resources);
-            cpt++;
-            resources.clear();
-        }
+    std::cout << "updateContentMap" << std::endl;
+    for (int index = 0; index < _mapWidth * _mapHeight; index++) {
+        resources.emplace_back(Object::PLAYER_RESOURCES::FOOD, content[index].food);
+        resources.emplace_back(Object::PLAYER_RESOURCES::LINEMATE, content[index].linemate);
+        resources.emplace_back(Object::PLAYER_RESOURCES::DERAUMERE, content[index].deraumere);
+        resources.emplace_back(Object::PLAYER_RESOURCES::SIBUR, content[index].sibur);
+        resources.emplace_back(Object::PLAYER_RESOURCES::MENDIANE, content[index].mendiane);
+        resources.emplace_back(Object::PLAYER_RESOURCES::PHIRAS, content[index].phiras);
+        resources.emplace_back(Object::PLAYER_RESOURCES::THYSTAME, content[index].thystame);
+        _tiles.at(index)->setResources(resources);
+        resources.clear();
     }
 }
 
@@ -173,6 +188,7 @@ void Game::updateContentTile(Position const &tilePosition, std::vector<std::pair
 
 void Game::updateInformations(char *data, int type)
 {
+    std::cout << type << std::endl;
     for (auto &command : _commandsMap)
         if (command.first == type)
             (this->*command.second)(data);
@@ -183,8 +199,11 @@ void Game::handleAddPlayer(char *data)
     response_payload_player_connected_t *addPlayer;
 
     addPlayer = (response_payload_player_connected_t *)data;
+    std::cout << "handleAddPlayer" << std::endl;
+    std::cout << addPlayer->team_name << std::endl;
 
-    this->addPlayer("hello", addPlayer->id, addPlayer->position.x, addPlayer->position.y, (Object::ORIENTATION)addPlayer->orientation);
+
+    this->addPlayer(addPlayer->id, addPlayer->position.x, addPlayer->position.y, (Object::ORIENTATION)addPlayer->orientation, std::string(addPlayer->team_name));
 }
 
 void Game::handleUpdatePlayerPosition(char *data)
@@ -192,7 +211,16 @@ void Game::handleUpdatePlayerPosition(char *data)
     response_payload_player_position_t *playerPos;
 
     playerPos = (response_payload_player_position_t*)data;
-    this->updatePlayerPosition(playerPos->player_id, playerPos->position.y, playerPos->position.x);
+    this->updatePlayerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y, playerPos->orientation);
+}
+
+void Game::handleUpdatePlayerOrientation(char *data)
+{
+    std::cout << "payer orientation" << std::endl;
+    response_payload_player_orientation_t *playerOrientation;
+
+    playerOrientation = (response_payload_player_orientation_t*)data;
+    this->updatePlayerOrientation(playerOrientation->player_id, (Object::ORIENTATION)playerOrientation->orientation);
 }
 
 void Game::handleUpdatePlayerLevel(char *data)
@@ -237,9 +265,8 @@ void Game::handleUpdateContentTile(char *data)
 
 void Game::handleUpdateContentMap(char *data)
 {
-    std::cout << "content map" << std::endl;
-    response_payload_content_map_t *contentMap = (response_payload_content_map_t *)data;
-    this->updateContentMap(contentMap->content);
+    response_payload_content_tile_t *contentMap = (response_payload_content_tile_t *)data;
+    this->updateContentMap(contentMap);
 }
 
 void Game::draw()

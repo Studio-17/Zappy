@@ -37,10 +37,10 @@ typedef struct request_payload_content_map_s {
 } request_payload_content_map_t;
 
 typedef struct response_payload_content_map_s {
-    response_payload_content_tile_t **content;
+    response_payload_content_tile_t *content;
 } response_payload_content_map_t;
 
-void post_response_content_map(int socket, response_payload_content_map_t response);
+void post_response_content_map(int socket, response_payload_content_tile_t *response, size_t size);
 
 request_payload_content_map_t get_request_content_map(int socket);
 void post_request_content_map(int socket, request_payload_content_map_t request);

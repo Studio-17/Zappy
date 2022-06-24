@@ -11,6 +11,7 @@
     #include "server/server.h"
     #include "server/server_struct.h"
     #include "communication/response/response.h"
+    #include "gui_update.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // AI
@@ -28,13 +29,15 @@ enum COMMANDS_AI {
     CONNECT_NBR,
     FORK,
     EJECT,
-    DEATH,
 
     TAKE_OBJECT,
     SET_OBJECT,
     INCANTATION,
+    INVALID,
 
     NB_COMMANDS_AI,
+    ERROR,
+    OUT_OF_RANGE,
 };
 
 // REQUEST
@@ -45,6 +48,8 @@ typedef struct ai_request_s {
     char *request;
     enum COMMANDS_AI command;
     ai_request_handler handler;
+    int time_limit;
+    void *data;
 } ai_request_t;
 
 enum COMMANDS_AI get_command_ai(char *request);
@@ -61,19 +66,6 @@ typedef struct command_ai_struct {
 // GUI
 ////////////////////////////////////////////////////////////////////////////////
 
-enum COMMANDS_GUI {
-    MAP_SIZE,
-    CONTENT_TILE,
-    CONTENT_MAP,
-    NAME_OF_TEAMS,
-    PLAYER_CONNECTED,
-    PLAYER_POSITION,
-    PLAYER_LEVEL,
-    PLAYER_INVENTORY,
-    TIME_UNIT,
-    TIME_UNIT_MODIFICATION,
-    NB_COMMANDS_GUI,
-};
 
 // COMMANDS_AI
 
@@ -114,16 +106,6 @@ static const command_gui commands_gui[] = {
         .action = "player's inventory\n",
         .received = "pin",
     },
-    {
-        .command = TIME_UNIT,
-        .action = "time unit request\n",
-        .received = "sgt",
-    },
-    {
-        .command = TIME_UNIT_MODIFICATION,
-        .action = "time unit modification\n",
-        .received = "sst",
-    },
 };
 
 typedef void (*gui_request_handler)(zappy_t *, void *);
@@ -142,5 +124,48 @@ typedef struct gui_request_s {
     int type;
     gui_request_handler handler;
 } gui_request_t;
+
+
+typedef void (*request_handler)(void *, void *, int);
+
+// typedef struct argument_handler_s {
+//     void *structure;
+//     void *data;
+//     int index;
+// } argument_handler_t;
+typedef struct data_s {
+    ai_request_t request;
+    // argument_handler_t arguments;
+
+    clock_t clock;
+} data_t;
+
+ai_request_t ai_handle_request(zappy_t *zappy, int player_index);
+
+// REQUEST HANDLER (with queue)
+
+// typedef struct argument_handler_s {
+//     zappy_t *structure;
+//     void *data;
+//     int index;
+// } argument_handler_t;
+
+// typedef struct data_s {
+//     ai_request_t request;
+//     // argument_handler_t arguments;
+
+//     clock_t clock;
+// } data_t;
+
+unsigned int queue_get_size(list_t list);
+bool queue_is_empty(list_t list);
+
+bool queue_push_back(list_t *front_ptr, void *elem, int type_size);
+
+bool queue_pop_front(list_t *front_ptr);
+
+void queue_clear(list_t *front_ptr);
+
+void *queue_get_front(list_t list);
 
 #endif /* !REQUEST_H_ */

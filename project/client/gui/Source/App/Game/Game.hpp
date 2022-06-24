@@ -11,6 +11,7 @@
     #include <memory>
     #include <vector>
     #include <map>
+    #include <unordered_map>
 
     #include "Tile.hpp"
     #include "Player.hpp"
@@ -34,6 +35,7 @@ enum COMMANDS_GUI {
     PLAYER_INVENTORY, // STRUCT DONE
     TIME_UNIT,
     TIME_UNIT_MODIFICATION,
+    PLAYER_ORIENTATION,
     NB_COMMANDS_GUI,
 };
 
@@ -51,15 +53,17 @@ class Game : public AScene {
         void drawTiles();
         void drawPlayers();
 
-        void addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation);
-        void updatePlayerPosition(int playerId, int x, int y);
+        void addPlayer(int playerId, int x, int y, Object::ORIENTATION orientation, std::string const &teamName);
+        void updatePlayerPosition(int playerId, int x, int y, int orientation);
+        void updatePlayerOrientation(int playerId, Object::ORIENTATION orientation);
         void updatePlayerLevel(int playerId, int level);
         void updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &inventory);
         void updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &resources);
-        void updateContentMap(response_payload_content_tile_t **content);
+        void updateContentMap(response_payload_content_tile_t *content);
 
         void handleAddPlayer(char *data);
         void handleUpdatePlayerPosition(char *data);
+        void handleUpdatePlayerOrientation(char *data);
         void handleUpdatePlayerLevel(char *data);
         void handleUpdatePlayerInventory(char *data);
         void handleUpdateContentTile(char *data);
@@ -71,6 +75,8 @@ class Game : public AScene {
 
         void updateInformations(char *data, int type) override;
         void getAndSetUpMapTiles();
+
+        void addPlayerToTeam(std::string const &teamName, int playerId);
 
     protected:
     private:
@@ -91,6 +97,8 @@ class Game : public AScene {
         std::shared_ptr<Client> _client;
 
         std::shared_ptr<RayLib::CinematicCamera> _camera;
+
+        std::unordered_map<std::string, std::vector<int>> _teamsToPlayerId;
 };
 
 #endif /* !GAME_HPP_ */

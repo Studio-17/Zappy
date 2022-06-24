@@ -15,8 +15,8 @@ Object::Tile::Tile(Object::Render::MyModel &pathToModel, Object::Render::MyTextu
     _position = position;
     std::srand(std::time(nullptr));
 
-    Position newPos = {std::rand() % 10 + position.getX(), position.getY() + 10, std::rand() % 10 + position.getZ()};
     for (int index = 0; index < static_cast<int>(Object::PLAYER_RESOURCES::NB_RESOURCES); index++) {
+        Position newPos = {std::rand() % 10 + position.getX() - 5, position.getY() + 10, std::rand() % 10 + position.getZ() - 5};
         _resources.emplace_back(std::make_shared<Object::Resource>(_resourcesModels.at(index), newPos, static_cast<Object::MAP_OBJECTS>(index + 3), 0));
     }
 }

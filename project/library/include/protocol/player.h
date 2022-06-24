@@ -21,6 +21,7 @@ typedef struct response_payload_player_connected_s {
     int level;
     int orientation;
     position_t position;
+    char team_name[50];
 } response_payload_player_connected_t;
 
 request_payload_player_connected_t get_request_player_connected(int socket);
@@ -38,7 +39,9 @@ typedef struct request_payload_player_position_s {
 typedef struct response_payload_player_position_s {
     bool status;
     int player_id;
+    // int orientation;
     position_t position;
+    int orientation;
 } response_payload_player_position_t;
 
 void post_response_player_position(int socket, response_payload_player_position_t response);
@@ -85,5 +88,18 @@ void post_response_player_inventory(int socket, response_payload_player_inventor
 
 request_payload_player_inventory_t get_request_player_inventory(int socket);
 void post_request_player_inventory(int socket, request_payload_player_inventory_t request);
+
+/* PLAYER ORIENTATION */
+
+typedef struct request_payload_player_orientation_s {
+    int player_id;
+} request_payload_player_orientation_t;
+
+typedef struct response_payload_player_orientation_s {
+    int player_id;
+    int orientation;
+} response_payload_player_orientation_t;
+
+void post_response_player_orientation(int socket, response_payload_player_orientation_t response);
 
 #endif /* !PLAYER_H_ */

@@ -9,7 +9,7 @@
 
 bool setup_elevation_processus(zappy_t *zappy)
 {
-    int needed_resources[LEVEL_MAX - 1][NB_ITEMS - 1] = {{1, 0, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0}, {2, 0, 1, 0, 2, 0}};
+    int needed_resources[LEVEL_MAX - 1][NB_ITEMS] = {{0, 1, 0, 0, 0, 0, 0}, {0, 1, 1, 1, 0, 0, 0}, {0, 2, 0, 1, 0, 2, 0}};
     int nb_player_needed[] = {1, 2, 2};
 
     zappy->elevation = malloc(sizeof(elevations_t));

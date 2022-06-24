@@ -2,12 +2,12 @@
 ** EPITECH PROJECT, 2022
 ** B-YEP-410-PAR-4-1-zappy-martin.vanaud
 ** File description:
-** gui
+** update_team_name
 */
 
-#include "protocol/greeting.h"
-#include "protocol/map.h"
-#include "protocol/player.h"
-
-#include "server.h"
 #include "gui_update.h"
+
+void gui_update_team_names(zappy_t *zappy)
+{
+    return;
+}
