@@ -13,7 +13,6 @@
 void gui_update_player_orientation(zappy_t *zappy, int player_index)
 {
     post_header(zappy->server->gui, (payload_header_t){
-        .id = SERVER,
         .size = sizeof(response_payload_player_orientation_t),
         .type = PLAYER_ORIENTATION,
     });

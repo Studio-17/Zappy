@@ -131,7 +131,7 @@ void Client::listen()
 {
     char *data = nullptr;
     int readResult = 0;
-    payload_header_t header = {0, 0, 0};
+    payload_header_t header = {0, 0};
 
     readResult = read(_socket, &header, sizeof(payload_header_t));
     if (readResult <= 0) {
