@@ -5,6 +5,8 @@
 ** communication
 */
 
+#include <math.h>
+
 #include "server.h"
 #include "ai_request.h"
 #include "list.h"
@@ -34,16 +36,31 @@ int execute_task(list_t *list, zappy_t *zappy, int player_index)
     if (millis >= (request->request.time_limit * 100 / zappy->options->freq)) {
 
         request->request.handler(zappy, request->request.data, player_index);
-        // printf("time spent: %ld (expected %d)\n", millis / 1000, request->request.time_limit);
+
         free(request->request.data);
 
         queue_pop_front(list);
     }
 }
 
+static void consume_time_unit(zappy_t *zappy, int player_index)
+{
+    clock_t current_time = clock();
+    float elapsed_time = (current_time - zappy->client[player_index].clock) / 1000;
+
+    float time_unit_mark = (126.0f / zappy->options->freq) * 100;
+
+    if ( time_unit_mark - elapsed_time <= 0 ) {
+
+        zappy->client[player_index].player.units -= 1;
+        zappy->client[player_index].clock = current_time;
+
+    }
+}
+
 bool listen_clients(zappy_t *zappy)
 {
-    for (int index = 0; index < zappy->server->server_socket->max_client; index += 1) {
+    for (int index = 0; index < zappy->server->clients; index += 1) {
 
         if (FD_ISSET(zappy->server->server_socket->client[index], &zappy->server->socket_descriptor->readfd)) {
 
@@ -72,6 +89,8 @@ bool listen_clients(zappy_t *zappy)
                 death_protocol(zappy, index);
 
         }
+
+        consume_time_unit(zappy, index);
 
         execute_task(&zappy->client[index].list, zappy, index);
     }
