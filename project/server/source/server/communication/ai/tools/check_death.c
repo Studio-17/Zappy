@@ -9,9 +9,7 @@
 
 bool check_death(zappy_t *zappy, int player_index)
 {
-    if (zappy->client[player_index].player.resource_inventory[FOOD].quantity <= 0) {
-        // dprintf(zappy->client[player_index].socket, "dead\n"); // ici ou pas ?
+    if (zappy->client[player_index].player.resource_inventory[FOOD].quantity <= 0)
         return (true);
-    }
     return (false);
 }
