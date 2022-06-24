@@ -48,4 +48,11 @@ typedef struct response_payload_map_s {
 response_payload_map_t get_response_map(int socket);
 void post_response_map(int socket, response_payload_map_t response);
 
+
+typedef struct response_payload_server_disconnected {
+    bool status;
+} response_payload_server_disconnected_t;
+
+void post_response_server_disconnected(int socket, response_payload_server_disconnected_t response);
+
 #endif /* !GREETING_H_ */
