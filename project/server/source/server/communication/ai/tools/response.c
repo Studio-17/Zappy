@@ -5,12 +5,10 @@
 ** response
 */
 
-#include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 void ai_response_ok_ko(int socket, bool status)
 {
-    size_t message_size = 4;
-
-    write(socket, (status ? "ok\n" : "ko\n" ), message_size);
+    dprintf(socket, (status ? "ok\n" : "ko\n"));
 }

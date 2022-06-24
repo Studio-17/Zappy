@@ -6,6 +6,7 @@
 */
 
 #include "server.h"
+#include "ai_request.h"
 #include "gui_update.h"
 
 /*

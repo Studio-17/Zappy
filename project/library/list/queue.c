@@ -7,16 +7,11 @@
 
 #include "listlib.h"
 
-bool queue_is_empty(list_t list)
-{
-    return ((list == NULL) ? true : false);
-}
-
 unsigned int queue_get_size(list_t list)
 {
     unsigned int list_size = 0;
 
-    if (queue_is_empty(list))
+    if (list_is_empty(list))
         return 0;
     while (list) {
         list_size += 1;
@@ -25,18 +20,9 @@ unsigned int queue_get_size(list_t list)
     return (list_size);
 }
 
-bool queue_pop_front(list_t *front_ptr)
+bool queue_is_empty(list_t list)
 {
-    list_t list = *front_ptr;
-
-    if (!list)
-        return false;
-    *front_ptr = list->next;
-    if (list->value)
-        free(list->value);
-    if (list)
-        free(list);
-    return true;
+    return ((list == NULL) ? true : false);
 }
 
 void queue_clear(list_t *front_ptr)
@@ -71,5 +57,19 @@ bool queue_push_back(list_t *front_ptr, void *elem, int type_size)
             list = list->next;
         list->next = node;
     }
+    return true;
+}
+
+bool queue_pop_front(list_t *front_ptr)
+{
+    list_t list = *front_ptr;
+
+    if (!list)
+        return false;
+    *front_ptr = list->next;
+    if (list->value)
+        free(list->value);
+    if (list)
+        free(list);
     return true;
 }
