@@ -23,6 +23,8 @@
     #include "Client.hpp"
     #include "IListener.hpp"
     #include "Camera.hpp"
+    #include "Text.hpp"
+    #include "Resource.hpp"
 
 enum COMMANDS_GUI {
     MAP_SIZE,
@@ -42,22 +44,23 @@ enum COMMANDS_GUI {
 class Game : public AScene {
     public:
         Game(std::shared_ptr<Client> client, std::shared_ptr<RayLib::CinematicCamera> camera);
-        Game();
         ~Game();
 
         Scenes handleEvent() override;
         void draw() override;
 
         void sendMapSize(int width, int height);
-        void setUpGameMap();
         void drawTiles();
         void drawPlayers();
+        void drawTileResources();
+        void drawImages();
+        void drawPlayersInfo();
 
         void addPlayer(int playerId, int x, int y, Object::ORIENTATION orientation, std::string const &teamName);
         void updatePlayerPosition(int playerId, int x, int y, int orientation);
         void updatePlayerOrientation(int playerId, Object::ORIENTATION orientation);
         void updatePlayerLevel(int playerId, int level);
-        void updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &inventory);
+        void updatePlayerInventory(int playerId, std::vector<int> const &inventory);
         void updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &resources);
         void updateContentMap(response_payload_content_tile_t *content);
 
@@ -71,13 +74,17 @@ class Game : public AScene {
 
         std::shared_ptr<Object::Tile> getTileByPosition(Position const &position);
 
+        void handleTileClicked();
+        void handleTileResources();
+
+        void handlePlayerClicked();
+
         void loadResourcesModels();
 
         void updateInformations(char *data, int type) override;
         void getAndSetUpMapTiles();
 
         void addPlayerToTeam(std::string const &teamName, int playerId);
-
     protected:
     private:
         int _mapWidth;
@@ -99,6 +106,12 @@ class Game : public AScene {
         std::shared_ptr<RayLib::CinematicCamera> _camera;
 
         std::unordered_map<std::string, std::vector<int>> _teamsToPlayerId;
+
+        bool _shouldPrintTileContent = false;
+        std::vector<int> _tileResourcesToPrint = {0, 0, 0, 0, 0, 0, 0};
+
+        bool _shouldPrintPlayerInfos = false;
+        Object::PlayerInfo _playerInfoToPrint;
 };
 
 #endif /* !GAME_HPP_ */
