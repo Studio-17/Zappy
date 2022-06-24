@@ -55,7 +55,7 @@ SOURCE	=	source/server/communication/communication.c					\
 			source/zappy/zappy.c										\
 			source/zappy/elevation.c									\
 
-TEST_SOURCE	=	../tests/test.c
+TEST_SOURCE	=	tests/test.c									\
 
 MAIN_OBJ	=	$(MAIN_SOURCE:.c=.o)
 
