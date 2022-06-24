@@ -9,6 +9,8 @@
 
 #include "Ia.hpp"
 
+const int MAX_ACTION_LIST = 10;
+
 Ia::Ia() : _client()
 {
     _levelsToObtain = {
@@ -99,6 +101,7 @@ Ia::Ia() : _client()
     };
 
     _actualLevel = 1;
+    _isDead = false;
 }
 
 Ia::~Ia()
@@ -111,10 +114,57 @@ void Ia::startIa()
         _client.setup();
         _client.connection();
         _mapSize = _client.getMapSize();
+        _inventory = _client.getInvetory();
     } catch (ClientErrors const &ClientError) {
         std::cerr << ClientError.what() << std::endl;
     }
     mainLoop();
+}
+
+std::vector<std::map<std::string, bool>> Ia::parseLook(std::string response)
+{
+    std::size_t pos = 0;
+    std::string token;
+    std::string comaDelimiter = ",";
+    std::string spaceDelimiter = " ";
+    std::vector<std::string> contentOfTile;
+    std::vector<std::map<std::string, bool>> contentOfMap;
+    std::map<std::string, bool> contentOfTileMap = {
+        {"food", false},
+        {"linemate", false},
+        {"deraumere", false},
+        {"sibur", false},
+        {"mendiane", false},
+        {"phiras", false},
+        {"thystame", false},
+        {"player", false},
+    };
+
+    response.erase(remove(response.begin(), response.end(), '['), response.end());
+    response.erase(remove(response.begin(), response.end(), ']'), response.end());
+
+    while ((pos = response.find(comaDelimiter)) != std::string::npos) {
+        token = response.substr(0, pos);
+        contentOfTile.push_back(token);
+        response.erase(0, pos + comaDelimiter.length());
+    }
+    for (std::size_t index = 0; index < contentOfTile.size(); index ++) {
+        std::vector<std::string> tmp;
+        while ((pos = contentOfTile.at(index).find(spaceDelimiter)) != std::string::npos) {
+        token = response.substr(0, pos);
+        tmp.push_back(token);
+        response.erase(0, pos + comaDelimiter.length());
+        }
+        std::map<std::string, bool> tmpContentMap = contentOfTileMap;
+        for (auto &resource : tmp) {
+            if (tmpContentMap.find(resource) != tmpContentMap.end()) {
+                tmpContentMap[resource] = true;
+            }
+        }
+        contentOfMap.push_back(tmpContentMap);
+    }
+
+    return contentOfMap;
 }
 
 std::string replaceCharacters(std::string str, const std::string& from, const std::string& to)
@@ -159,7 +209,7 @@ std::vector<ACTIONS> Ia::moveToTile(int tile)
 bool Ia::searchGem(std::string const &gem)
 {
     for (auto &[gemInLevelToObtain, quantity] : _levelsToObtain.at(_actualLevel))
-        if (_client.getInvetory().at(gem) <= quantity)
+        if (_inventory.at(gem) <= quantity)
             return true;
     return false;
 }
@@ -180,34 +230,80 @@ bool Ia::wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objectsPer
     return false;
 }
 
+void Ia::forward(std::string const &serverResponse)
+{
+    if (serverResponse == "ok\n") {
+        _requestListReceived.pop();
+        _requestListSent.pop();
+    }
+}
+void Ia::turnLeft(std::string const &serverResponse)
+{
+    if (serverResponse == "ok\n") {
+        _requestListReceived.pop();
+        _requestListSent.pop();
+    }
+}
+void Ia::turnRight(std::string const &serverResponse)
+{
+    if (serverResponse == "ok\n") {
+        _requestListReceived.pop();
+        _requestListSent.pop();
+    }
+}
+void Ia::look(std::string const &serverResponse)
+{
+}
 
-// 1- Le but est de look et si un objet l'intéresse il se déplace jusqu'à la case et prend l'objet
-// 2- Si aucun objet l'intéresse alors elle tourne left / right et refait la ligne 1
-// 3- Si rien ne l'intérresse alors q'elle a tourné sur elle même 3 fois dans le meme sens alors elle s'avance d'une case et reviens au 1
-// 4- Si sur la case + dans son inventory elle a tout ce qu'il faut pour faire incantation alors elle lance l'incantation
-// 5- elle recupere tout les objets sur la case et les met dans son inventaire
-// 6- elle demande au serveur 'inventory' et si tout et bon elle pose les objetcs qu'il faut et fait l'incantation
+void Ia::handleEvent(ACTIONS action, std::string const &response)
+{
+    switch (action) {
+        case ACTIONS::FORWARD:
+            forward(response);
+            break;
+        case ACTIONS::LEFT:
+            turnLeft(response);
+            break;
+        case ACTIONS::RIGHT:
+            turnRight(response);
+            break;
+        case ACTIONS::LOOK:
+            look(response);
+            break;
+        case ACTIONS::INVENTORY:
+            break;
+        default:
+            break;
+    }
+}
+
+void Ia::addActionToQueu(ACTIONS action)
+{
+    _requestListToSend.emplace(action);
+
+    if (_requestListSent.size() < MAX_ACTION_LIST) {
+        ACTIONS tmp = _requestListToSend.front();
+        _requestListToSend.pop();
+        _requestListSent.emplace(tmp);
+    }
+}
+
+void Ia::addMessageToQueu(std::string const &serverResponse)
+{
+    _requestListReceived.emplace(serverResponse);
+}
+
 void Ia::mainLoop()
 {
-    std::pair<ACTIONS, std::string> response;
-    std::string object;
-    // std::vector<std::map<std::string, bool>> allObjInTile;
+    std::string message;
 
-    while (true) {
+    while (!_isDead) {
         sleep(1);
-        // response = _client.handleAction(doAction(ACTIONS::LOOK));
-        // response = _client.handleAction(ACTIONS::LOOK);
-        // // allObjInTile = _client.parseLook(response);
-        // if (wantToTakeAnyObject(_client.getAllObjPerTile())) {
-        //     moveToTile(_objectToTake.first);
-        //     std::cout << "move to tile" << std::endl;
-        //     // takeObject()
-        // } else
-            response = _client.handleAction(ACTIONS::FORWARD);
-        // response = _client.handleAction(doAction(ACTIONS::FORWARD));
-        // if (response.compare("ok"))
-        //     std::cout << "IA received: " << response << std::endl;
-        // else
-        //     std::cout << "Bad response from the IA: " << response << std::endl;
+        handleEvent(_requestListSent.front(), _requestListReceived.front());
+
+        // add action to queu here
+
+        message = _client.getRequest(_client.getSocket());
+        addMessageToQueu(message);
     }
 }
