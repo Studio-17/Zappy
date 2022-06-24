@@ -54,6 +54,7 @@ static bool create_player(zappy_t *zappy, int socket, char *team_name)
         .orientation = NORTH,
         .elevation_status = NONE,
         .resource_inventory = malloc(sizeof(inventory_resource_t) * NB_ITEMS),
+        .units = 1260,
     };
 
     player.resource_inventory[FOOD].resource = FOOD;
@@ -70,6 +71,7 @@ static bool create_player(zappy_t *zappy, int socket, char *team_name)
         .player = player,
         .list = NULL,
         .team_members = 0,
+        .clock = clock(),
     };
 
     int team_members_connected = count_team_members(zappy, team_name);
