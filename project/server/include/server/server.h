@@ -8,6 +8,11 @@
 #ifndef SERVER_H_
     #define SERVER_H_
 
+    #include <string.h>
+    #include <unistd.h>
+    #include <time.h>
+    #include <stdlib.h>
+
     #include <math.h>
 
     #include "netlib.h"
@@ -22,6 +27,10 @@
 
     #include "server/client/client.h"
     #include "server/connection/setup/setup.h"
+    #include "list.h"
+
+    // #include "zappy/list.h"
+    // #include "request.h"
 
     #define RESOURCE_QUANTITY(width, height, density) (width * height * density)
 
@@ -87,6 +96,7 @@ typedef struct ai_client_s {
     enum CLIENT_TYPE type;
 
     player_t player;
+    list_t list;
 
     char team_name[50];
     int team_members;
@@ -163,8 +173,6 @@ void get_map_informations(zappy_t *zappy, int client_socket);
 
 bool listen_clients(zappy_t *zappy);
 void *gui_get_generic_request(int client_socket, int size_to_read);
-
-bool ai_handle_request(zappy_t *zappy, int player_index);
 
 void debug_server(server_t *server);
 void free_server(server_t *server);

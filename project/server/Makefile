@@ -29,6 +29,7 @@ SOURCE	=	source/server/communication/communication.c					\
 			source/server/communication/ai/take_request.c				\
 			source/server/communication/ai/set_request.c				\
 			source/server/communication/ai/incantation_request.c		\
+			source/server/communication/ai/invalid_request.c			\
 			source/server/communication/ai/tools/check_death.c			\
 			source/server/communication/ai/tools/move.c					\
 			source/server/communication/ai/tools/response.c				\
@@ -54,8 +55,9 @@ SOURCE	=	source/server/communication/communication.c					\
 			source/zappy/resources.c									\
 			source/zappy/zappy.c										\
 			source/zappy/elevation.c									\
+			source/zappy/queue.c										\
 
-TEST_SOURCE	=	../tests/test.c
+TEST_SOURCE	=	tests/test.c									\
 
 MAIN_OBJ	=	$(MAIN_SOURCE:.c=.o)
 
@@ -91,7 +93,6 @@ LDFLAGS	+=	-lm
 LDFLAGS	+=	-L ../library/
 LDFLAGS	+=	-l criterion --coverage
 
-LDLIBS	+=	-llist
 LDLIBS	+=	-lmini
 LDLIBS	+=	-lnet
 

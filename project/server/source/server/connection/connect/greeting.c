@@ -69,6 +69,7 @@ static bool create_player(zappy_t *zappy, int socket, char *team_name)
         .client_nb = zappy->server->clients,
         .type = AI,
         .player = player,
+        .list = NULL,
         .team_members = 0,
         .clock = clock(),
     };
