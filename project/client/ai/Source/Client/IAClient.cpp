@@ -56,6 +56,17 @@ IAClient::~IAClient()
 {
 }
 
+void IAClient::setMapSize(std::string str)
+{
+    std::string delimiter = " ";
+    size_t pos = str.find(delimiter);
+    std::string token = str.substr(0, pos);
+
+    _mapSize.first = std::stoi(token);
+    str.erase(0, pos + delimiter.length());
+    _mapSize.second = std::stoi(str);
+}
+
 void IAClient::postRequest(int socketId, std::string const &request)
 {
     dprintf(socketId, "%s\n", request.c_str());
@@ -127,8 +138,7 @@ void IAClient::handle()
         std::cout << clientNumString;
 
     coordString = getRequest(_socket);
-    std::cout << coordString;
-    _mapSize = coordString;
+    setMapSize(coordString);
 }
 
 
@@ -141,6 +151,7 @@ void IAClient::handleOptions()
 {
     _options->handleOptions();
 }
+
 
 // void IAClient::handleAction(ACTIONS action)
 // {

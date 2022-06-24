@@ -13,6 +13,17 @@ const int MAX_ACTION_LIST = 10;
 
 Ia::Ia() : _client()
 {
+    _actualIaPosition = {0, 0};
+    _possibleDirections = {
+        {DIRECTION::UP, {0, -1}},
+        {DIRECTION::RIGHT, {1, 0}},
+        {DIRECTION::DOWN, {0, 1}},
+        {DIRECTION::LEFT, {-1, 0}},
+    };
+    _actualIaDirection = DIRECTION::DOWN;
+    _actualLevel = 1;
+    _isDead = false;
+
     _levelsToObtain = {
         {2,
             {
@@ -99,9 +110,6 @@ Ia::Ia() : _client()
             }
         }
     };
-
-    _actualLevel = 1;
-    _isDead = false;
 }
 
 Ia::~Ia()
@@ -121,14 +129,44 @@ void Ia::startIa()
     mainLoop();
 }
 
-std::vector<std::map<std::string, bool>> Ia::parseLook(std::string response)
+void Ia::createMap(int mapHeight, int mapWidth)
+{
+    std::vector<std::map<std::string, bool>> tmp;
+
+    for (int line = 0; line < mapWidth; line++) {
+        for (int col = 0; col < mapHeight; col++)
+            tmp.emplace_back(createTile());
+        _contentOfMap.emplace_back(tmp);
+        tmp.clear();
+    }
+}
+
+std::map<std::string, bool> Ia::createTile()
+{
+    std::map<std::string, bool> tile;
+    tile.emplace("food", false);
+    tile.emplace("linemate", false);
+    tile.emplace("deraumere", false);
+    tile.emplace("sibur", false);
+    tile.emplace("mendiane", false);
+    tile.emplace("phiras", false);
+    tile.emplace("thystame", false);
+    return tile;
+}
+
+void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, DIRECTION direction)
+{
+
+}
+
+void Ia::parseLook(std::string response)
 {
     std::size_t pos = 0;
     std::string token;
     std::string comaDelimiter = ",";
     std::string spaceDelimiter = " ";
     std::vector<std::string> contentOfTile;
-    std::vector<std::map<std::string, bool>> contentOfMap;
+    std::vector<std::vector<std::string>> contentOfMap;
     std::map<std::string, bool> contentOfTileMap = {
         {"food", false},
         {"linemate", false},
@@ -140,34 +178,31 @@ std::vector<std::map<std::string, bool>> Ia::parseLook(std::string response)
         {"player", false},
     };
 
-    response.erase(remove(response.begin(), response.end(), '['), response.end());
-    response.erase(remove(response.begin(), response.end(), ']'), response.end());
+    response = replaceCharacters(response, "[ ", "");
+    response = replaceCharacters(response, " ]", "");
 
     while ((pos = response.find(comaDelimiter)) != std::string::npos) {
         token = response.substr(0, pos);
         contentOfTile.push_back(token);
         response.erase(0, pos + comaDelimiter.length());
     }
-    for (std::size_t index = 0; index < contentOfTile.size(); index ++) {
-        std::vector<std::string> tmp;
-        while ((pos = contentOfTile.at(index).find(spaceDelimiter)) != std::string::npos) {
-        token = response.substr(0, pos);
-        tmp.push_back(token);
-        response.erase(0, pos + comaDelimiter.length());
-        }
-        std::map<std::string, bool> tmpContentMap = contentOfTileMap;
-        for (auto &resource : tmp) {
-            if (tmpContentMap.find(resource) != tmpContentMap.end()) {
-                tmpContentMap[resource] = true;
-            }
-        }
-        contentOfMap.push_back(tmpContentMap);
-    }
+    contentOfTile.push_back(response);
 
-    return contentOfMap;
+    for (std::size_t index = 0; index < contentOfTile.size(); index ++) {
+        contentOfMap.push_back({});
+        std::string tmp = contentOfTile.at(index);
+        while ((pos = tmp.find(spaceDelimiter)) != std::string::npos) {
+            token = tmp.substr(0, pos);
+            contentOfMap.at(index).push_back(token);
+            tmp.erase(0, pos + spaceDelimiter.length());
+        }
+        contentOfMap.at(index).push_back(tmp);
+    }
+    fillInTheMap(contentOfMap, _actualIaPosition, _actualIaDirection);
 }
 
-std::string replaceCharacters(std::string str, const std::string& from, const std::string& to)
+
+std::string Ia::replaceCharacters(std::string str, const std::string& from, const std::string& to)
 {
     size_t start_pos = 0;
 
@@ -206,6 +241,29 @@ std::vector<ACTIONS> Ia::moveToTile(int tile)
     return actions;
 }
 
+void Ia::movePlayer()
+{
+    std::pair<int, int> position;
+
+    position.first = (_actualIaPosition.first + _possibleDirections.at(static_cast<DIRECTION>(_actualIaDirection)).first) % _mapSize.first;
+    position.second =(_actualIaPosition.second + _possibleDirections.at(static_cast<DIRECTION>(_actualIaDirection)).second) % _mapSize.second;
+    if (position.first < 0)
+        position.first += _mapSize.first;
+    if (position.second < 0)
+        position.second += _mapSize.second;
+    _actualIaPosition = position;
+}
+
+void Ia::changeDirection(DIRECTION direction)
+{
+    int tmp = static_cast<int>(_actualIaDirection);
+
+    if (direction == DIRECTION::LEFT)
+        _actualIaDirection = static_cast<DIRECTION>(tmp - 1 < 0 ? 3 : tmp - 1);
+    if (direction == DIRECTION::RIGHT)
+        _actualIaDirection = static_cast<DIRECTION>(tmp + 1 > 3 ? 0 : tmp + 1);
+}
+
 bool Ia::searchGem(std::string const &gem)
 {
     for (auto &[gemInLevelToObtain, quantity] : _levelsToObtain.at(_actualLevel))
@@ -235,6 +293,7 @@ void Ia::forward(std::string const &serverResponse)
     if (serverResponse == "ok\n") {
         _requestListReceived.pop();
         _requestListSent.pop();
+        movePlayer();
     }
 }
 void Ia::turnLeft(std::string const &serverResponse)
@@ -242,6 +301,7 @@ void Ia::turnLeft(std::string const &serverResponse)
     if (serverResponse == "ok\n") {
         _requestListReceived.pop();
         _requestListSent.pop();
+        changeDirection(DIRECTION::LEFT);
     }
 }
 void Ia::turnRight(std::string const &serverResponse)
@@ -249,10 +309,8 @@ void Ia::turnRight(std::string const &serverResponse)
     if (serverResponse == "ok\n") {
         _requestListReceived.pop();
         _requestListSent.pop();
+        changeDirection(DIRECTION::RIGHT);
     }
-}
-void Ia::look(std::string const &serverResponse)
-{
 }
 
 void Ia::handleEvent(ACTIONS action, std::string const &response)
@@ -268,7 +326,7 @@ void Ia::handleEvent(ACTIONS action, std::string const &response)
             turnRight(response);
             break;
         case ACTIONS::LOOK:
-            look(response);
+            parseLook(response);
             break;
         case ACTIONS::INVENTORY:
             break;
@@ -277,7 +335,7 @@ void Ia::handleEvent(ACTIONS action, std::string const &response)
     }
 }
 
-void Ia::addActionToQueu(ACTIONS action)
+void Ia::addActionToQueue(ACTIONS action)
 {
     _requestListToSend.emplace(action);
 
@@ -288,7 +346,7 @@ void Ia::addActionToQueu(ACTIONS action)
     }
 }
 
-void Ia::addMessageToQueu(std::string const &serverResponse)
+void Ia::addMessageToQueue(std::string const &serverResponse)
 {
     _requestListReceived.emplace(serverResponse);
 }
@@ -301,9 +359,11 @@ void Ia::mainLoop()
         sleep(1);
         handleEvent(_requestListSent.front(), _requestListReceived.front());
 
-        // add action to queu here
+        // add action to queue here
+        // movePlayer();
+        // changeDirection(DIRECTION::RIGHT);
 
         message = _client.getRequest(_client.getSocket());
-        addMessageToQueu(message);
+        addMessageToQueue(message);
     }
 }

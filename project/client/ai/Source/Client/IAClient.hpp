@@ -45,7 +45,8 @@ class IAClient {
         ~IAClient();
 
         // Methods
-        std::string getMapSize() const { return _mapSize; };
+        std::pair<int, int> getMapSize() { return _mapSize; };
+        void setMapSize(std::string str);
         int getSocket() const { return _socket; };
         std::map<std::string, int> getInvetory() { return _inventory; };
 
@@ -70,7 +71,7 @@ class IAClient {
         int _socket;
         sockaddr_in _server;
         std::unique_ptr<IAOptions> _options;
-        std::string _mapSize;
+        std::pair<int, int> _mapSize; //!< Map size
 
         std::map<std::string, int> _inventory;
         // std::map<std::string, int> _timeLimit;
