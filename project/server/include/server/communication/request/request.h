@@ -33,8 +33,11 @@ enum COMMANDS_AI {
     TAKE_OBJECT,
     SET_OBJECT,
     INCANTATION,
+    INVALID,
 
     NB_COMMANDS_AI,
+    ERROR,
+    OUT_OF_RANGE,
 };
 
 // REQUEST
@@ -46,6 +49,7 @@ typedef struct ai_request_s {
     enum COMMANDS_AI command;
     ai_request_handler handler;
     int time_limit;
+    void *data;
 } ai_request_t;
 
 enum COMMANDS_AI get_command_ai(char *request);
@@ -121,20 +125,47 @@ typedef struct gui_request_s {
     gui_request_handler handler;
 } gui_request_t;
 
-// REQUEST HANDLER (with queue)
 
-typedef struct argument_handler_s {
-    zappy_t *structure;
-    void *data;
-    int index;
-} argument_handler_t;
+typedef void (*request_handler)(void *, void *, int);
 
+// typedef struct argument_handler_s {
+//     void *structure;
+//     void *data;
+//     int index;
+// } argument_handler_t;
 typedef struct data_s {
-    ai_request_handler request;
-    argument_handler_t arguments;
+    ai_request_t request;
+    // argument_handler_t arguments;
 
-    int request_time;
     clock_t clock;
 } data_t;
+
+ai_request_t ai_handle_request(zappy_t *zappy, int player_index);
+
+// REQUEST HANDLER (with queue)
+
+// typedef struct argument_handler_s {
+//     zappy_t *structure;
+//     void *data;
+//     int index;
+// } argument_handler_t;
+
+// typedef struct data_s {
+//     ai_request_t request;
+//     // argument_handler_t arguments;
+
+//     clock_t clock;
+// } data_t;
+
+unsigned int queue_get_size(list_t list);
+bool queue_is_empty(list_t list);
+
+bool queue_push_back(list_t *front_ptr, void *elem, int type_size);
+
+bool queue_pop_front(list_t *front_ptr);
+
+void queue_clear(list_t *front_ptr);
+
+void *queue_get_front(list_t list);
 
 #endif /* !REQUEST_H_ */

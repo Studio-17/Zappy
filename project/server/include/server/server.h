@@ -27,8 +27,10 @@
 
     #include "server/client/client.h"
     #include "server/connection/setup/setup.h"
+    #include "list.h"
 
-    #include "zappy/list.h"
+    // #include "zappy/list.h"
+    // #include "request.h"
 
 
     #define RESOURCE_QUANTITY(width, height, density) (width * height * density)
@@ -161,8 +163,6 @@ void get_map_informations(zappy_t *zappy, int client_socket);
 
 bool listen_clients(zappy_t *zappy);
 void *gui_get_generic_request(int client_socket, int size_to_read);
-
-bool ai_handle_request(zappy_t *zappy, int player_index);
 
 void debug_server(server_t *server);
 void free_server(server_t *server);

@@ -6,47 +6,37 @@
 */
 
 #ifndef LIST_H_
-#define LIST_H_
+    #define LIST_H_
 
     #include <stdlib.h>
     #include <stdio.h>
     #include <stdbool.h>
+    #include "listlib.h"
+    // #include "request.h"
 
-typedef struct node_s {
-    void *value;
-    struct node_s *next;
-} node_t;
+// typedef void (*request_handler)(void *, void *, int);
 
-typedef node_t *list_t;
+// // typedef struct argument_handler_s {
+// //     void *structure;
+// //     void *data;
+// //     int index;
+// // } argument_handler_t;
+// typedef struct data_s {
+//     ai_request_t request;
+//     // argument_handler_t arguments;
 
-unsigned int list_get_size(list_t list);
-bool list_is_empty(list_t list);
-typedef void (*value_displayer_t)(const void *value);
-void list_dump(list_t list, value_displayer_t val_disp);
+//     clock_t clock;
+// } data_t;
 
-bool list_add_elem_at_front(list_t *front_ptr, void *elem);
-bool list_add_elem_at_back(list_t *front_ptr, void *elem);
-bool list_add_elem_at_position(list_t *front_ptr, void *elem, unsigned int position);
+// unsigned int queue_get_size(list_t list);
+// bool queue_is_empty(list_t list);
 
-bool list_del_elem_at_front(list_t *front_ptr);
-bool list_del_elem_at_back(list_t *front_ptr);
-bool list_del_elem_at_position(list_t *front_ptr, unsigned int position);
+// bool queue_push_back(list_t *front_ptr, void *elem, int type_size);
 
-void list_clear(list_t *front_ptr);
+// bool queue_pop_front(list_t *front_ptr);
 
-void *list_get_elem_at_front(list_t list);
-void *list_get_elem_at_back(list_t list);
-void *list_get_elem_at_position(list_t list, unsigned int position);
+// void queue_clear(list_t *front_ptr);
 
-unsigned int queue_get_size(list_t list);
-bool queue_is_empty(list_t list);
-
-bool queue_push_back(list_t *front_ptr, void *elem, int type_size);
-
-bool queue_pop_front(list_t *front_ptr);
-
-void queue_clear(list_t *front_ptr);
-
-void *queue_get_front(list_t list);
+// void *queue_get_front(list_t list);
 
 #endif /* !LISTLIB_H_ */

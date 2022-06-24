@@ -132,7 +132,12 @@ void add_client_socket_to_set(server_t *server)
 
 void wait_for_connections(server_t *server)
 {
-    if ((select(server->socket_descriptor->max_socket_descriptor + 1, &server->socket_descriptor->readfd, NULL, NULL, NULL) < 0))
+    struct timeval tv;
+
+    /* Pendant 5 secondes maxi */
+    tv.tv_sec = 0;
+    tv.tv_usec = 5;
+    if ((select(server->socket_descriptor->max_socket_descriptor + 1, &server->socket_descriptor->readfd, NULL, NULL, &tv) < 0))
     {
         perror("select");
     }
