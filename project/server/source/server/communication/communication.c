@@ -61,21 +61,13 @@ static void consume_time_unit(zappy_t *zappy, int player_index)
 bool listen_clients(zappy_t *zappy)
 {
     for (int index = 0; index < zappy->server->clients; index += 1) {
-
-        if (FD_ISSET(zappy->server->server_socket->client[index], &zappy->server->socket_descriptor->readfd)) {
-
-            if (!zappy->server->server_socket->client[index])
-                continue;
-
-            zappy->server->socket_descriptor->socket_descriptor = zappy->server->server_socket->client[index];
-
+        if (FD_ISSET(zappy->client[index].socket, &zappy->server->socket_descriptor->readfd)) {
             ai_request_t request = ai_handle_request(zappy, index);
 
             if (request.command == ERROR)
                 return false;
             else if (request.command == OUT_OF_RANGE)
                 continue;
-
             data_t new_data = {
                 .request = request,
                 .clock = 0,

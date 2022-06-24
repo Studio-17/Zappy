@@ -41,7 +41,8 @@ static void print_tile_content(int socket, tile_t const tile, bool player, bool 
 static bool is_player_at_postion(zappy_t *zappy, position_t const position)
 {
     for (int player_index = 0; player_index != zappy->options->max_clients; player_index++)
-        if (zappy->server->server_socket->client[player_index])
+        // if (zappy->server->server_socket->client[player_index])
+        if (zappy->client[player_index].socket)
             if (zappy->client[player_index].player.position.x == position.x && zappy->client[player_index].player.position.y == position.y)
                 return true;
     return false;

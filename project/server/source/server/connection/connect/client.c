@@ -34,23 +34,12 @@ bool connect_client(zappy_t *zappy)
 
         if (!greeting_protocol(zappy, client_socket)) {
 
-            for (int index = 0; index < zappy->server->server_socket->max_client; index += 1) {
-
-                if (zappy->server->server_socket->client[index] == 0) {
-                    saved_index = index;
-                    // zappy->client[index].socket = client_socket;
-                    zappy->server->server_socket->client[index] = client_socket;
-                    break;
-
-                }
-            }
-
             if (zappy->server->is_gui_connected)
                 gui_update_player_connected(zappy, saved_index);
 
         } else {
-
-            gui_update_map_content(zappy);
+            if (zappy->server->is_gui_connected)
+                gui_update_map_content(zappy);
         }
 
     }
@@ -68,17 +57,15 @@ void add_server_socket_to_set(server_t *server)
     server->socket_descriptor->max_socket_descriptor = server->server_socket->server;
 }
 
-void add_client_socket_to_set(server_t *server)
+void add_client_socket_to_set(zappy_t *zappy)
 {
-    for (int index = 0; index < server->server_socket->max_client; index += 1)
-    {
-        server->socket_descriptor->socket_descriptor = server->server_socket->client[index];
+    for (int index = 0; index < zappy->server->clients; index += 1) {
 
-        if (server->socket_descriptor->socket_descriptor > 0)
-            FD_SET(server->socket_descriptor->socket_descriptor, &server->socket_descriptor->readfd);
+        if (zappy->client[index].socket > 0)
+            FD_SET(zappy->client[index].socket, &zappy->server->socket_descriptor->readfd);
 
-        if (server->socket_descriptor->socket_descriptor > server->socket_descriptor->max_socket_descriptor)
-            server->socket_descriptor->max_socket_descriptor = server->socket_descriptor->socket_descriptor;
+        if (zappy->client[index].socket > zappy->server->socket_descriptor->max_socket_descriptor)
+            zappy->server->socket_descriptor->max_socket_descriptor = zappy->client[index].socket;
     }
 }
 
@@ -95,13 +82,12 @@ void wait_for_connections(server_t *server)
     }
 }
 
-void add_client_to_server(server_t *server, int client_socket)
+void add_client_to_server(zappy_t *zappy, int client_socket)
 {
-    for (int index = 0; index < server->server_socket->max_client; index += 1)
-    {
-        if (server->server_socket->client[index] == 0)
-        {
-            server->server_socket->client[index] = client_socket;
+    for (int index = 0; index < zappy->server->clients; index += 1) {
+
+        if (zappy->client[index].socket == 0) {
+            zappy->client[index].socket = client_socket;
             break;
         }
     }

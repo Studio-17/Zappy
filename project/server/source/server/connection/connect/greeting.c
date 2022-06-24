@@ -95,7 +95,7 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
 {
     char team_name[256];
     bool valid_team_name = false;
-    bool is_gui_team = false;
+    int is_gui_team = 0;
     bool can_player_connect = false;
     bzero(&team_name, sizeof(team_name));
 
@@ -142,6 +142,9 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
 static void post_client_num(zappy_t *zappy, int socket)
 {
     for (int index = 0; index <= zappy->server->clients; index += 1) {
+        zappy->client[index].socket;
+        printf("done\n");
+        printf("socket %d\n", zappy->client[index].socket);
         if (zappy->client[index].socket == socket) {
             dprintf(socket, "%d\n", zappy->client[index].client_nb);
             return;
