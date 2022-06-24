@@ -43,18 +43,21 @@
             void setTimeLimit(std::map<std::string, int> timeLimit) { _timeLimit = timeLimit; };
 
             void createMap(int mapHeight, int mapWidth);
-            std::map<std::string, int> createTile();
+            std::map<std::string, bool> createTile();
+            void fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, std::pair<int, int> direction); // pas fait
 
-            std::vector<std::vector<std::map<std::string, int>>> getContentOfMap() { return _contentOfMap; };
+            std::vector<std::vector<std::map<std::string, bool>>> getContentOfMap() { return _contentOfMap; };
 
-            void setContentTile(std::map<std::string, int> contentOfTile, int x, int y) { _contentOfMap.at(y).at(x) = contentOfTile; };
-            std::map<std::string, int> getContentOfATile(int x, int y) { return _contentOfMap.at(y).at(x); };
+            void setContentTile(std::map<std::string, bool> contentOfTile, int x, int y) { _contentOfMap.at(y).at(x) = contentOfTile; };
+            std::map<std::string, bool> getContentOfATile(int x, int y) { return _contentOfMap.at(y).at(x); };
 
-            void PutAResourceDown(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource)++; };
-            void GrabAResource(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource)--; };
+            void PutAResourceDown(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource) = true; };
+            void GrabAResource(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource) = false; };
 
             void setupOptions(int ac, char **av) { _options->setupOptions(ac, av); };
             void handleOptions() { _options->handleOptions(); };
+
+            void movePlayer(std::pair<int, int> direction);
 
             void postRequest(int socketId, std::string const &request) { dprintf(socketId, "%s\n", request.c_str()); };
             std::string getRequest(int socketId);
@@ -75,7 +78,7 @@
             std::pair<int, int> _mapSize;
             std::map<std::string, int> _inventory;
             std::map<std::string, int> _timeLimit;
-            std::vector<std::vector<std::map<std::string, int>>> _contentOfMap;
+            std::vector<std::vector<std::map<std::string, bool>>> _contentOfMap;
     };
 
 #endif /* !IACLIENT_HPP_ */

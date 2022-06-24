@@ -12,7 +12,7 @@
     #include <queue>
 
 class Ia {
-    enum class ACTIONS {
+    enum class ACTION {
         FORWARD,
         RIGHT,
         LEFT,
@@ -27,6 +27,13 @@ class Ia {
         INCANTATION,
     };
 
+    enum class DIRECTION {
+        UP = 0,
+        RIGHT = 1,
+        DOWN = 2,
+        LEFT = 3,
+    };
+
     public:
         Ia();
         ~Ia();
@@ -38,18 +45,18 @@ class Ia {
 
         std::string takeObject(std::string object) { return ("Take " + transformRessourceToAction(object) + "\n"); }; // Take object
         std::string setObject(std::string object) { return ("Set " + transformRessourceToAction(object) + "\n"); }; // Set object
-        std::string doAction(ACTIONS action) { return (_actionCommands.at(action)); };
+        std::string doAction(ACTION action) { return (_actionCommands.at(action)); };
 
         std::string replaceCharacters(std::string str, const std::string& from, const std::string& to); // change all strings to another string in a string
 
         std::string transformRessourceToAction(std::string object); // transform a basic object to an action ex: 'food' to 'Food'
-        std::vector<std::map<std::string, bool>> parseLook(std::string response); // Function to parse the look string
+        void parseLook(std::string response); // Function to parse the look string
 
         bool searchGem(std::string const &gem);
         bool wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objects); // Check if in the tiles there is a cool object
 
         int getCenteredTile(int level) { return (level * (level + 1)); }; // Get the position of the centered tile of the ia vue
-        std::vector<ACTIONS> moveToTile(int tile); // tranform a tile position to a vector of movements to go to the tile and take the object
+        std::vector<ACTION> moveToTile(int tile); // tranform a tile position to a vector of movements to go to the tile and take the object
 
         void mainLoop();
 
@@ -59,7 +66,10 @@ class Ia {
     protected:
     private:
         IAClient _client; //!< IAClient
-        std::map<ACTIONS, std::string> _actionCommands; //!< Map of the action commands
+        std::pair<int, int> _ActualIaPosition; //!< Actual Ia Position
+        std::pair<int, int> _ActualIaDirection; //!< Actual Ia Direction
+        std::vector<std::pair<int, int>> _possibleDirections; //!< Possible directions of the ia
+        std::map<ACTION, std::string> _actionCommands; //!< Map of the action commands
         std::map<std::size_t, std::map<std::string, int>> _levelsToObtain; //!< Map of the levels to obtain
 
         int _actualLevel; //!< actual level of the ia

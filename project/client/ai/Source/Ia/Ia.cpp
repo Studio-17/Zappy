@@ -11,17 +11,27 @@
 
 Ia::Ia() : _client()
 {
+    _ActualIaPosition = {0, 0};
+    _possibleDirections = {
+        {0, -1},
+        {1, 0},
+        {0, 1},
+        {-1, 0},
+    };
+    _ActualIaDirection = _possibleDirections.at(static_cast<int>(DIRECTION::DOWN));
+    _actualLevel = 1;
+
     _actionCommands = {
-        {ACTIONS::FORWARD, "Forward\n"},
-        {ACTIONS::RIGHT, "Right\n"},
-        {ACTIONS::LEFT, "Left\n"},
-        {ACTIONS::LOOK, "Look\n"},
-        {ACTIONS::INVENTORY, "Inventory\n"},
-        {ACTIONS::BROADCAST_TEXT, "Broadcast text\n"},
-        {ACTIONS::CONNECT_NBR, "Connect_nbr\n"},
-        {ACTIONS::FORK, "Fork\n"},
-        {ACTIONS::EJECT, "Eject\n"},
-        {ACTIONS::INCANTATION, "Incantation\n"},
+        {ACTION::FORWARD, "Forward\n"},
+        {ACTION::RIGHT, "Right\n"},
+        {ACTION::LEFT, "Left\n"},
+        {ACTION::LOOK, "Look\n"},
+        {ACTION::INVENTORY, "Inventory\n"},
+        {ACTION::BROADCAST_TEXT, "Broadcast text\n"},
+        {ACTION::CONNECT_NBR, "Connect_nbr\n"},
+        {ACTION::FORK, "Fork\n"},
+        {ACTION::EJECT, "Eject\n"},
+        {ACTION::INCANTATION, "Incantation\n"},
     };
 
     _levelsToObtain = {
@@ -110,22 +120,20 @@ Ia::Ia() : _client()
             }
         }
     };
-
-    _actualLevel = 1;
 }
 
 Ia::~Ia()
 {
 }
 
-std::vector<std::map<std::string, bool>> Ia::parseLook(std::string response)
+void Ia::parseLook(std::string response)
 {
     size_t pos = 0;
     std::string token;
     std::string comaDelimiter = ",";
     std::string spaceDelimiter = " ";
     std::vector<std::string> contentOfTile;
-    std::vector<std::map<std::string, bool>> contentOfMap;
+    std::vector<std::vector<std::string>> contentOfMap;
     std::map<std::string, bool> contentOfTileMap = {
         {"food", false},
         {"linemate", false},
@@ -145,23 +153,19 @@ std::vector<std::map<std::string, bool>> Ia::parseLook(std::string response)
         contentOfTile.push_back(token);
         response.erase(0, pos + comaDelimiter.length());
     }
-    for (std::size_t index = 0; index < contentOfTile.size(); index ++) {
-        std::vector<std::string> tmp;
-        while ((pos = contentOfTile.at(index).find(spaceDelimiter)) != std::string::npos) {
-        token = response.substr(0, pos);
-        tmp.push_back(token);
-        response.erase(0, pos + comaDelimiter.length());
-        }
-        std::map<std::string, bool> tmpContentMap = contentOfTileMap;
-        for (auto &resource : tmp) {
-            if (tmpContentMap.find(resource) != tmpContentMap.end()) {
-                tmpContentMap[resource] = true;
-            }
-        }
-        contentOfMap.push_back(tmpContentMap);
-    }
+    contentOfTile.push_back(response);
 
-    return contentOfMap;
+    for (std::size_t index = 0; index < contentOfTile.size(); index ++) {
+        contentOfMap.push_back({});
+        std::string tmp = contentOfTile.at(index);
+        while ((pos = tmp.find(spaceDelimiter)) != std::string::npos) {
+            token = tmp.substr(0, pos);
+            contentOfMap.at(index).push_back(token);
+            tmp.erase(0, pos + spaceDelimiter.length());
+        }
+        contentOfMap.at(index).push_back(tmp);
+    }
+    _client.fillInTheMap(contentOfMap, _ActualIaPosition, _ActualIaDirection);
 }
 
 void Ia::startIa()
@@ -175,7 +179,7 @@ void Ia::startIa()
     mainLoop();
 }
 
-std::string replaceCharacters(std::string str, const std::string& from, const std::string& to)
+std::string Ia::replaceCharacters(std::string str, const std::string& from, const std::string& to)
 {
     size_t start_pos = 0;
 
@@ -192,9 +196,9 @@ std::string Ia::transformRessourceToAction(std::string object)
     return object;
 }
 
-std::vector<Ia::ACTIONS> Ia::moveToTile(int tile)
+std::vector<Ia::ACTION> Ia::moveToTile(int tile)
 {
-    std::vector<Ia::ACTIONS> actions;
+    std::vector<Ia::ACTION> actions;
     int centeredTile;
     bool isInGoodFloor = false;
 
@@ -203,13 +207,13 @@ std::vector<Ia::ACTIONS> Ia::moveToTile(int tile)
         if (tile >= centeredTile + floor && tile <= centeredTile + floor)
             isInGoodFloor = true;
         else
-            actions.push_back(ACTIONS::FORWARD);
+            actions.push_back(ACTION::FORWARD);
     }
     while (centeredTile != tile) {
         if (centeredTile > tile)
-            actions.push_back(ACTIONS::LEFT);
+            actions.push_back(ACTION::LEFT);
         else
-            actions.push_back(ACTIONS::RIGHT);
+            actions.push_back(ACTION::RIGHT);
     }
     return actions;
 }
@@ -246,13 +250,14 @@ void Ia::mainLoop()
 
     while (true) {
         sleep(1);
-        response = _client.handleAction(doAction(Ia::ACTIONS::LOOK));
-        allObjInTile = parseLook(response);
-        if (wantToTakeAnyObject(allObjInTile)) {
-            moveToTile(_objectToTake.first);
-            std::cout << "move to tile" << std::endl;
-            // takeObject()
-        } else
-            response = _client.handleAction(doAction(Ia::ACTIONS::LEFT));
+        response = _client.handleAction(doAction(Ia::ACTION::LOOK));
+        std::cout << "Response: " << response << std::endl;
+        parseLook("[ sibur mendiane,, linemate, food ]");
+        // if (wantToTakeAnyObject(allObjInTile)) {
+        //     moveToTile(_objectToTake.first);
+        //     std::cout << "move to tile" << std::endl;
+        //     // takeObject()
+        // } else
+        //     response = _client.handleAction(doAction(Ia::ACTIONS::LEFT));
     }
 }
