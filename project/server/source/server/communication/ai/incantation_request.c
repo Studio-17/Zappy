@@ -74,8 +74,10 @@ void ai_incantation_request(zappy_t *zappy, void *data, int player_index)
             zappy->client[player_index].player.elevation_status == END;
             remove_elevation_stones(zappy, player_index);
         }
-        gui_update_tile_content(zappy, (position_t){zappy->client[player_index].player.position.x, zappy->client[player_index].player.position.y});
-        gui_update_player_level(zappy, player_index);
+        if (zappy->server->is_gui_connected) {
+            gui_update_tile_content(zappy, (position_t){zappy->client[player_index].player.position.x, zappy->client[player_index].player.position.y});
+            gui_update_player_level(zappy, player_index);
+        }
         dprintf(zappy->client[player_index].socket, "Elevation underway\nCurrent level: %d\n", zappy->client[player_index].player.level);
     } else {
         zappy->client[player_index].player.elevation_status == FAILED;
