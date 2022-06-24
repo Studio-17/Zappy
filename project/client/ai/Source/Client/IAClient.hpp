@@ -17,8 +17,8 @@
     #include <arpa/inet.h>
     #include <map>
     #include <vector>
-    #include<iostream>
-    #include<algorithm>
+    #include <iostream>
+    #include <algorithm>
 
     #include "Errors/ErrorsModules/Client/ClientErrors.hpp"
 
@@ -48,33 +48,22 @@ class IAClient {
         std::string getMapSize() const { return _mapSize; };
         int getSocket() const { return _socket; };
         std::map<std::string, int> getInvetory() { return _inventory; };
-        void setInventory(std::map<std::string, int> inventory) { _inventory = inventory; };
-        std::map<std::string, int> getTimeLimit() { return _timeLimit; };
-        void setTimeLimit(std::map<std::string, int> timeLimit) { _timeLimit = timeLimit; };
-        std::vector<std::map<std::string, bool>> getAllObjPerTile() const { return _allObjPerTile; };
-        void setAllObjPerTile(std::vector<std::map<std::string, bool>> allObjPerTile) { _allObjPerTile = allObjPerTile; };
 
 
         // Post & Get a request from server
         void postRequest(int socketId, std::string const &request);
+        void postRequest(int socketId, ACTIONS request);
         std::string getRequest(int socketId);
         void serverSentResponse();
-
 
         // Setup connection IA
         void setup();
         void connection();
         void handle();
+
         void setupOptions(int ac, char **av);
         void handleOptions();
-
-
-        std::vector<std::map<std::string, bool>> parseLook(std::string response);
-        std::pair<ACTIONS, std::string> handleAction(ACTIONS action);
-        void forward();
-        void turnLeft();
-        void turnRight();
-        void look();
+        // void handleAction(ACTIONS action);
 
     protected:
     private:
@@ -84,10 +73,8 @@ class IAClient {
         std::string _mapSize;
 
         std::map<std::string, int> _inventory;
-        std::map<std::string, int> _timeLimit;
+        // std::map<std::string, int> _timeLimit;
         std::map<ACTIONS, std::string> _actionCommands; //!< Map of the action commands
-
-        std::vector<std::map<std::string, bool>> _allObjPerTile;
 };
 
 #endif /* !IACLIENT_HPP_ */

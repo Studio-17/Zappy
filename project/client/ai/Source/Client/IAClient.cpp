@@ -24,20 +24,20 @@ IAClient::IAClient()
         {"phiras", 0},
         {"thystame", 0}
     };
-    _timeLimit = {
-        {"Forward", 7},
-        {"Right", 7},
-        {"Left", 7},
-        {"Look", 7},
-        {"Inventory", 1},
-        {"Broadcast text", 7},
-        {"Connect_nbr", 0},
-        {"Fork", 42},
-        {"Eject", 7},
-        {"Take ", 7},
-        {"Set ", 7},
-        {"Incantation", 300},
-    };
+    // _timeLimit = {
+    //     {"Forward", 7},
+    //     {"Right", 7},
+    //     {"Left", 7},
+    //     {"Look", 7},
+    //     {"Inventory", 1},
+    //     {"Broadcast text", 7},
+    //     {"Connect_nbr", 0},
+    //     {"Fork", 42},
+    //     {"Eject", 7},
+    //     {"Take ", 7},
+    //     {"Set ", 7},
+    //     {"Incantation", 300},
+    // };
     _actionCommands = {
         {ACTIONS::FORWARD, "Forward\n"},
         {ACTIONS::RIGHT, "Right\n"},
@@ -59,6 +59,11 @@ IAClient::~IAClient()
 void IAClient::postRequest(int socketId, std::string const &request)
 {
     dprintf(socketId, "%s\n", request.c_str());
+}
+
+void IAClient::postRequest(int socketId, ACTIONS request)
+{
+    dprintf(socketId, "%s\n", _actionCommands.at(request).c_str());
 }
 
 std::string IAClient::getRequest(int socketId)
@@ -137,105 +142,12 @@ void IAClient::handleOptions()
     _options->handleOptions();
 }
 
-std::vector<std::map<std::string, bool>> IAClient::parseLook(std::string response)
-{
-    std::size_t pos = 0;
-    std::string token;
-    std::string comaDelimiter = ",";
-    std::string spaceDelimiter = " ";
-    std::vector<std::string> contentOfTile;
-    std::vector<std::map<std::string, bool>> contentOfMap;
-    std::map<std::string, bool> contentOfTileMap = {
-        {"food", false},
-        {"linemate", false},
-        {"deraumere", false},
-        {"sibur", false},
-        {"mendiane", false},
-        {"phiras", false},
-        {"thystame", false},
-        {"player", false},
-    };
+// void IAClient::handleAction(ACTIONS action)
+// {
+    // std::pair<ACTIONS, std::string> response;
 
-    response.erase(remove(response.begin(), response.end(), '['), response.end());
-    response.erase(remove(response.begin(), response.end(), ']'), response.end());
-
-    while ((pos = response.find(comaDelimiter)) != std::string::npos) {
-        token = response.substr(0, pos);
-        contentOfTile.push_back(token);
-        response.erase(0, pos + comaDelimiter.length());
-    }
-    for (std::size_t index = 0; index < contentOfTile.size(); index ++) {
-        std::vector<std::string> tmp;
-        while ((pos = contentOfTile.at(index).find(spaceDelimiter)) != std::string::npos) {
-        token = response.substr(0, pos);
-        tmp.push_back(token);
-        response.erase(0, pos + comaDelimiter.length());
-        }
-        std::map<std::string, bool> tmpContentMap = contentOfTileMap;
-        for (auto &resource : tmp) {
-            if (tmpContentMap.find(resource) != tmpContentMap.end()) {
-                tmpContentMap[resource] = true;
-            }
-        }
-        contentOfMap.push_back(tmpContentMap);
-    }
-
-    return contentOfMap;
-}
-
-static bool checkKoResponse(std::string const &response)
-{
-    if (response == "ko\n")
-        return true;
-    return false;
-}
-
-std::pair<ACTIONS, std::string> IAClient::handleAction(ACTIONS action)
-{
-    std::pair<ACTIONS, std::string> response;
-
-    response.first = action;
-    postRequest(_socket, _actionCommands.at(action));
-    response.second = getRequest(_socket);
-
-    if (checkKoResponse(response.second))
-        return response;
-
-    switch (action) {
-        case ACTIONS::FORWARD:
-            forward();
-            break;
-        case ACTIONS::LEFT:
-            turnLeft();
-            break;
-        case ACTIONS::RIGHT:
-            turnRight();
-            break;
-        case ACTIONS::LOOK:
-            look();
-            break;
-        default:
-            break;
-    }
-    return response;
-}
-
-void IAClient::forward()
-{
-    _inventory.at("food") -= _timeLimit.at("Forward");
-}
-
-void IAClient::turnLeft()
-{
-    _inventory.at("food") -= _timeLimit.at("Left");
-}
-
-void IAClient::turnRight()
-{
-    _inventory.at("food") -= _timeLimit.at("Right");
-}
-
-void IAClient::look()
-{
-    _inventory.at("food") -= _timeLimit.at("Look");
-}
+    // response.first = action;
+    // postRequest(_socket, _actionCommands.at(action));
+    // response.second = getRequest(_socket);
+    // return response;
+// }
