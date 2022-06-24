@@ -62,9 +62,6 @@ void post_request_player_position(int socket, request_payload_player_position_t 
     write(socket, &request, sizeof(request_payload_player_position_t));
 }
 
-
-
-
 void post_response_player_level(int socket, response_payload_player_level_t response)
 {
     write(socket, &response, sizeof(response_payload_player_level_t));
@@ -85,9 +82,6 @@ void post_request_player_level(int socket, request_payload_player_level_t reques
     write(socket, &request, sizeof(request_payload_player_level_t));
 }
 
-
-
-
 void post_response_player_inventory(int socket, response_payload_player_inventory_t response)
 {
     write(socket, &response, sizeof(response_payload_player_inventory_t));
@@ -106,4 +100,9 @@ request_payload_player_inventory_t get_request_player_inventory(int socket)
 void post_request_player_inventory(int socket, request_payload_player_inventory_t request)
 {
     write(socket, &request, sizeof(request_payload_player_inventory_t));
+}
+
+void post_response_player_orientation(int socket, response_payload_player_orientation_t request)
+{
+    write(socket, &request, sizeof(response_payload_player_orientation_t));
 }

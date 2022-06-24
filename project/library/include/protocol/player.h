@@ -88,4 +88,17 @@ void post_response_player_inventory(int socket, response_payload_player_inventor
 request_payload_player_inventory_t get_request_player_inventory(int socket);
 void post_request_player_inventory(int socket, request_payload_player_inventory_t request);
 
+/* PLAYER ORIENTATION */
+
+typedef struct request_payload_player_orientation_s {
+    int player_id;
+} request_payload_player_orientation_t;
+
+typedef struct response_payload_player_orientation_s {
+    int player_id;
+    int orientation;
+} response_payload_player_orientation_t;
+
+void post_response_player_orientation(int socket, response_payload_player_orientation_t response);
+
 #endif /* !PLAYER_H_ */
