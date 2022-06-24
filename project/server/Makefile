@@ -41,6 +41,7 @@ SOURCE	=	source/server/communication/communication.c					\
 			source/server/communication/gui/update_tile_content.c		\
 			source/server/communication/gui/update_player_level.c		\
 			source/server/communication/gui/update_player_connected.c	\
+			source/server/communication/gui/update_player_orientation.c	\
 			source/server/server.c										\
 			source/server/connection/connect/client.c					\
 			source/server/connection/connect/greeting.c					\

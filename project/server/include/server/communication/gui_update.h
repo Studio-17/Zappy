@@ -19,7 +19,10 @@ enum COMMANDS_GUI {
     PLAYER_POSITION,
     PLAYER_LEVEL,
     PLAYER_INVENTORY,
-    NB_COMMANDS_GUI,
+    TIME_UNIT,
+    TIME_UNIT_MODIFICATION,
+    PLAYER_ORIENTATION,
+    NB_COMMANDS_GUI
 };
 
 typedef void (*gui_update_handler)(zappy_t *, void *);
@@ -37,5 +40,6 @@ void gui_update_player_connected(zappy_t *zappy, int data_to_update);
 void gui_update_player_position(zappy_t *zappy, int player_index);
 void gui_update_player_level(zappy_t *zappy, int player_index);
 void gui_update_player_inventory(zappy_t *zappy, int player_index);
+void gui_update_player_orientation(zappy_t *zappy, int player_index);
 
 #endif /* !GUI_UPDATE_H_ */

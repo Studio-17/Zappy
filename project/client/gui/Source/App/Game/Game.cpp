@@ -10,6 +10,7 @@
 static std::vector<std::pair<COMMANDS_GUI, void(Game::*)(char *)>> _commandsMap = {
     std::make_pair(PLAYER_CONNECTED, &Game::handleAddPlayer),
     std::make_pair(PLAYER_POSITION, &Game::handleUpdatePlayerPosition),
+    std::make_pair(PLAYER_ORIENTATION, &Game::handleUpdatePlayerOrientation),
     std::make_pair(PLAYER_LEVEL, &Game::handleUpdatePlayerLevel),
     std::make_pair(PLAYER_INVENTORY, &Game::handleUpdatePlayerInventory),
     std::make_pair(CONTENT_TILE, &Game::handleUpdateContentTile),
@@ -119,10 +120,19 @@ void Game::updatePlayerPosition(int playerId, int x, int y, int orientation)
     for (auto &player : _players) {
         if (player->getPlayerId() == playerId) {
             player->setPosition(playerPosition * 10);
-            player->setOrientation((Object::ORIENTATION)orientation);
+            // player->setOrientation((Object::ORIENTATION)orientation);
         }
     }
     std::cout << "player " << playerId << " moved " << x << " " << y << "with orientation: " << orientation << std::endl;
+}
+
+void Game::updatePlayerOrientation(int playerId, Object::ORIENTATION orientation)
+{
+    for (auto &player : _players) {
+        if (player->getPlayerId() == playerId)
+            player->setOrientation(orientation);
+    }
+    std::cout << "player " << playerId << " set Orientation to : " << (int)orientation << std::endl;
 }
 
 void Game::updatePlayerLevel(int playerId, int level)
@@ -178,6 +188,7 @@ void Game::updateContentTile(Position const &tilePosition, std::vector<std::pair
 
 void Game::updateInformations(char *data, int type)
 {
+    std::cout << type << std::endl;
     for (auto &command : _commandsMap)
         if (command.first == type)
             (this->*command.second)(data);
@@ -201,6 +212,15 @@ void Game::handleUpdatePlayerPosition(char *data)
 
     playerPos = (response_payload_player_position_t*)data;
     this->updatePlayerPosition(playerPos->player_id, playerPos->position.x, playerPos->position.y, playerPos->orientation);
+}
+
+void Game::handleUpdatePlayerOrientation(char *data)
+{
+    std::cout << "payer orientation" << std::endl;
+    response_payload_player_orientation_t *playerOrientation;
+
+    playerOrientation = (response_payload_player_orientation_t*)data;
+    this->updatePlayerOrientation(playerOrientation->player_id, (Object::ORIENTATION)playerOrientation->orientation);
 }
 
 void Game::handleUpdatePlayerLevel(char *data)
