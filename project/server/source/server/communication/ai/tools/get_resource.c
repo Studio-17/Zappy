@@ -25,9 +25,9 @@ int get_resource_from_request(char *target)
     };
 
     if (!request_content)
-        return (NULL);
+        return (-1);
     if (my_arrlen(request_content) != 2)
-        return (NULL);
+        return (-1);
     for (int index = 0; resource_set[index]; index += 1)
         if (strncmp(request_content[1], resource_set[index], length - 2) == 0)
             return (index);

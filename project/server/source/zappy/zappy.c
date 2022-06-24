@@ -31,7 +31,8 @@ bool setup_zappy_content(zappy_t *zappy)
     if (!zappy->options->team_names)
         return false;
     zappy->options->max_clients = my_arrlen(zappy->options->team_names) * zappy->options->clients_nb;
-    zappy->client = malloc(sizeof(ai_client_t) * zappy->options->clients_nb);
+    zappy->options->max_teams = my_arrlen(zappy->options->team_names);
+    zappy->client = malloc(sizeof(ai_client_t) * zappy->options->max_clients);
     if (!zappy->client)
         return false;
     zappy->server = malloc(sizeof(server_t));

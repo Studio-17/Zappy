@@ -49,7 +49,7 @@ static bool is_player_at_postion(zappy_t *zappy, position_t const position)
 
 void ai_look_request(zappy_t *zappy, void *data, int player_index)
 {
-    int socket = zappy->server->socket_descriptor->socket_descriptor;
+    int socket = zappy->client[player_index].socket;
     position_t player_orientation = direction[zappy->client[player_index].player.orientation];
     position_t row_orientation = row_direction[zappy->client[player_index].player.orientation];
     int nb_tiles = 0;

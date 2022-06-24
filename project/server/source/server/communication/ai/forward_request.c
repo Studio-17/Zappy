@@ -19,5 +19,5 @@ void ai_forward_request(zappy_t *zappy, void *data, int player_index)
 
     gui_update_player_position(zappy, player_index);
 
-    ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, true);
+    ai_response_ok_ko(zappy->client[player_index].socket, true);
 }

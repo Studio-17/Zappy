@@ -33,7 +33,7 @@ void ai_eject_request(zappy_t *zappy, void *data, int player_index)
     }
 
     if (player_on_tile == 0)
-        ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, false);
+        ai_response_ok_ko(zappy->client[player_index].socket, false);
     else
-        ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, true);
+        ai_response_ok_ko(zappy->client[player_index].socket, true);
 }

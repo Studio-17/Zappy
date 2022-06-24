@@ -19,27 +19,6 @@
 #include "server/server.h"
 #include "server/communication/request/request.h"
 
-static void create_player(zappy_t *zappy, int socket)
-{
-    player_t player = (player_t){
-        .id = zappy->server->clients,
-        .level = 1,
-        .position = (position_t){rand() % zappy->options->width, rand() % zappy->options->height},
-        .orientation = NORTH,
-        .elevation_status = NONE,
-        .resource_inventory = malloc(sizeof(inventory_resource_t) * NB_ITEMS),
-    };
-
-    player.resource_inventory[FOOD].resource = FOOD;
-    player.resource_inventory[FOOD].quantity = 10;
-    for (int index = 1; index < NB_ITEMS; index += 1) {
-        player.resource_inventory[index].resource = (enum ITEM)index;
-        player.resource_inventory[index].quantity = 0;
-    }
-
-    zappy->client[zappy->server->clients] = (ai_client_t){socket, zappy->server->clients, AI, player};
-}
-
 bool connect_client(zappy_t *zappy)
 {
     int client_socket;
@@ -48,27 +27,29 @@ bool connect_client(zappy_t *zappy)
     if (FD_ISSET(zappy->server->server_socket->server, &zappy->server->socket_descriptor->readfd))
     {
         if ((client_socket = accept(zappy->server->server_socket->server,
-                                 (struct sockaddr *)&zappy->server->address, (socklen_t *)&zappy->server->address_length)) < 0)
-        {
+                                 (struct sockaddr *)&zappy->server->address, (socklen_t *)&zappy->server->address_length)) < 0) {
             perror("accept");
             exit(EXIT_FAILURE);
         }
+
         if (!greeting_protocol(zappy, client_socket)) {
+
             for (int index = 0; index < zappy->server->server_socket->max_client; index += 1) {
+
                 if (zappy->server->server_socket->client[index] == 0) {
                     saved_index = index;
                     // zappy->client[index].socket = client_socket;
                     zappy->server->server_socket->client[index] = client_socket;
                     break;
+
                 }
             }
 
-            create_player(zappy, client_socket);
-
-            zappy->server->clients += 1;
             if (zappy->server->is_gui_connected)
                 gui_update_player_connected(zappy, saved_index);
+
         } else {
+
             gui_update_map_content(zappy);
         }
 

@@ -18,15 +18,17 @@ bool listen_clients(zappy_t *zappy)
 {
     for (int index = 0; index < zappy->server->server_socket->max_client; index += 1) {
         if (FD_ISSET(zappy->server->server_socket->client[index], &zappy->server->socket_descriptor->readfd)) {
+
             if (!zappy->server->server_socket->client[index])
                 continue;
+
             zappy->server->socket_descriptor->socket_descriptor = zappy->server->server_socket->client[index];
 
             if (!ai_handle_request(zappy, index))
                 return false;
 
-            if (check_death(zappy, index))
-                death_protocol(zappy, index);
+            // if (check_death(zappy, index))
+            //     death_protocol(zappy, index);
         }
     }
     return true;

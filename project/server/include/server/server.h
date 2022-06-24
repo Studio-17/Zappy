@@ -8,14 +8,6 @@
 #ifndef SERVER_H_
     #define SERVER_H_
 
-    // #include <stdio.h>
-    // #include <string.h>
-    // #include <stdlib.h>
-    // #include <errno.h>
-    // #include <unistd.h>
-    // #include <sys/types.h>
-    // #include <sys/socket.h>
-
     #include <math.h>
 
     #include "netlib.h"
@@ -30,7 +22,6 @@
 
     #include "server/client/client.h"
     #include "server/connection/setup/setup.h"
-
 
     #define RESOURCE_QUANTITY(width, height, density) (width * height * density)
 
@@ -86,9 +77,14 @@ typedef struct player_t {
 
 typedef struct ai_client_s {
     int socket;
+
     int client_nb;
     enum CLIENT_TYPE type;
+
     player_t player;
+
+    char team_name[50];
+    int team_members;
 } ai_client_t;
 
 typedef struct resources_s {
@@ -99,7 +95,6 @@ typedef struct resources_s {
 } resources_t;
 
 resources_t *setup_resources(int width, int height);
-
 
 void debug_resources(resources_t *resource);
 void free_resources(resources_t *resources);
