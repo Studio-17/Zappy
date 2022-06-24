@@ -68,11 +68,16 @@ enum ELEVATION_STEP {
 
 typedef struct player_t {
     int id;
-    int level;
+
     position_t position;
     enum ORIENTATION orientation;
+
+    int level;
     enum ELEVATION_STEP elevation_status;
+
     inventory_resource_t *resource_inventory;
+
+    int units;
 } player_t;
 
 typedef struct ai_client_s {
@@ -85,6 +90,8 @@ typedef struct ai_client_s {
 
     char team_name[50];
     int team_members;
+
+    clock_t clock;
 } ai_client_t;
 
 typedef struct resources_s {

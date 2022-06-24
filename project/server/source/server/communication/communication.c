@@ -11,6 +11,7 @@
 void death_protocol(zappy_t *zappy, int index)
 {
     dprintf(zappy->client[index].socket, "dead\n");
+
     // disconnect the player
 }
 
@@ -29,8 +30,8 @@ bool listen_clients(zappy_t *zappy)
             if (!ai_handle_request(zappy, index))
                 return false;
 
-            // if (check_death(zappy, index))
-            //     death_protocol(zappy, index);
+            if (check_death(zappy, index))
+                death_protocol(zappy, index);
         }
     }
     return true;
