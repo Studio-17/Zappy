@@ -37,8 +37,10 @@ bool listen_clients(zappy_t *zappy)
 {
     for (int index = 0; index < zappy->server->server_socket->max_client; index += 1) {
         if (FD_ISSET(zappy->server->server_socket->client[index], &zappy->server->socket_descriptor->readfd)) {
+
             if (!zappy->server->server_socket->client[index])
                 continue;
+
             zappy->server->socket_descriptor->socket_descriptor = zappy->server->server_socket->client[index];
 
             ai_request_t request = ai_handle_request(zappy, index);
@@ -56,8 +58,8 @@ bool listen_clients(zappy_t *zappy)
             };
             queue_push_back(&zappy->client[index].list, &new_data, sizeof(data_t));
             printf("queue size %d\n", queue_get_size(zappy->client[index].list));
-            if (check_death(zappy, index))
-                death_protocol(zappy, index);
+            // if (check_death(zappy, index))
+                // death_protocol(zappy, index);
         }
         execute_task(&zappy->client[index].list, zappy, index);
     }

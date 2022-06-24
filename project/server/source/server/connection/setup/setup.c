@@ -19,7 +19,7 @@ bool setup_server(server_t *server, options_t *options)
     server->server_socket->client = malloc(sizeof(int) * options->clients_nb);
     if (!server->server_socket->client)
         return false;
-    server->server_socket->max_client = options->clients_nb;
+    server->server_socket->max_client = options->clients_nb * my_arrlen(options->team_names);
     server->clients = 0;
     server->is_gui_connected = false;
     return true;

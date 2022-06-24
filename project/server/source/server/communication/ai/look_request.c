@@ -12,7 +12,7 @@ static const position_t direction[] = {
 };
 
 static const position_t row_direction[] = {
-    {1, 0}, {0, 1}, {1, 0}, {0, 1}
+    {1, 0}, {0, 1}, {-1, 0}, {0, -1}
 };
 
 static void print_tile_content(int socket, tile_t const tile, bool player, bool first)
@@ -49,7 +49,7 @@ static bool is_player_at_postion(zappy_t *zappy, position_t const position)
 
 void ai_look_request(zappy_t *zappy, void *data, int player_index)
 {
-    int socket = zappy->server->socket_descriptor->socket_descriptor;
+    int socket = zappy->client[player_index].socket;
     position_t player_orientation = direction[zappy->client[player_index].player.orientation];
     position_t row_orientation = row_direction[zappy->client[player_index].player.orientation];
     int nb_tiles = 0;
@@ -57,7 +57,7 @@ void ai_look_request(zappy_t *zappy, void *data, int player_index)
     for (int i = 0; i <= zappy->client[player_index].player.level; i++)
         nb_tiles += 1 + (i * 2);
     bool first = true;
-    dprintf(socket, "[");
+    dprintf(socket, "[ ");
     for (int i = 0; i <= zappy->client[player_index].player.level; i++) {
         for (int index = -i; index <= i; index++) {
             if (!first)
@@ -82,5 +82,5 @@ void ai_look_request(zappy_t *zappy, void *data, int player_index)
                 first = false;
         }
     }
-    dprintf(socket, "]\n");
+    dprintf(socket, " ]\n");
 }

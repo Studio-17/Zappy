@@ -6,6 +6,8 @@
 */
 
 #include "server.h"
+#include "ai_request.h"
+#include "gui_update.h"
 
 /*
  *  elevation   nb of players   linemate    deraumere   sibur   mendiane    phiras  thystame
@@ -65,7 +67,6 @@ void ai_incantation_request(zappy_t *zappy, void *data, int player_index)
     printf("current player level: %d\n", zappy->client[player_index].player.level);
     printf("elevation processus index: %d\n", elevation_processus_index);
 
-
     if (check_elevation(zappy, elevation_processus_index, zappy->client[player_index].player.level, player_index)) {
         if (zappy->client[player_index].player.elevation_status == NONE || zappy->client[player_index].player.elevation_status == FAILED)
             zappy->client[player_index].player.elevation_status = BEGIN;
@@ -73,9 +74,11 @@ void ai_incantation_request(zappy_t *zappy, void *data, int player_index)
             zappy->client[player_index].player.elevation_status == END;
             remove_elevation_stones(zappy, player_index);
         }
-        dprintf(zappy->server->socket_descriptor->socket_descriptor, "Elevation underway\nCurrent level: %d\n", zappy->client[player_index].player.level);
+        gui_update_tile_content(zappy, (position_t){zappy->client[player_index].player.position.x, zappy->client[player_index].player.position.y});
+        gui_update_player_level(zappy, player_index);
+        dprintf(zappy->client[player_index].socket, "Elevation underway\nCurrent level: %d\n", zappy->client[player_index].player.level);
     } else {
         zappy->client[player_index].player.elevation_status == FAILED;
-        ai_response_ok_ko(zappy->server->socket_descriptor->socket_descriptor, false);
+        ai_response_ok_ko(zappy->client[player_index].socket, false);
     }
 }

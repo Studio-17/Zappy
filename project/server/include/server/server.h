@@ -32,7 +32,6 @@
     // #include "zappy/list.h"
     // #include "request.h"
 
-
     #define RESOURCE_QUANTITY(width, height, density) (width * height * density)
 
 enum ITEM {
@@ -87,10 +86,15 @@ typedef struct player_t {
 
 typedef struct ai_client_s {
     int socket;
+
     int client_nb;
     enum CLIENT_TYPE type;
+
     player_t player;
     list_t list;
+
+    char team_name[50];
+    int team_members;
 } ai_client_t;
 
 typedef struct resources_s {
@@ -101,7 +105,6 @@ typedef struct resources_s {
 } resources_t;
 
 resources_t *setup_resources(int width, int height);
-
 
 void debug_resources(resources_t *resource);
 void free_resources(resources_t *resources);

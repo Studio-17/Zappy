@@ -12,7 +12,7 @@
 
 void ai_base_request(zappy_t *zappy, __attribute__((unused)) void *data, __attribute__((unused))int player_index)
 {
-    int socket = zappy->server->socket_descriptor->socket_descriptor;
+    int socket = zappy->client[player_index].socket;
 
     write(socket, "UNUSED REQUEST\n", strlen("UNUSED REQUEST\n"));
 }
@@ -63,7 +63,7 @@ static const ai_request_t ai_request_to_handle[] = {
     {
         .request = "Connect_nbr",
         .command = CONNECT_NBR,
-        .handler = &ai_base_request,
+        .handler = &ai_connect_nbr_request,
         .time_limit = 0,
         .data = NULL,
     },
@@ -132,7 +132,7 @@ char *ai_get_generic_request(int client_socket, zappy_t *zappy, int player_index
 
 ai_request_t ai_handle_request(zappy_t *zappy, int player_index)
 {
-    char *request_data = ai_get_generic_request(zappy->server->socket_descriptor->socket_descriptor, zappy, player_index);
+    char *request_data = ai_get_generic_request(zappy->client[player_index].socket, zappy, player_index);
     bool valid_request = false;
     ai_request_t tmp;
     ai_request_t error_request = { .command = ERROR };

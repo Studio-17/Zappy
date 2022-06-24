@@ -36,6 +36,7 @@ typedef struct options_s {
     int height;
     char *names;
     char **team_names;
+    int max_teams;
     int clients_nb;
     int max_clients;
     int freq;

@@ -17,37 +17,45 @@ DELETE_DIR	=	$(DELETE) -r
 
 MAIN_SOURCE	=	source/main.c			\
 
-SOURCE	=	source/server/communication/communication.c				\
-			source/server/communication/ai.c						\
-			source/server/communication/ai/forward_request.c		\
-			source/server/communication/ai/right_request.c			\
-			source/server/communication/ai/left_request.c			\
-			source/server/communication/ai/eject_request.c			\
-			source/server/communication/ai/look_request.c			\
-			source/server/communication/ai/inventory_request.c		\
-			source/server/communication/ai/take_request.c			\
-			source/server/communication/ai/set_request.c			\
-			source/server/communication/ai/incantation_request.c	\
-			source/server/communication/ai/invalid_request.c		\
-			source/server/communication/ai/tools/check_death.c		\
-			source/server/communication/ai/tools/move.c				\
-			source/server/communication/ai/tools/response.c			\
-			source/server/communication/ai/tools/get_resource.c		\
-			source/server/communication/gui.c						\
-			source/server/communication/gui/update_tile.c			\
-			source/server/server.c									\
-			source/server/connection/connect/client.c				\
-			source/server/connection/connect/greeting.c				\
-			source/server/connection/connect/server.c				\
-			source/server/connection/setup/setup.c					\
-			source/options/options.c								\
-			source/options/usage.c									\
-			source/zappy/map.c										\
-			source/zappy/resources.c								\
-			source/zappy/zappy.c									\
-			source/zappy/queue.c									\
-			source/zappy/elevation.c								\
-			# source/zappy/list.c										
+SOURCE	=	source/server/communication/communication.c					\
+			source/server/communication/ai.c							\
+			source/server/communication/ai/forward_request.c			\
+			source/server/communication/ai/right_request.c				\
+			source/server/communication/ai/left_request.c				\
+			source/server/communication/ai/eject_request.c				\
+			source/server/communication/ai/look_request.c				\
+			source/server/communication/ai/inventory_request.c			\
+			source/server/communication/ai/connect_nbr_request.c		\
+			source/server/communication/ai/take_request.c				\
+			source/server/communication/ai/set_request.c				\
+			source/server/communication/ai/incantation_request.c		\
+			source/server/communication/ai/invalid_request.c			\
+			source/server/communication/ai/tools/check_death.c			\
+			source/server/communication/ai/tools/move.c					\
+			source/server/communication/ai/tools/response.c				\
+			source/server/communication/ai/tools/get_resource.c			\
+			source/server/communication/gui.c							\
+			source/server/communication/gui/update_map_content.c		\
+			source/server/communication/gui/update_team_name.c			\
+			source/server/communication/gui/update_player_inventory.c	\
+			source/server/communication/gui/update_map_size.c			\
+			source/server/communication/gui/update_player_position.c	\
+			source/server/communication/gui/update_tile_content.c		\
+			source/server/communication/gui/update_player_level.c		\
+			source/server/communication/gui/update_player_connected.c	\
+			source/server/communication/gui/update_player_orientation.c	\
+			source/server/server.c										\
+			source/server/connection/connect/client.c					\
+			source/server/connection/connect/greeting.c					\
+			source/server/connection/connect/server.c					\
+			source/server/connection/setup/setup.c						\
+			source/options/options.c									\
+			source/options/usage.c										\
+			source/zappy/map.c											\
+			source/zappy/resources.c									\
+			source/zappy/zappy.c										\
+			source/zappy/elevation.c									\
+			source/zappy/queue.c										\
 
 TEST_SOURCE	=	../tests/test.c
 

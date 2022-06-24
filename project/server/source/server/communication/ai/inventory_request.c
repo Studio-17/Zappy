@@ -6,18 +6,19 @@
 */
 
 #include "ai_request.h"
+#include "gui_update.h"
 
 void ai_inventory_request(zappy_t *zappy, void *data, int player_index)
 {
     inventory_resource_t *inventory = zappy->client[player_index].player.resource_inventory;
 
-    dprintf(zappy->server->socket_descriptor->socket_descriptor, "[ ");
+    dprintf(zappy->client[player_index].socket, "[ ");
 
     for (int index = 0; index < NB_ITEMS; index += 1) {
 
-        dprintf(zappy->server->socket_descriptor->socket_descriptor, (index == NB_ITEMS - 1) ? "%s %d" : "%s %d, ", zappy->resources[index].name, inventory[index].quantity);
+        dprintf(zappy->client[player_index].socket, (index == NB_ITEMS - 1) ? "%s %d" : "%s %d, ", zappy->resources[index].name, inventory[index].quantity);
 
     }
 
-    dprintf(zappy->server->socket_descriptor->socket_descriptor, " ]\n");
+    dprintf(zappy->client[player_index].socket, " ]\n");
 }

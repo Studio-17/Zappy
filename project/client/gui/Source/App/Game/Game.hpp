@@ -35,6 +35,7 @@ enum COMMANDS_GUI {
     PLAYER_INVENTORY, // STRUCT DONE
     TIME_UNIT,
     TIME_UNIT_MODIFICATION,
+    PLAYER_ORIENTATION,
     NB_COMMANDS_GUI,
 };
 
@@ -52,8 +53,9 @@ class Game : public AScene {
         void drawTiles();
         void drawPlayers();
 
-        void addPlayer(std::string const &team, int playerId, int x, int y, Object::ORIENTATION orientation, std::string const &teamName);
-        void updatePlayerPosition(int playerId, int x, int y);
+        void addPlayer(int playerId, int x, int y, Object::ORIENTATION orientation, std::string const &teamName);
+        void updatePlayerPosition(int playerId, int x, int y, int orientation);
+        void updatePlayerOrientation(int playerId, Object::ORIENTATION orientation);
         void updatePlayerLevel(int playerId, int level);
         void updatePlayerInventory(int playerId, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &inventory);
         void updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &resources);
@@ -61,6 +63,7 @@ class Game : public AScene {
 
         void handleAddPlayer(char *data);
         void handleUpdatePlayerPosition(char *data);
+        void handleUpdatePlayerOrientation(char *data);
         void handleUpdatePlayerLevel(char *data);
         void handleUpdatePlayerInventory(char *data);
         void handleUpdateContentTile(char *data);
