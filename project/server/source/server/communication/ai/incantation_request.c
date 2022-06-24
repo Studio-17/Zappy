@@ -64,9 +64,6 @@ void ai_incantation_request(zappy_t *zappy, void *data, int player_index)
 {
     int elevation_processus_index = zappy->client[player_index].player.level - 1;
 
-    printf("current player level: %d\n", zappy->client[player_index].player.level);
-    printf("elevation processus index: %d\n", elevation_processus_index);
-
     if (check_elevation(zappy, elevation_processus_index, zappy->client[player_index].player.level, player_index)) {
         if (zappy->client[player_index].player.elevation_status == NONE || zappy->client[player_index].player.elevation_status == FAILED)
             zappy->client[player_index].player.elevation_status = BEGIN;
