@@ -10,6 +10,8 @@
 
     #include <raylib.h>
     #include <vector>
+    #include "raymath.h"
+
 
     #include "Rendering/Animation.hpp"
     #include "Rendering/Model.hpp"

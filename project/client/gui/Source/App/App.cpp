@@ -21,10 +21,12 @@ App::App(std::string const &name, int width, int height) : _window(width, height
 {
     _camera = std::make_shared<RayLib::CinematicCamera>();
     _camera->setPosition(Position(65, 230, 266));
-    _camera->setTarget(Position(65, 0, 65));
-    _camera->setFovy(45.0f);
+    _camera->setTarget(Position(35, 0, 55));
+    _camera->setFovy(20.0f);
     _camera->setUp(Position(0, 1, 0));
     _camera->setProjection(CAMERA_PERSPECTIVE);
+    SetCameraMode(_camera->getCamera(), CAMERA_FREE);
+    SetTargetFPS(60);
 }
 
 App::~App()
@@ -51,6 +53,7 @@ void App::startMainLoop()
         if (_activeScene == Scenes::QUIT)
             break;
         _menuScenes.at(_activeScene)->draw();
+        _camera->updateCamera();
         _window.endDrawing();
     }
 }
