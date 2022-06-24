@@ -151,9 +151,9 @@ std::map<std::string, bool> Ia::createTile()
     return tile;
 }
 
-void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, std::pair<int, int> direction)
+void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, DIRECTION direction)
 {
-    std::cout << "Not filled yet" << std::endl;
+
 }
 
 void Ia::parseLook(std::string response)
@@ -195,7 +195,7 @@ void Ia::parseLook(std::string response)
         }
         contentOfMap.at(index).push_back(tmp);
     }
-    // fillInTheMap(contentOfMap, _actualIaPosition, _actualIaDirection);
+    fillInTheMap(contentOfMap, _actualIaPosition, _actualIaDirection);
 }
 
 void Ia::startIa()
@@ -306,11 +306,7 @@ void Ia::mainLoop()
     while (true) {
         sleep(1);
         response = _client.handleAction(doAction(Ia::ACTION::LOOK));
-        std::cout << "Response: " << response << std::endl;
         movePlayer();
         changeDirection(DIRECTION::RIGHT);
-        // parseLook("[ sibur mendiane,, linemate, food ]");
-        std::cout << "Position: " << _actualIaPosition.first << " " << _actualIaPosition.second << std::endl;
-        std::cout << "Direction: " << _possibleDirections.at(_actualIaDirection).first << " " << _possibleDirections.at(_actualIaDirection).second << std::endl;
     }
 }

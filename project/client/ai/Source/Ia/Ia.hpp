@@ -61,7 +61,7 @@ class Ia {
         void createMap(int mapHeight, int mapWidth); //!< Create the map of the game
         std::map<std::string, bool> createTile(); //!< Create a tile of the map
 
-        void fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, std::pair<int, int> direction); // pas fait
+        void fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, DIRECTION direction); // pas fait
 
         void setContentTile(std::map<std::string, bool> contentOfTile, int x, int y) { _contentOfMap.at(y).at(x) = contentOfTile; }; //!< Set the content of a tile
         std::map<std::string, bool> getContentOfATile(int x, int y) { return _contentOfMap.at(y).at(x); }; //!< Get the content of a tile
