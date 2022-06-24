@@ -110,6 +110,8 @@ bool ai_handle_request(zappy_t *zappy, int player_index)
 
         if (strncmp(request_data, ai_request_to_handle[index].request, strlen(ai_request_to_handle[index].request)) == 0) {
 
+            printf("%s handle called\n", ai_request_to_handle[index].request);
+
             ai_request_to_handle[index].handler(zappy, request_data, player_index);
             valid_request = true;
             return (true);

@@ -16,6 +16,8 @@ void death_protocol(zappy_t *zappy, int index)
 
 bool listen_clients(zappy_t *zappy)
 {
+    printf("server can listen to maximum of %d clients\n", zappy->server->server_socket->max_client);
+
     for (int index = 0; index < zappy->server->server_socket->max_client; index += 1) {
         if (FD_ISSET(zappy->server->server_socket->client[index], &zappy->server->socket_descriptor->readfd)) {
 
