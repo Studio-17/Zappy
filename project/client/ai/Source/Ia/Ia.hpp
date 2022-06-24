@@ -36,20 +36,24 @@ class Ia {
         std::string replaceCharacters(std::string str, const std::string& from, const std::string& to); //!< change all strings to another string in a string
 
         std::string transformRessourceToAction(std::string object); // Utile ?
+
         void parseLook(std::string response); //!< Function to parse the look string
+        void parseInventory(std::string response); //!< Function to parse the inventory string
+
+        void fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> playerPosition, DIRECTION direction); //!< Fill the map with the content of the look
+        void fillInTheInventory(std::map<std::string, int> content); // a verifier
 
         bool searchGem(std::string const &gem); // a modifier
         bool wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objects); // a modifier
 
-        int getNbTileFromLevel(int level); //!< Get the number of tiles from a level
         std::vector<ACTIONS> moveToTile(int tile); // a modifier
+
+        bool isBracketsInString(std::string str); // fait mais a utiliser quand le buffer circulaire est fait
 
         void createMap(int mapHeight, int mapWidth); //!< Create the map of the game
         std::map<std::string, bool> createTile(); //!< Create a tile of the map
 
-        void fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> playerPosition, DIRECTION direction); // pas fait
-
-        void setContentTile(std::map<std::string, bool> contentOfTile, int x, int y) { _contentOfMap.at(y).at(x) = contentOfTile; }; //!< Set the content of a tile
+        void setContentTile(std::vector<std::vector<std::string>> contentOfTile, int x, int y); //!< Set the content of a tile
         std::map<std::string, bool> getContentOfATile(int x, int y) { return _contentOfMap.at(y).at(x); }; //!< Get the content of a tile
 
         void PutAResourceDown(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource) = true; }; //!< Put a resource down in the map
@@ -59,14 +63,15 @@ class Ia {
         void changeDirection(DIRECTION direction); //!< Change the direction of the player
 
 
-        void forward(std::string const &serverResponse);
-        void turnLeft(std::string const &serverResponse);
-        void turnRight(std::string const &serverResponse);
-        void look(std::string const &serverResponse);
-        void handleEvent(ACTIONS action, std::string const &response);
-        void addActionToQueue(ACTIONS action);
-        void addMessageToQueue(std::string const &serverResponse);
-        void mainLoop();
+        void forward(std::string const &serverResponse); //!< Move the player forward
+        void turnLeft(std::string const &serverResponse); //!< Turn the player left
+        void turnRight(std::string const &serverResponse); //!< Turn the player right
+        void look(std::string const &serverResponse); //!< Set some map infos from the look response
+        void inventory(std::string const &serverResponse); //!< Set the inventory from the inventory response
+        void handleEvent(ACTIONS action, std::string const &response); //!< Handle the response of the server
+        void addActionToQueue(ACTIONS action); //!< Add an action to the queue
+        void addMessageToQueue(std::string const &serverResponse); //!< Add a message to the queue
+        void mainLoop(); //!< Main loop of the IA
 
     protected:
     private:
@@ -79,11 +84,11 @@ class Ia {
         std::map<std::size_t, std::map<std::string, int>> _levelsToObtain; //!< Map of the levels to obtain
 
         int _actualLevel; //!< actual level of the ia
-        std::map<std::string, int> _inventory; //!< Map of the inventory
+        std::map<std::string, int> _inventory; // a passer dans le IaClient
         std::string _action; //!< Action to do
 
         std::pair<int, std::string> _objectToTake; //!< Object to take
-        bool _isDead;
+        bool _isDead; //!< bool to know if the ia dead
 
         std::queue<ACTIONS> _requestListToSend; //!< Queue of the requests to send
         std::queue<ACTIONS> _requestListSent; //!< Queue of the requests sent

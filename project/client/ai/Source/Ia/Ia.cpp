@@ -30,6 +30,16 @@ Ia::Ia() : _client()
     _actualLevel = 1;
     _isDead = false;
 
+    _inventory = {
+        {"food", 10},
+        {"linemate", 0},
+        {"deraumere", 0},
+        {"sibur", 0},
+        {"mendiane", 0},
+        {"phiras", 0},
+        {"thystame", 0}
+    };
+
     _levelsToObtain = {
         {2,
             {{"food", 0},
@@ -114,7 +124,6 @@ void Ia::startIa()
         _client.setup();
         _client.connection();
         _mapSize = _client.getMapSize();
-        _inventory = _client.getInvetory();
     } catch (ClientErrors const &ClientError) {
         std::cerr << ClientError.what() << std::endl;
     }
@@ -152,9 +161,6 @@ void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<i
     std::pair<int, int> rowOrientation = _rowDirections.at(direction);
     int nbTiles = 0;
 
-    std::cout << "actual level -> " << _actualLevel << std::endl;
-    std::cout << "position ->" << playerPosition.first << " " << playerPosition.second << std::endl;
-    std::cout << "orientation ->" << playerOrientation.first << " " << playerOrientation.second << std::endl;
     for (int i = 0; i <= _actualLevel; i++)
         nbTiles += 1 + (i * 2);
     bool first = true;
@@ -175,13 +181,33 @@ void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<i
                 tmpPos.second = 0;
             else if (tmpPos.second < 0)
                 tmpPos.second = _mapSize.second - 1;
-            // ici on remplit la map
-            std::cout << "tmp->" << tmpPos.first << " " << tmpPos.second << std::endl;
+            setContentTile(content, tmpPos.first, tmpPos.second);
             if (first)
                 first = false;
         }
     }
-    std::cout << "Finished" << std::endl;
+}
+
+void Ia::setContentTile(std::vector<std::vector<std::string>> contentOfTile, int x, int y)
+{
+    for (auto &line : contentOfTile) {
+        for (auto &tile : line) {
+            if (tile == "food")
+                _contentOfMap.at(y).at(x).at("food") = true;
+            else if (tile == "linemate")
+                _contentOfMap.at(y).at(x).at("linemate") = true;
+            else if (tile == "deraumere")
+                _contentOfMap.at(y).at(x).at("deraumere") = true;
+            else if (tile == "sibur")
+                _contentOfMap.at(y).at(x).at("sibur") = true;
+            else if (tile == "mendiane")
+                _contentOfMap.at(y).at(x).at("mendiane") = true;
+            else if (tile == "phiras")
+                _contentOfMap.at(y).at(x).at("phiras") = true;
+            else if (tile == "thystame")
+                _contentOfMap.at(y).at(x).at("thystame") = true;
+        }
+    }
 }
 
 void Ia::parseLook(std::string response)
@@ -192,16 +218,6 @@ void Ia::parseLook(std::string response)
     std::string spaceDelimiter = " ";
     std::vector<std::string> contentOfTile;
     std::vector<std::vector<std::string>> contentOfMap;
-    std::map<std::string, bool> contentOfTileMap = {
-        {"food", false},
-        {"linemate", false},
-        {"deraumere", false},
-        {"sibur", false},
-        {"mendiane", false},
-        {"phiras", false},
-        {"thystame", false},
-        {"player", false},
-    };
 
     response = replaceCharacters(response, "[ ", "");
     response = replaceCharacters(response, " ]", "");
@@ -213,8 +229,6 @@ void Ia::parseLook(std::string response)
     }
     contentOfTile.push_back(response);
 
-    if (contentOfTile.size() == 1)
-        std::cout << "Not good: Only one tile !!!!!" << std::endl;
 
     for (std::size_t index = 0; index < contentOfTile.size(); index ++) {
         contentOfMap.push_back({});
@@ -227,6 +241,45 @@ void Ia::parseLook(std::string response)
         contentOfMap.at(index).push_back(tmp);
     }
     fillInTheMap(contentOfMap, _actualIaPosition, _actualIaDirection);
+}
+
+void Ia::parseInventory(std::string response)
+{
+    std::size_t pos = 0;
+    std::string token;
+    std::string comaDelimiter = ",";
+    std::string spaceDelimiter = " ";
+    std::map<std::string, int> contentOfInventory;
+
+    while ((pos = response.find(comaDelimiter)) != std::string::npos) {
+        token = response.substr(0, pos);
+        response.erase(0, pos + comaDelimiter.length());
+        pos = token.find(spaceDelimiter);
+        std::string key = token.substr(0, pos);
+        int value = std::stoi(token.substr(pos + spaceDelimiter.length()));
+        contentOfInventory.emplace(key, value);
+    }
+    fillInTheInventory(contentOfInventory);
+}
+
+void Ia::fillInTheInventory(std::map<std::string, int> content)
+{
+    for (auto &item : content) {
+        if (item.first == "food")
+            _inventory.at("food") = item.second;
+        else if (item.first == "linemate")
+            _inventory.at("linemate") = item.second;
+        else if (item.first == "deraumere")
+            _inventory.at("deraumere") = item.second;
+        else if (item.first == "sibur")
+            _inventory.at("sibur") = item.second;
+        else if (item.first == "mendiane")
+            _inventory.at("mendiane") = item.second;
+        else if (item.first == "phiras")
+            _inventory.at("phiras") = item.second;
+        else if (item.first == "thystame")
+            _inventory.at("thystame") = item.second;
+    }
 }
 
 
@@ -245,16 +298,6 @@ std::string Ia::transformRessourceToAction(std::string object)
 {
     object[0] = std::toupper(object[0]);
     return object;
-}
-
-int Ia::getNbTileFromLevel(int level)
-{
-    int tmp = 0;
-
-    for (int i = 0; i <= level; i++)
-        tmp += i * 2 + 1;
-    std::cout << "Tmp ->" << tmp << std::endl;
-    return tmp;
 }
 
 // std::vector<ACTIONS> Ia::moveToTile(int tile)
@@ -326,6 +369,13 @@ void Ia::changeDirection(DIRECTION direction)
 //     return false;
 // }
 
+bool Ia::isBracketsInString(std::string str)
+{
+    if (str.find("[ ") != std::string::npos && str.find(" ]") != std::string::npos && str.find("\n") != std::string::npos && str.find("[ ") < str.find(" ]"))
+        return true;
+    return false;
+}
+
 void Ia::forward(std::string const &serverResponse)
 {
     if (serverResponse == "ok\n") {
@@ -354,9 +404,21 @@ void Ia::turnRight(std::string const &serverResponse)
 void Ia::look(std::string const &serverResponse)
 {
     std::cout << "Look response->" << serverResponse << std::endl;
-    parseLook(serverResponse);
-    _requestListReceived.pop();
-    _requestListSent.pop();
+    // if (isBracketsInString(serverResponse)) {
+        parseLook(serverResponse);
+        _requestListReceived.pop();
+        _requestListSent.pop();
+    // }
+}
+
+void Ia::inventory(std::string const &serverResponse)
+{
+    std::cout << "Inventory response->" << serverResponse << std::endl;
+    // if (isBracketsInString(serverResponse)) {
+    //     parseInventory(serverResponse);
+    //     _requestListReceived.pop();
+    //     _requestListSent.pop();
+    // }
 }
 
 void Ia::handleEvent(ACTIONS action, std::string const &response)
@@ -375,6 +437,7 @@ void Ia::handleEvent(ACTIONS action, std::string const &response)
             look(response);
             break;
         case ACTIONS::INVENTORY:
+            inventory(response);
             break;
         default:
             break;
