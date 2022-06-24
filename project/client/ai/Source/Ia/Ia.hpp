@@ -35,19 +35,19 @@ class Ia {
 
         std::string replaceCharacters(std::string str, const std::string& from, const std::string& to); //!< change all strings to another string in a string
 
-        std::string transformRessourceToAction(std::string object); //!< transform a basic object to an action ex: 'food' to 'Food'
+        std::string transformRessourceToAction(std::string object); // Utile ?
         void parseLook(std::string response); //!< Function to parse the look string
 
-        bool searchGem(std::string const &gem); //!< Search if a gem is in the inventory
-        bool wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objects); //!< Check if in the tiles there is a cool object
+        bool searchGem(std::string const &gem); // a modifier
+        bool wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objects); // a modifier
 
-        int getCenteredTile(int level) { return (level * (level + 1)); }; //!< Get the position of the centered tile of the ia vue
-        std::vector<ACTIONS> moveToTile(int tile); //!< tranform a tile position to a vector of movements to go to the tile and take the object
+        int getNbTileFromLevel(int level); //!< Get the number of tiles from a level
+        std::vector<ACTIONS> moveToTile(int tile); // a modifier
 
         void createMap(int mapHeight, int mapWidth); //!< Create the map of the game
         std::map<std::string, bool> createTile(); //!< Create a tile of the map
 
-        void fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, DIRECTION direction); // pas fait
+        void fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> playerPosition, DIRECTION direction); // pas fait
 
         void setContentTile(std::map<std::string, bool> contentOfTile, int x, int y) { _contentOfMap.at(y).at(x) = contentOfTile; }; //!< Set the content of a tile
         std::map<std::string, bool> getContentOfATile(int x, int y) { return _contentOfMap.at(y).at(x); }; //!< Get the content of a tile
@@ -73,6 +73,7 @@ class Ia {
         IAClient _client; //!< IAClient
         std::pair<int, int> _actualIaPosition; //!< Actual Ia Position
         DIRECTION _actualIaDirection; //!< Actual Ia Direction
+        std::map<DIRECTION, std::pair<int, int>> _rowDirections;
         std::map<DIRECTION, std::pair<int, int>> _possibleDirections; //!< Possible directions of the ia
         std::map<ACTIONS, std::string> _actionCommands; //!< Map of the action commands
         std::map<std::size_t, std::map<std::string, int>> _levelsToObtain; //!< Map of the levels to obtain
