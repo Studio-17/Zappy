@@ -87,32 +87,6 @@ void IAClient::handle()
 
     coordString = getRequest(_socket);
     setMapSize(coordString);
-    createMap(_mapSize.first, _mapSize.second);
-}
-
-void IAClient::createMap(int mapHeight, int mapWidth)
-{
-    std::vector<std::map<std::string, bool>> tmp;
-
-    for (int line = 0; line < mapWidth; line++) {
-        for (int col = 0; col < mapHeight; col++)
-            tmp.emplace_back(createTile());
-        _contentOfMap.emplace_back(tmp);
-        tmp.clear();
-    }
-}
-
-std::map<std::string, bool> IAClient::createTile()
-{
-    std::map<std::string, bool> tile;
-    tile.emplace("food", false);
-    tile.emplace("linemate", false);
-    tile.emplace("deraumere", false);
-    tile.emplace("sibur", false);
-    tile.emplace("mendiane", false);
-    tile.emplace("phiras", false);
-    tile.emplace("thystame", false);
-    return tile;
 }
 
 void IAClient::setMapSize(std::string str)
@@ -124,11 +98,6 @@ void IAClient::setMapSize(std::string str)
     _mapSize.first = std::stoi(token);
     str.erase(0, pos + delimiter.length());
     _mapSize.second = std::stoi(str);
-}
-
-void IAClient::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, std::pair<int, int> direction)
-{
-    std::cout << "Not filled yet" << std::endl;
 }
 
 void IAClient::serverSentResponse()

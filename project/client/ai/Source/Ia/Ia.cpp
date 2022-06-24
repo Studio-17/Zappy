@@ -11,14 +11,14 @@
 
 Ia::Ia() : _client()
 {
-    _ActualIaPosition = {0, 0};
+    _actualIaPosition = {0, 0};
     _possibleDirections = {
-        {0, -1},
-        {1, 0},
-        {0, 1},
-        {-1, 0},
+        {DIRECTION::UP, {0, -1}},
+        {DIRECTION::RIGHT, {1, 0}},
+        {DIRECTION::DOWN, {0, 1}},
+        {DIRECTION::LEFT, {-1, 0}},
     };
-    _ActualIaDirection = _possibleDirections.at(static_cast<int>(DIRECTION::DOWN));
+    _actualIaDirection = DIRECTION::DOWN;
     _actualLevel = 1;
 
     _actionCommands = {
@@ -126,6 +126,36 @@ Ia::~Ia()
 {
 }
 
+void Ia::createMap(int mapHeight, int mapWidth)
+{
+    std::vector<std::map<std::string, bool>> tmp;
+
+    for (int line = 0; line < mapWidth; line++) {
+        for (int col = 0; col < mapHeight; col++)
+            tmp.emplace_back(createTile());
+        _contentOfMap.emplace_back(tmp);
+        tmp.clear();
+    }
+}
+
+std::map<std::string, bool> Ia::createTile()
+{
+    std::map<std::string, bool> tile;
+    tile.emplace("food", false);
+    tile.emplace("linemate", false);
+    tile.emplace("deraumere", false);
+    tile.emplace("sibur", false);
+    tile.emplace("mendiane", false);
+    tile.emplace("phiras", false);
+    tile.emplace("thystame", false);
+    return tile;
+}
+
+void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, std::pair<int, int> direction)
+{
+    std::cout << "Not filled yet" << std::endl;
+}
+
 void Ia::parseLook(std::string response)
 {
     size_t pos = 0;
@@ -165,7 +195,7 @@ void Ia::parseLook(std::string response)
         }
         contentOfMap.at(index).push_back(tmp);
     }
-    _client.fillInTheMap(contentOfMap, _ActualIaPosition, _ActualIaDirection);
+    // fillInTheMap(contentOfMap, _actualIaPosition, _actualIaDirection);
 }
 
 void Ia::startIa()
@@ -173,6 +203,8 @@ void Ia::startIa()
     try {
         _client.setup();
         _client.connection();
+        _mapSize = _client.getMapSize();
+        createMap(_mapSize.first, _mapSize.second);
     } catch (ClientErrors const &ClientError) {
         std::cerr << ClientError.what() << std::endl;
     }
@@ -218,6 +250,29 @@ std::vector<Ia::ACTION> Ia::moveToTile(int tile)
     return actions;
 }
 
+void Ia::movePlayer()
+{
+    std::pair<int, int> position;
+
+    position.first = (_actualIaPosition.first + _possibleDirections.at(static_cast<DIRECTION>(_actualIaDirection)).first) % _mapSize.first;
+    position.second =(_actualIaPosition.second + _possibleDirections.at(static_cast<DIRECTION>(_actualIaDirection)).second) % _mapSize.second;
+    if (position.first < 0)
+        position.first += _mapSize.first;
+    if (position.second < 0)
+        position.second += _mapSize.second;
+    _actualIaPosition = position;
+}
+
+void Ia::changeDirection(DIRECTION direction)
+{
+    int tmp = static_cast<int>(_actualIaDirection);
+
+    if (direction == DIRECTION::LEFT)
+        _actualIaDirection = static_cast<DIRECTION>(tmp - 1 < 0 ? 3 : tmp - 1);
+    if (direction == DIRECTION::RIGHT)
+        _actualIaDirection = static_cast<DIRECTION>(tmp + 1 > 3 ? 0 : tmp + 1);
+}
+
 bool Ia::searchGem(std::string const &gem)
 {
     for (auto &[gemInLevelToObtain, quantity] : _levelsToObtain.at(_actualLevel))
@@ -252,12 +307,10 @@ void Ia::mainLoop()
         sleep(1);
         response = _client.handleAction(doAction(Ia::ACTION::LOOK));
         std::cout << "Response: " << response << std::endl;
-        parseLook("[ sibur mendiane,, linemate, food ]");
-        // if (wantToTakeAnyObject(allObjInTile)) {
-        //     moveToTile(_objectToTake.first);
-        //     std::cout << "move to tile" << std::endl;
-        //     // takeObject()
-        // } else
-        //     response = _client.handleAction(doAction(Ia::ACTIONS::LEFT));
+        movePlayer();
+        changeDirection(DIRECTION::RIGHT);
+        // parseLook("[ sibur mendiane,, linemate, food ]");
+        std::cout << "Position: " << _actualIaPosition.first << " " << _actualIaPosition.second << std::endl;
+        std::cout << "Direction: " << _possibleDirections.at(_actualIaDirection).first << " " << _possibleDirections.at(_actualIaDirection).second << std::endl;
     }
 }

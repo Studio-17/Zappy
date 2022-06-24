@@ -43,20 +43,35 @@ class Ia {
         void setUpOptions(int ac, char **av) { _client.setupOptions(ac, av); };
         void handleOptions() { _client.handleOptions(); };
 
-        std::string takeObject(std::string object) { return ("Take " + transformRessourceToAction(object) + "\n"); }; // Take object
-        std::string setObject(std::string object) { return ("Set " + transformRessourceToAction(object) + "\n"); }; // Set object
-        std::string doAction(ACTION action) { return (_actionCommands.at(action)); };
+        std::string takeObject(std::string object) { return ("Take " + transformRessourceToAction(object) + "\n"); }; //!< Take object
+        std::string setObject(std::string object) { return ("Set " + transformRessourceToAction(object) + "\n"); }; //!< Set object
+        std::string doAction(ACTION action) { return (_actionCommands.at(action)); }; //!< Do action
 
-        std::string replaceCharacters(std::string str, const std::string& from, const std::string& to); // change all strings to another string in a string
+        std::string replaceCharacters(std::string str, const std::string& from, const std::string& to); //!< change all strings to another string in a string
 
-        std::string transformRessourceToAction(std::string object); // transform a basic object to an action ex: 'food' to 'Food'
-        void parseLook(std::string response); // Function to parse the look string
+        std::string transformRessourceToAction(std::string object); //!< transform a basic object to an action ex: 'food' to 'Food'
+        void parseLook(std::string response); //!< Function to parse the look string
 
-        bool searchGem(std::string const &gem);
-        bool wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objects); // Check if in the tiles there is a cool object
+        bool searchGem(std::string const &gem); //!< Search if a gem is in the inventory
+        bool wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objects); //!< Check if in the tiles there is a cool object
 
-        int getCenteredTile(int level) { return (level * (level + 1)); }; // Get the position of the centered tile of the ia vue
-        std::vector<ACTION> moveToTile(int tile); // tranform a tile position to a vector of movements to go to the tile and take the object
+        int getCenteredTile(int level) { return (level * (level + 1)); }; //!< Get the position of the centered tile of the ia vue
+        std::vector<ACTION> moveToTile(int tile); //!< tranform a tile position to a vector of movements to go to the tile and take the object
+
+        void createMap(int mapHeight, int mapWidth); //!< Create the map of the game
+        std::map<std::string, bool> createTile(); //!< Create a tile of the map
+
+        void fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, std::pair<int, int> direction); // pas fait
+
+        void setContentTile(std::map<std::string, bool> contentOfTile, int x, int y) { _contentOfMap.at(y).at(x) = contentOfTile; }; //!< Set the content of a tile
+        std::map<std::string, bool> getContentOfATile(int x, int y) { return _contentOfMap.at(y).at(x); }; //!< Get the content of a tile
+
+        void PutAResourceDown(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource) = true; }; //!< Put a resource down in the map
+        void GrabAResource(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource) = false; }; //!< Grab a resource in the map
+
+        void movePlayer(); //!< Move the player only forward
+        void changeDirection(DIRECTION direction); //!< Change the direction of the player
+
 
         void mainLoop();
 
@@ -66,9 +81,9 @@ class Ia {
     protected:
     private:
         IAClient _client; //!< IAClient
-        std::pair<int, int> _ActualIaPosition; //!< Actual Ia Position
-        std::pair<int, int> _ActualIaDirection; //!< Actual Ia Direction
-        std::vector<std::pair<int, int>> _possibleDirections; //!< Possible directions of the ia
+        std::pair<int, int> _actualIaPosition; //!< Actual Ia Position
+        DIRECTION _actualIaDirection; //!< Actual Ia Direction
+        std::map<DIRECTION, std::pair<int, int>> _possibleDirections; //!< Possible directions of the ia
         std::map<ACTION, std::string> _actionCommands; //!< Map of the action commands
         std::map<std::size_t, std::map<std::string, int>> _levelsToObtain; //!< Map of the levels to obtain
 
@@ -77,6 +92,9 @@ class Ia {
         std::string _action; //!< Action to do
 
         std::pair<int, std::string> _objectToTake; //!< Object to take
+
+        std::pair<int, int> _mapSize; //!< Map size
+        std::vector<std::vector<std::map<std::string, bool>>> _contentOfMap; //!< Content of the map
 
         std::queue<std::string> requestListToSend; //!< Queue of the requests to send
         std::queue<std::string> requestListSent; //!< Queue of the requests sent
