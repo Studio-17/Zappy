@@ -21,6 +21,7 @@ SRC_MINILIB	=	mini/my_atoi.c		\
 				mini/my_strtoword.c	\
 				mini/free_arr.c		\
 				mini/my_arrlen.c	\
+				mini/read_socket.c	\
 
 SRC_NETLIB	=	net/protocol.c				\
 				net/header.c				\
