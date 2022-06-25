@@ -13,6 +13,8 @@
 #include "server.h"
 #include "options.h"
 
+#include "gui_update.h"
+
 zappy_t *store_zappy(zappy_t *zappy)
 {
     static zappy_t *stored_zappy = NULL;
@@ -25,7 +27,12 @@ zappy_t *store_zappy(zappy_t *zappy)
 
 void sigint_handler(__attribute__((unused)) int sig)
 {
-    free_zappy(store_zappy(NULL));
+    zappy_t *zappy = store_zappy(NULL);
+
+    if (zappy->server->is_gui_connected)
+        gui_update_server_offline(zappy);
+
+    free_zappy(zappy);
     printf("Server is shutting down...\n");
     exit(EXIT_SUCCESS);
 }

@@ -65,10 +65,12 @@ void ai_incantation_request(zappy_t *zappy, void *data, int player_index)
     int elevation_processus_index = zappy->client[player_index].player.level - 1;
 
     if (check_elevation(zappy, elevation_processus_index, zappy->client[player_index].player.level, player_index)) {
-        if (zappy->client[player_index].player.elevation_status == NONE || zappy->client[player_index].player.elevation_status == FAILED)
+        if (zappy->client[player_index].player.elevation_status == NONE || zappy->client[player_index].player.elevation_status == FAILED) {
             zappy->client[player_index].player.elevation_status = BEGIN;
-        else if (zappy->client[player_index].player.elevation_status == BEGIN) {
+            gui_update_player_started_incantation(zappy, player_index);
+        } else if (zappy->client[player_index].player.elevation_status == BEGIN) {
             zappy->client[player_index].player.elevation_status == END;
+            gui_update_player_ended_incantation(zappy, player_index, true);
             remove_elevation_stones(zappy, player_index);
         }
         if (zappy->server->is_gui_connected) {
@@ -78,6 +80,7 @@ void ai_incantation_request(zappy_t *zappy, void *data, int player_index)
         dprintf(zappy->client[player_index].socket, "Elevation underway\nCurrent level: %d\n", zappy->client[player_index].player.level);
     } else {
         zappy->client[player_index].player.elevation_status == FAILED;
+        gui_update_player_ended_incantation(zappy, player_index, false);
         ai_response_ok_ko(zappy->client[player_index].socket, false);
     }
 }

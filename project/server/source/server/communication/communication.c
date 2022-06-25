@@ -15,6 +15,8 @@
 
 void death_protocol(zappy_t *zappy, int index)
 {
+    gui_update_player_dead(zappy, index);
+
     dprintf(zappy->client[index].socket, "dead\n");
 
     // disconnect the player

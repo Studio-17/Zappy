@@ -23,7 +23,7 @@ enum COMMANDS_GUI {
     TIME_UNIT_MODIFICATION,
     PLAYER_ORIENTATION,
     PLAYER_DEAD,
-    SERVER_DISCONNECTED,
+    SERVER_OFFLINE,
     PLAYER_STARTED_INCANTATION,
     PLAYER_ENDED_INCANTATION,
     NB_COMMANDS_GUI
@@ -45,5 +45,9 @@ void gui_update_player_position(zappy_t *zappy, int player_index);
 void gui_update_player_level(zappy_t *zappy, int player_index);
 void gui_update_player_inventory(zappy_t *zappy, int player_index);
 void gui_update_player_orientation(zappy_t *zappy, int player_index);
+void gui_update_player_dead(zappy_t *zappy, int player_index);
+void gui_update_server_offline(zappy_t *zappy);
+void gui_update_player_started_incantation(zappy_t *zappy, int player_index);
+void gui_update_player_ended_incantation(zappy_t *zappy, int player_index, bool incantation_status);
 
 #endif /* !GUI_UPDATE_H_ */

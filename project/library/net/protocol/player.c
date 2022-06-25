@@ -112,7 +112,7 @@ void post_response_player_dead(int socket, response_payload_player_dead_t respon
     write(socket, &response, sizeof(response_payload_player_dead_t));
 }
 
-void response_payload_player_start_incantation(int socket, response_payload_player_start_incantation_t response)
+void post_response_player_start_incantation(int socket, response_payload_player_start_incantation_t response)
 {
     write(socket, &response, sizeof(response_payload_player_start_incantation_t));
 }

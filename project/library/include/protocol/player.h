@@ -112,6 +112,7 @@ typedef struct response_payload_player_start_incantation_s {
 void post_response_player_start_incantation(int socket, response_payload_player_start_incantation_t response);
 
 typedef struct response_payload_player_end_incantation_s {
+    bool success;
     int player_id;
 } response_payload_player_end_incantation_t;
 
