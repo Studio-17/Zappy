@@ -51,7 +51,7 @@ int create_player(zappy_t *zappy, int socket, char *team_name)
         .orientation = NORTH,
         .elevation_status = NONE,
         .resource_inventory = malloc(sizeof(inventory_resource_t) * NB_ITEMS),
-        .units = 1260,
+        .units = 0,
     };
 
     if (!player.resource_inventory)
@@ -64,7 +64,6 @@ int create_player(zappy_t *zappy, int socket, char *team_name)
     }
 
     zappy->client[zappy->server->clients].id = id;
-    printf("id is %d\n", id);
     zappy->client[zappy->server->clients].team_name = strdup(team_name);
     if (!zappy->client[zappy->server->clients].team_name)
         return false;
@@ -73,7 +72,6 @@ int create_player(zappy_t *zappy, int socket, char *team_name)
     zappy->client[zappy->server->clients].clock = clock();
     zappy->client[zappy->server->clients].socket = socket;
     zappy->client[zappy->server->clients].player = player;
-    printf("there is now %d player(s) connected\n", zappy->server->clients);
     if (zappy->server->is_gui_connected)
         gui_update_player_connected(zappy, zappy->server->clients);
     zappy->server->clients += 1;

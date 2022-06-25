@@ -66,3 +66,8 @@ void post_response_map(int socket, response_payload_map_t request)
 {
     write(socket, &request, sizeof(response_payload_map_t));
 }
+
+void post_response_server_disconnected(int socket, response_payload_server_disconnected_t response)
+{
+    write(socket, &response, sizeof(response_payload_server_disconnected_t));
+}

@@ -98,4 +98,25 @@ typedef struct response_payload_player_orientation_s {
 
 void post_response_player_orientation(int socket, response_payload_player_orientation_t response);
 
+
+typedef struct response_payload_player_dead_s {
+    int player_id;
+} response_payload_player_dead_t;
+
+void post_response_player_dead(int socket, response_payload_player_dead_t response);
+
+typedef struct response_payload_player_start_incantation_s {
+    int player_id;
+} response_payload_player_start_incantation_t;
+
+void post_response_player_start_incantation(int socket, response_payload_player_start_incantation_t response);
+
+typedef struct response_payload_player_end_incantation_s {
+    bool success;
+    int player_id;
+    int player_level;
+} response_payload_player_end_incantation_t;
+
+void post_response_player_end_incantation(int socket, response_payload_player_end_incantation_t response);
+
 #endif /* !PLAYER_H_ */
