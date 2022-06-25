@@ -35,6 +35,9 @@ bool get_options(int ac, char * const *av, options_t *options)
         {0, 0, 0, 0}};
     int long_index = 0;
 
+    int index = 0;
+    char *team_names = NULL;
+
     while ((opt = getopt_long(ac, av, "hp:x:y:n:c:f:",
                               long_options, &long_index)) != -1)
     {
@@ -53,7 +56,24 @@ bool get_options(int ac, char * const *av, options_t *options)
             options->height = my_atoi(optarg);
             break;
         case 'n':
-            options->names = optarg;
+            for (index = optind -1; index < ac; index += 1){
+                if (av[index][0] != '-') {
+
+                    if (!team_names)
+                        team_names = strdup(av[index]);
+                    else {
+                        team_names = realloc(team_names, strlen(team_names) + strlen(av[index]) + 2);
+                        team_names = strcat(team_names, " ");
+                        team_names = strcat(team_names, av[index]);
+                    }
+
+                } else {
+                    break;
+                }
+            }
+            optind = index;
+            options->names = strdup(team_names);
+            free(team_names);
             break;
         case 'c':
             options->clients_nb = my_atoi(optarg);
@@ -78,13 +98,32 @@ bool handle_options(options_t *options)
         print_usage(MISSING_OPTION);
         return false;
     }
-    if (options->port == 0 || options->width == 0 ||
+    else if (options->port == 0 || options->width == 0 ||
         options->height == 0 || options->names == NULL ||
         options->clients_nb == 0)
     {
         print_usage(INVALID_OPTION);
         return false;
     }
+    else if (options->width < 10 || options->width > 30)
+    {
+        printf("\n%s\n\n", "-x option only accepts integer values between 10 and 30");
+        print_usage(OPTIONS_ERROR_NONE);
+        return false;
+    }
+    else if (options->height < 10 || options->height > 30)
+    {
+        printf("\n%s\n\n", "-y option only accepts integer values between 10 and 30");
+        print_usage(OPTIONS_ERROR_NONE);
+        return false;
+    }
+    else if (options->freq <= 1 || options->freq >= 10000)
+    {
+        printf("\n%s\n\n", "-f option only accepts integer values between 2 and 10000");
+        print_usage(OPTIONS_ERROR_NONE);
+        return false;
+    }
+
     return true;
 }
 

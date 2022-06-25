@@ -20,7 +20,7 @@ void death_protocol(zappy_t *zappy, int index)
 
     dprintf(zappy->client[index].socket, "dead\n");
 
-    // disconnect the player
+    close(zappy->client[index].socket);
 }
 
 int execute_task(list_t *list, zappy_t *zappy, int player_index)
@@ -81,7 +81,9 @@ static void update_food(zappy_t *zappy, int player_index)
 bool listen_clients(zappy_t *zappy)
 {
     for (int player_index = 0; player_index < zappy->server->clients; player_index += 1) {
+
         if (FD_ISSET(zappy->client[player_index].socket, &zappy->server->socket_descriptor->readfd)) {
+
             ai_request_t request = ai_handle_request(zappy, player_index);
 
             if (request.command == ERROR)
