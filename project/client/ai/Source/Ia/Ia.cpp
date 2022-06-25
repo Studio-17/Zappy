@@ -163,6 +163,7 @@ bool Ia::parseReceiveResponse(std::string message)
     _bufferServerResponse += message;
     if ((pos = _bufferServerResponse.find(backline)) != std::string::npos) {
        serverResponse = _bufferServerResponse.substr(0, pos);
+       std::cout << "serverResponse: " << serverResponse << std::endl;
        _bufferServerResponse.erase(0, pos + backline.length());
        addMessageToQueue(serverResponse);
        return true;
@@ -311,6 +312,7 @@ void Ia::forward(std::string const &serverResponse)
     }
     _requestListReceived.pop();
     _requestListSent.pop();
+    // _requestListSent.pop();
 }
 void Ia::turnLeft(std::string const &serverResponse)
 {
@@ -319,6 +321,7 @@ void Ia::turnLeft(std::string const &serverResponse)
     }
     _requestListReceived.pop();
     _requestListSent.pop();
+    // _requestListSent.pop();
 }
 void Ia::turnRight(std::string const &serverResponse)
 {
@@ -327,6 +330,7 @@ void Ia::turnRight(std::string const &serverResponse)
     }
     _requestListReceived.pop();
     _requestListSent.pop();
+    // _requestListSent.pop();
 }
 
 void Ia::look(std::string const &serverResponse)
@@ -334,6 +338,7 @@ void Ia::look(std::string const &serverResponse)
     parseLook(serverResponse);
     _requestListReceived.pop();
     _requestListSent.pop();
+    // _requestListSent.pop();
 }
 
 void Ia::handleEvent(ACTIONS action, std::string const &response)
@@ -360,12 +365,13 @@ void Ia::handleEvent(ACTIONS action, std::string const &response)
 
 void Ia::addActionToQueue(ACTIONS action)
 {
-    _requestListToSend.emplace(action);
+    // _requestListToSend.emplace(action);
+    _requestTmp.emplace(action);
 
-    if (_requestListSent.size() < MAX_ACTION_LIST) {
-        ACTIONS tmp = _requestListToSend.front();
-        _requestListToSend.pop();
-        _requestListSent.emplace(tmp);
+    if (_requestListToSend.size() < MAX_ACTION_LIST) {
+        ACTIONS tmp = _requestTmp.front();
+        _requestTmp.pop();
+        _requestListToSend.emplace(tmp);
     }
 }
 
@@ -377,17 +383,33 @@ void Ia::addMessageToQueue(std::string const &serverResponse)
 void Ia::mainLoop()
 {
     std::string message;
+    std::queue<ACTIONS> tmp;
+
+    addActionToQueue(ACTIONS::FORWARD);
+    addActionToQueue(ACTIONS::LOOK);
+    addActionToQueue(ACTIONS::FORWARD);
+    addActionToQueue(ACTIONS::FORWARD);
 
     while (!_isDead) {
-        if (!_requestListSent.empty()) {
-            _client.postRequest(_client.getSocket(), _requestListSent.front());
+        std::cout << "start" << std::endl;
+        tmp = _requestListToSend;
+        while (!tmp.empty()) {
+            std::cout << static_cast<std::underlying_type<ACTIONS>::type>(tmp.front()) << std::endl;
+            tmp.pop();
+        }
+        if (!_requestListToSend.empty()) {
+            _client.postRequest(_client.getSocket(), _requestListToSend.front());
+            _requestListSent.emplace(_requestListToSend.front());
+            _requestListToSend.pop();
         }
 
         // add action to queue here
 
         message = _client.getRequest(_client.getSocket());
         if (parseReceiveResponse(message)) {
-            handleEvent(_requestListSent.front(), _requestListReceived.front());
+            if (!_requestListSent.empty() && !_requestListReceived.empty())
+                handleEvent(_requestListSent.front(), _requestListReceived.front());
         }
+        std::cout << "end" << std::endl;
     }
 }
