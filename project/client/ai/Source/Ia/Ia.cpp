@@ -154,22 +154,20 @@ std::map<std::string, bool> Ia::createTile()
     return tile;
 }
 
-std::string Ia::parseReceiveResponse(std::string message)
+bool Ia::parseReceiveResponse(std::string message)
 {
     std::size_t pos = 0;
     std::string backline = "\n";
-    std::string token;
-    std::vector<std::string> contentMessage;
+    std::string serverResponse;
 
-    while ((pos = message.find(backline)) != std::string::npos) {
-        token = message.substr(0, pos);
-        contentMessage.push_back(token);
-        message.erase(0, pos + backline.length());
+    _bufferServerResponse += message;
+    if ((pos = _bufferServerResponse.find(backline)) != std::string::npos) {
+       serverResponse = _bufferServerResponse.substr(0, pos);
+       _bufferServerResponse.erase(0, pos + backline.length());
+       addMessageToQueue(serverResponse);
+       return true;
     }
-    contentMessage.push_back(message);
-    for (auto &str : contentMessage)
-        std::cout << str.c_str() << std::endl;
-    return contentMessage.at(0);
+    return false;
 }
 
 void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, DIRECTION direction)
@@ -308,23 +306,23 @@ bool Ia::wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objectsPer
 
 void Ia::forward(std::string const &serverResponse)
 {
-    if (serverResponse == "ok\n") {
-        _requestListReceived.pop();
-        _requestListSent.pop();
+    if (serverResponse == "ok") {
         movePlayer();
     }
+    _requestListReceived.pop();
+    _requestListSent.pop();
 }
 void Ia::turnLeft(std::string const &serverResponse)
 {
-    if (serverResponse == "ok\n") {
+    if (serverResponse == "ok") {
+        changeDirection(DIRECTION::LEFT);
         _requestListReceived.pop();
         _requestListSent.pop();
-        changeDirection(DIRECTION::LEFT);
     }
 }
 void Ia::turnRight(std::string const &serverResponse)
 {
-    if (serverResponse == "ok\n") {
+    if (serverResponse == "ok") {
         _requestListReceived.pop();
         _requestListSent.pop();
         changeDirection(DIRECTION::RIGHT);
@@ -334,8 +332,6 @@ void Ia::turnRight(std::string const &serverResponse)
 void Ia::look(std::string const &serverResponse)
 {
     parseLook(serverResponse);
-    _requestListReceived.pop();
-    _requestListSent.pop();
 }
 
 void Ia::handleEvent(ACTIONS action, std::string const &response)
@@ -382,14 +378,15 @@ void Ia::mainLoop()
 
     while (!_isDead) {
         sleep(1);
-        handleEvent(_requestListSent.front(), _requestListReceived.front());
+        if (!_requestListSent.empty()) {
+            _client.postRequest(_client.getSocket(), _requestListSent.front());
+        }
 
         // add action to queue here
-        // movePlayer();
-        // changeDirection(DIRECTION::RIGHT);
 
-        _client.postRequest(_client.getSocket(), _requestListSent.front());
         message = _client.getRequest(_client.getSocket());
-        addMessageToQueue(message);
+        if (parseReceiveResponse(message)) {
+            handleEvent(_requestListSent.front(), _requestListReceived.front());
+        }
     }
 }

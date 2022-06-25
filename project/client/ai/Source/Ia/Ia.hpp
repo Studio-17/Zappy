@@ -67,7 +67,7 @@ class Ia {
         void addActionToQueue(ACTIONS action);
         void addMessageToQueue(std::string const &serverResponse);
         void mainLoop();
-        std::string parseReceiveResponse(std::string message);
+        bool parseReceiveResponse(std::string message);
 
     protected:
     private:
@@ -91,6 +91,8 @@ class Ia {
 
         std::pair<int, int> _mapSize; //!< Map size
         std::vector<std::vector<std::map<std::string, bool>>> _contentOfMap; //!< Content of the map
+
+        std::string _bufferServerResponse;
 };
 
 #endif /* !IA_HPP_ */

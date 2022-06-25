@@ -39,6 +39,7 @@ IAClient::IAClient()
     //     {"Incantation", 300},
     // };
     _actionCommands = {
+        {ACTIONS::NONE, "\n"},
         {ACTIONS::FORWARD, "Forward\n"},
         {ACTIONS::RIGHT, "Right\n"},
         {ACTIONS::LEFT, "Left\n"},
@@ -74,6 +75,7 @@ void IAClient::postRequest(int socketId, std::string const &request)
 
 void IAClient::postRequest(int socketId, ACTIONS request)
 {
+    // std::cout << _actionCommands.at(request) << std::endl;
     dprintf(socketId, "%s\n", _actionCommands.at(request).c_str());
 }
 
