@@ -13,13 +13,11 @@
 
 typedef struct server_socket_s {
     int server;
-    int *client;
     int max_client;
 } server_socket_t;
 
 typedef struct server_socket_descriptor_s {
     fd_set readfd;
-    int socket_descriptor;
     int max_socket_descriptor;
 } server_socket_descriptor_t;
 

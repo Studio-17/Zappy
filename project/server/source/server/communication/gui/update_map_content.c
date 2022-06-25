@@ -32,7 +32,6 @@ void gui_update_map_content(zappy_t *zappy)
     usleep(3000);
 
     post_header(zappy->server->gui, (payload_header_t){
-        .id = SERVER,
         .size = sizeof(response_payload_content_tile_t) * zappy->options->height * zappy->options->width,
         .type = CONTENT_MAP
     });

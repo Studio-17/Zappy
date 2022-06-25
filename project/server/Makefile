@@ -56,6 +56,7 @@ SOURCE	=	source/server/communication/communication.c					\
 			source/zappy/zappy.c										\
 			source/zappy/elevation.c									\
 			source/zappy/queue.c										\
+			source/zappy/client.c										\
 
 TEST_SOURCE	=	tests/test.c									\
 

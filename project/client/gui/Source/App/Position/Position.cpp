@@ -33,6 +33,13 @@ bool Position::operator ==(Position const &position)
     return false;
 }
 
+bool Position::operator!=(Position const &position)
+{
+    if (_x != position._x || _y != position._y || _z != position._z)
+        return true;
+    return false;
+}
+
 Position &Position::setFromArray(std::array<float, 3> const &position)
 {
     _x = position.at(0);

@@ -13,10 +13,21 @@
 #include "server.h"
 #include "options.h"
 
+zappy_t *store_zappy(zappy_t *zappy)
+{
+    static zappy_t *stored_zappy = NULL;
+
+    if (!zappy)
+        return stored_zappy;
+    stored_zappy = zappy;
+    return stored_zappy;
+}
+
 void sigint_handler(__attribute__((unused)) int sig)
 {
+    free_zappy(store_zappy(NULL));
     printf("Server is shutting down...\n");
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 
 int main(int ac, char * const *av)
@@ -39,8 +50,8 @@ int main(int ac, char * const *av)
     zappy->map->ratio = number_of_resources / zappy->map->size;
     fill_map(zappy->map, zappy->resources);
     create_server(zappy);
+    store_zappy(zappy);
     if (!server_loop(zappy))
         return 84;
-    free_zappy(zappy);
     return (EXIT_SUCCESS);
 }

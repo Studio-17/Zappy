@@ -13,6 +13,7 @@
     #include "AThreeDimensionObject.hpp"
     #include "Text.hpp"
     #include "Camera.hpp"
+    #include "clock.hpp"
 
 namespace Object {
     /**
@@ -24,6 +25,13 @@ namespace Object {
         EAST,
         SOUTH,
         WEST
+    };
+
+    class PlayerInfo {
+        public:
+            int _playerLevel;
+            std::vector<int> _inventory;
+            std::string _teamName;
     };
 
     class Player : public AThreeDimensionObject {
@@ -60,6 +68,9 @@ namespace Object {
              *
              * @param animNb number of animation
              */
+
+            void handleEvent();
+
             void animation(std::size_t animNb);
             /**
              * @brief Move player
@@ -67,7 +78,7 @@ namespace Object {
              * @param position player position
              * @param direction new player position
              */
-            void move(Position const &position, Position const &direction);
+            void move(Position const &position);
 
             /**
              * @brief Set life player
@@ -80,6 +91,8 @@ namespace Object {
              * @return false
              */
             bool isAlive() { return _isAlive; };
+
+            bool isClicked() { return _isClicked; };
 
             /**
              * @brief Get player speed
@@ -128,20 +141,26 @@ namespace Object {
              */
             void setLevel(int level);
 
+
             /**
              * @brief Get the Inventory
              *
              * @return std::vector<PLAYER_RESOURCES, int>
              */
-            std::vector<std::pair<PLAYER_RESOURCES, int>> getInventory() { return _inventory; };
             /**
              * @brief Set the Inventory
              *
              * @param inventory inventory resources
              */
-            void setInventory(std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &inventory);
+            void setInventory(std::vector<int> const &inventory);
 
             void setOrientation(enum Object::ORIENTATION);
+
+            PlayerInfo getPlayerInfo() { return _playerInfo; };
+
+            int getCurrentAnimation() const { return _currentAnimation; };
+            void setCurrentAnimation(int animation) { _currentAnimation = animation; };
+            void startIncantation();
 
         private:
 
@@ -156,10 +175,19 @@ namespace Object {
             int _playerId;
             int _level;
 
-            std::vector<std::pair<PLAYER_RESOURCES, int>> _inventory;
+            bool _startedIncantation = false;
+            int _currentAnimation = 1;
+
             ORIENTATION _playerOrientation;
             std::string _teamName;
             std::shared_ptr<RayLib::CinematicCamera> _camera;
+            BoundingBox _boundingBox;
+            Ray _mouseRay = { 0 };
+            RayCollision _playerCollision = { 0 };
+            bool _isClicked = false;
+
+            PlayerInfo _playerInfo;
+            Clock _movementClock;
     };
 }
 

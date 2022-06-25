@@ -10,5 +10,8 @@
 
 void ai_response_ok_ko(int socket, bool status)
 {
-    dprintf(socket, (status ? "ok\n" : "ko\n"));
+    if (status)
+        dprintf(socket, "ok\n");
+    else
+        dprintf(socket, "ko\n");
 }

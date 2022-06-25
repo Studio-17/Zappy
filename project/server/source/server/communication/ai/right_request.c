@@ -17,7 +17,8 @@ void ai_right_request(zappy_t *zappy, void *data, int player_index)
     else
         zappy->client[player_index].player.orientation += 1;
 
-    gui_update_player_orientation(zappy, player_index);
+    if (zappy->server->is_gui_connected)
+        gui_update_player_orientation(zappy, player_index);
 
     ai_response_ok_ko(socket, true);
 }

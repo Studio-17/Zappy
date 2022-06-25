@@ -16,19 +16,10 @@ bool setup_server(server_t *server, options_t *options)
     server->server_socket = malloc(sizeof(server_socket_t));
     if (!server->server_socket)
         return false;
-    server->server_socket->client = malloc(sizeof(int) * options->clients_nb);
-    if (!server->server_socket->client)
-        return false;
     server->server_socket->max_client = options->clients_nb * my_arrlen(options->team_names);
     server->clients = 0;
     server->is_gui_connected = false;
     return true;
-}
-
-void initialise_all_clients_sockets(server_t *server)
-{
-    for (int index = 0; index < server->server_socket->max_client; index++)
-        server->server_socket->client[index] = 0;
 }
 
 void create_server_socket(server_t *server)
