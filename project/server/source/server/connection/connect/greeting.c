@@ -54,7 +54,7 @@ static bool create_player(zappy_t *zappy, int socket, char *team_name)
         .orientation = NORTH,
         .elevation_status = NONE,
         .resource_inventory = malloc(sizeof(inventory_resource_t) * NB_ITEMS),
-        .units = 1260,
+        .units = 0,
     };
 
     player.resource_inventory[FOOD].resource = FOOD;
@@ -116,7 +116,8 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
 
                 can_player_connect = create_player(zappy, socket, team_name);
                 if (can_player_connect == false) {
-                    dprintf(socket, "ko: create player\n");
+                    dprintf(socket, "ko\n");
+                    // restart greeting protocol
                     return (can_player_connect);
                 }
 
@@ -124,7 +125,7 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
 
             valid_team_name = true;
 
-            printf("%s", team_name);
+            // printf("%s", team_name);
             break;
         }
     }

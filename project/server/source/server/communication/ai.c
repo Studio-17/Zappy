@@ -140,7 +140,6 @@ ai_request_t ai_handle_request(zappy_t *zappy, int player_index)
     if (!request_data)
         return (error_request);
     if (queue_get_size(zappy->client[player_index].list) >= 10) {
-        printf("out of range\n");
         return (out_of_range_request);
     }
     for (int index = 0; index < NB_COMMANDS_AI; index += 1) {
