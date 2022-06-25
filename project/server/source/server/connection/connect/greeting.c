@@ -92,7 +92,6 @@ bool greeting_protocol(zappy_t *zappy, int client_socket)
         usleep(100);
 
         post_map_dimensions(zappy, client_socket);
-
     }
     return is_gui;
 }
