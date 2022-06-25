@@ -48,12 +48,11 @@ class Ia {
 
         std::vector<ACTIONS> moveToTile(int tile); // a modifier
 
-        bool isBracketsInString(std::string str); // fait mais a utiliser quand le buffer circulaire est fait
-
         void createMap(int mapHeight, int mapWidth); //!< Create the map of the game
         std::map<std::string, bool> createTile(); //!< Create a tile of the map
 
         void setContentTile(std::vector<std::string> contentOfTile, int x, int y); //!< Set the content of a tile
+        void clearContentTile(int x, int y); //!< Clear the content of a tile
         std::map<std::string, bool> getContentOfATile(int x, int y) { return _contentOfMap.at(y).at(x); }; //!< Get the content of a tile
 
         void PutAResourceDown(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource) = true; }; //!< Put a resource down in the map
