@@ -375,7 +375,7 @@ void Game::handlePlayerClicked()
     for (auto &player : _players) {
         if (player->isClicked()) {
             _playerInfoToPrint = player->getPlayerInfo();
-            player->startIncantation();
+            _cameraTarget = player->getPosition();
             _shouldPrintPlayerInfos = true;
         }
     }
