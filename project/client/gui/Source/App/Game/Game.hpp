@@ -80,6 +80,8 @@ class Game : public AScene {
         void handleUpdateContentTile(char *data);
         void handleUpdateContentMap(char *data);
         void handlePlayerDead(char *data);
+        void handlePlayerStartIcantation(char *data);
+        void handlePlayerStopIncantation(char *data);
 
         std::shared_ptr<Object::Tile> getTileByPosition(Position const &position);
 
