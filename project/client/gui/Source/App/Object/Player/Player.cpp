@@ -145,3 +145,8 @@ void Object::Player::setInventory(std::vector<int> const &inventory)
 {
     _playerInfo._inventory = inventory;
 }
+
+void Object::Player::startIncantation()
+{
+    _currentAnimation = 5;
+}

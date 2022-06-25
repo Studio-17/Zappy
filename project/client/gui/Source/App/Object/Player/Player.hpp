@@ -157,6 +157,11 @@ namespace Object {
             void setOrientation(enum Object::ORIENTATION);
 
             PlayerInfo getPlayerInfo() { return _playerInfo; };
+
+            int getCurrentAnimation() const { return _currentAnimation; };
+            void setCurrentAnimation(int animation) { _currentAnimation = animation; };
+            void startIncantation();
+
         private:
 
             std::pair<float, float> _defaultSpeed = {0.5f, 0.8f};
@@ -169,6 +174,9 @@ namespace Object {
             bool _isMoving = false; ///< is moving
             int _playerId;
             int _level;
+
+            bool _startedIncantation = false;
+            int _currentAnimation = 1;
 
             ORIENTATION _playerOrientation;
             std::string _teamName;
