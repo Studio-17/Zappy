@@ -124,6 +124,7 @@ void Ia::startIa()
         _client.setup();
         _client.connection();
         _mapSize = _client.getMapSize();
+        createMap(_mapSize.second, _mapSize.first);
     } catch (ClientErrors const &ClientError) {
         std::cerr << ClientError.what() << std::endl;
     }
@@ -140,6 +141,7 @@ void Ia::createMap(int mapHeight, int mapWidth)
         _contentOfMap.emplace_back(tmp);
         tmp.clear();
     }
+    std::cout << _contentOfMap.size() << std::endl;
 }
 
 std::map<std::string, bool> Ia::createTile()
@@ -176,6 +178,7 @@ void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<i
     std::pair<int, int> playerOrientation = _possibleDirections.at(direction);
     std::pair<int, int> rowOrientation = _rowDirections.at(direction);
     int nbTiles = 0;
+    int nbTilesToFill = 0;
 
     for (int i = 0; i <= _actualLevel; i++)
         nbTiles += 1 + (i * 2);
@@ -197,32 +200,31 @@ void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<i
                 tmpPos.second = 0;
             else if (tmpPos.second < 0)
                 tmpPos.second = _mapSize.second - 1;
-            setContentTile(content, tmpPos.first, tmpPos.second);
+            setContentTile(content.at(nbTilesToFill), tmpPos.first, tmpPos.second);
+            nbTilesToFill++;
             if (first)
                 first = false;
         }
     }
 }
 
-void Ia::setContentTile(std::vector<std::vector<std::string>> contentOfTile, int x, int y)
+void Ia::setContentTile(std::vector<std::string> contentOfTile, int x, int y)
 {
-    for (auto &line : contentOfTile) {
-        for (auto &tile : line) {
-            if (tile == "food")
-                _contentOfMap.at(y).at(x).at("food") = true;
-            else if (tile == "linemate")
-                _contentOfMap.at(y).at(x).at("linemate") = true;
-            else if (tile == "deraumere")
-                _contentOfMap.at(y).at(x).at("deraumere") = true;
-            else if (tile == "sibur")
-                _contentOfMap.at(y).at(x).at("sibur") = true;
-            else if (tile == "mendiane")
-                _contentOfMap.at(y).at(x).at("mendiane") = true;
-            else if (tile == "phiras")
-                _contentOfMap.at(y).at(x).at("phiras") = true;
-            else if (tile == "thystame")
-                _contentOfMap.at(y).at(x).at("thystame") = true;
-        }
+    for (auto &resource : contentOfTile) {
+        if (resource == "food")
+            _contentOfMap.at(y).at(x).at("food") = true;
+        else if (resource == "linemate")
+            _contentOfMap.at(y).at(x).at("linemate") = true;
+        else if (resource == "deraumere")
+            _contentOfMap.at(y).at(x).at("deraumere") = true;
+        else if (resource == "sibur")
+            _contentOfMap.at(y).at(x).at("sibur") = true;
+        else if (resource == "mendiane")
+            _contentOfMap.at(y).at(x).at("mendiane") = true;
+        else if (resource == "phiras")
+            _contentOfMap.at(y).at(x).at("phiras") = true;
+        else if (resource == "thystame")
+            _contentOfMap.at(y).at(x).at("thystame") = true;
     }
 }
 
@@ -237,6 +239,8 @@ void Ia::parseLook(std::string response)
 
     response = replaceCharacters(response, "[ ", "");
     response = replaceCharacters(response, " ]", "");
+
+    std::cout << response << std::endl;
 
     while ((pos = response.find(comaDelimiter)) != std::string::npos) {
         token = response.substr(0, pos);
@@ -256,6 +260,7 @@ void Ia::parseLook(std::string response)
         }
         contentOfMap.at(index).push_back(tmp);
     }
+    std::cout << "contentOfMap size : " << contentOfMap.size() << std::endl;
     fillInTheMap(contentOfMap, _actualIaPosition, _actualIaDirection);
 }
 
@@ -419,18 +424,19 @@ void Ia::turnLeft(std::string const &serverResponse)
 
 void Ia::look(std::string const &serverResponse)
 {
-    parseLook(serverResponse);
-    _requestListReceived.pop();
-    _requestListSent.pop();
-}
-
-void Ia::look(std::string const &serverResponse)
-{
     std::cout << "Look response->" << serverResponse << std::endl;
     // if (isBracketsInString(serverResponse)) {
         parseLook(serverResponse);
         _requestListReceived.pop();
         _requestListSent.pop();
+        for (auto &map : _contentOfMap) {
+            for (auto &tile : map) {
+                for (auto &[resource, isIn] : tile) {
+                    if (isIn == 1)
+                        std::cout << resource << " " << isIn << std::endl;
+                }
+            }
+        }
     // }
 }
 
@@ -453,9 +459,9 @@ void Ia::handleEvent(ACTIONS action, std::string const &response)
         case ACTIONS::LEFT:
             turnLeft(response);
             break;
-        case ACTIONS::RIGHT:
-            turnRight(response);
-            break;
+        // case ACTIONS::RIGHT:
+        //     turnRight(response);
+        //     break;
         case ACTIONS::LOOK:
             look(response);
             break;
@@ -493,6 +499,7 @@ void Ia::mainLoop()
         }
 
         // add action to queue here
+        addActionToQueue(ACTIONS::LOOK);
 
         _client.postRequest(_client.getSocket(), _requestListSent.front());
         message = _client.getRequest(_client.getSocket());
