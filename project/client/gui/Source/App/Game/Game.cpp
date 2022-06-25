@@ -42,11 +42,13 @@ Game::Game(std::shared_ptr<Client> client, std::shared_ptr<RayLib::CinematicCame
     _texts.push_back(std::make_unique<Object::Text>("Resources/Fonts/Square.ttf", "Phiras:", Position(1410, 1000, 0)));
     _texts.push_back(std::make_unique<Object::Text>("Resources/Fonts/Square.ttf", "Thystame:", Position(1590, 1000, 0)));
 
+    _texts.push_back(std::make_unique<Object::Text>("Resources/Fonts/Square.ttf", "Server disconnected", Position(1600, 20, 0)));
+
     for (auto &text : _texts)
         text->setColor(WHITE);
 
-    _images.push_back(std::make_unique<Object::Image>("Resources/Images/title_background.png", Position(0, 980)));
     _images.push_back(std::make_unique<Object::Image>("Resources/Images/background_sky.png", Position(0, 0)));
+    _images.push_back(std::make_unique<Object::Image>("Resources/Images/title_background.png", Position(0, 980)));
 }
 
 Game::~Game()
@@ -190,6 +192,31 @@ void Game::updateContentTile(Position const &tilePosition, std::vector<std::pair
     getTileByPosition(tilePosition)->setResources(resources);
 }
 
+void Game::updatePlayerDead(int playerId)
+{
+    for (auto &player : _players) {
+        if (player->getPlayerId() == playerId) {
+            player->die();
+            std::cout << "player " << playerId << " died" << std::endl;
+        }
+    }
+}
+
+void Game::updateServerDisconnected()
+{
+    _isServerConnected = false;
+}
+
+void Game::updatePlayerStartIncantation(int playerId)
+{
+    for (auto &player : _players) {
+        if (player->getPlayerId() == playerId) {
+            player->startIncantation();
+            getTileByPosition(player->getPosition())->incanteTile();
+        }
+    }
+}
+
 void Game::updateInformations(char *data, int type)
 {
     std::cout << type << std::endl;
@@ -273,6 +300,12 @@ void Game::handleUpdateContentMap(char *data)
     this->updateContentMap(contentMap);
 }
 
+void Game::handlePlayerDead(char *data)
+{
+    // response_payload_player_dead_t *playerDead = (response_payload_player_dead_t *)data;
+    // this->updatePlayerDead(playerDead->player_id);
+}
+
 void Game::handleTileClicked()
 {
     _shouldPrintTileContent = false;
@@ -299,14 +332,18 @@ void Game::handlePlayerClicked()
         if (player->isClicked()) {
             _playerInfoToPrint = player->getPlayerInfo();
             _shouldPrintPlayerInfos = true;
+            player->startIncantation();
         }
     }
 }
 
 void Game::drawTileResources()
 {
-    for (auto &text : _texts)
-        text->draw();
+    for (int index = 0; index < 13; index = index + 1) {
+        _texts.at(index)->draw();
+    }
+    if (!_isServerConnected)
+        _texts.at(14)->draw();
 }
 
 void Game::handleTileResources()
@@ -350,7 +387,7 @@ Scenes Game::handleEvent()
         tile->handleEvent();
     for (auto &player : _players) {
         player->handleEvent();
-        player->animation(1);
+        player->animation(player->getCurrentAnimation());
     }
     handleTileClicked();
     handleTileResources();
