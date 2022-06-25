@@ -32,5 +32,6 @@ void gui_update_player_ended_incantation(zappy_t *zappy, int player_index, bool 
     post_response_player_end_incantation(zappy->server->gui, (response_payload_player_end_incantation_t){
         .player_id = zappy->client[player_index].id,
         .success = incantation_status,
+        .player_level = zappy->client[player_index].player.level,
     });
 }

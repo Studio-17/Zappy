@@ -67,6 +67,10 @@ bool start_incantation(zappy_t *zappy, int player_index)
     if (check_elevation(zappy, elevation_processus_index, zappy->client[player_index].player.level, player_index)) {
 
         zappy->client[player_index].player.elevation_status = BEGIN;
+
+        if (zappy->server->is_gui_connected)
+            gui_update_player_started_incantation(zappy, player_index);
+
         dprintf(zappy->client[player_index].socket, "Elevation underway\n");
 
         return (true);
@@ -94,7 +98,8 @@ void ai_incantation_request(zappy_t *zappy, void *data, int player_index)
 
         if (zappy->server->is_gui_connected) {
             gui_update_tile_content(zappy, (position_t){zappy->client[player_index].player.position.x, zappy->client[player_index].player.position.y});
-            gui_update_player_level(zappy, player_index);
+            // gui_update_player_level(zappy, player_index);
+            gui_update_player_ended_incantation(zappy, player_index, true); // add player.level to gui
         }
 
         dprintf(zappy->client[player_index].socket, "Current level: %d\n", zappy->client[player_index].player.level);
@@ -102,6 +107,9 @@ void ai_incantation_request(zappy_t *zappy, void *data, int player_index)
     } else {
 
         zappy->client[player_index].player.elevation_status = FAILED;
+
+        if (zappy->server->is_gui_connected)
+            gui_update_player_ended_incantation(zappy, player_index, false);
 
         ai_response_ok_ko(zappy->client[player_index].socket, false);
 

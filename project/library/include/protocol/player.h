@@ -114,6 +114,7 @@ void post_response_player_start_incantation(int socket, response_payload_player_
 typedef struct response_payload_player_end_incantation_s {
     bool success;
     int player_id;
+    int player_level;
 } response_payload_player_end_incantation_t;
 
 void post_response_player_end_incantation(int socket, response_payload_player_end_incantation_t response);
