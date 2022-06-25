@@ -51,14 +51,10 @@ static void consume_time_unit(zappy_t *zappy, int player_index)
 
     float time_unit_mark = (126.0f / (float)zappy->options->freq) * 100.0f;
 
-    // printf("%f / %f\n", time_unit_mark, elapsed_time);
-
     if ( time_unit_mark - elapsed_time <= 0 ) {
 
         zappy->client[player_index].player.units -= 1;
         zappy->client[player_index].clock = current_time;
-
-        // printf("Lost one unit, remaining: %d\n", zappy->client[player_index].player.units);
 
     }
 }

@@ -22,7 +22,6 @@
 bool connect_client(zappy_t *zappy)
 {
     int client_socket;
-    int saved_index = 0;
 
     if (FD_ISSET(zappy->server->server_socket->server, &zappy->server->socket_descriptor->readfd))
     {
@@ -34,8 +33,10 @@ bool connect_client(zappy_t *zappy)
 
         if (!greeting_protocol(zappy, client_socket)) {
 
-            if (zappy->server->is_gui_connected)
-                gui_update_player_connected(zappy, saved_index);
+            if (zappy->server->is_gui_connected) {
+                // printf("client-id: %d\n", zappy->client[zappy->server->clients].id);
+                gui_update_player_connected(zappy, zappy->client[zappy->server->clients].id);
+            }
 
         } else {
             if (zappy->server->is_gui_connected)

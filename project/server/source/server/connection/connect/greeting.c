@@ -66,6 +66,7 @@ static bool create_player(zappy_t *zappy, int socket, char *team_name)
 
     zappy->client[zappy->server->clients] = (ai_client_t){
         .socket = socket,
+        .id = 0,
         .client_nb = zappy->server->clients,
         .type = AI,
         .player = player,
@@ -74,15 +75,21 @@ static bool create_player(zappy_t *zappy, int socket, char *team_name)
         .clock = clock(),
     };
 
+    int id = zappy->options->max_clients - zappy->server->clients;
+
     int team_members_connected = count_team_members(zappy, team_name);
     int client_nb = zappy->options->clients_nb - count_team_members(zappy, team_name) - 1;
 
-    if (client_nb < 0)
+    if (client_nb < 0 || id < 0)
         return (false);
+
+    zappy->client[zappy->server->clients].id = id;
 
     strcpy(zappy->client[zappy->server->clients].team_name, team_name);
     zappy->client[zappy->server->clients].team_members = team_members_connected;
     zappy->client[zappy->server->clients].client_nb = client_nb;
+
+    // printf("client-id(server-side): %d\n", zappy->client[zappy->server->clients].id);
 
     zappy->server->clients += 1;
 

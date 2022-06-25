@@ -91,6 +91,7 @@ typedef struct player_t {
 
 typedef struct ai_client_s {
     int socket;
+    int id;
 
     int client_nb;
     enum CLIENT_TYPE type;
