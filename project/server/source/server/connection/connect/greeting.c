@@ -59,8 +59,13 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
     return (valid_team_name);
 }
 
-static void post_client_num(zappy_t *zappy, int socket)
+static void post_client_num(zappy_t *zappy, int socket, bool is_gui)
 {
+    if (is_gui) {
+        dprintf(socket, "%d\n", 0);
+        return;
+    }
+
     for (int index = 0; index <= zappy->server->clients; index += 1) {
         if (zappy->client[index].socket == socket) {
             dprintf(socket, "%d\n", zappy->client[index].client_nb);
@@ -82,7 +87,7 @@ bool greeting_protocol(zappy_t *zappy, int client_socket)
 
     if (get_team_name(zappy, client_socket, &is_gui)) {
 
-        post_client_num(zappy, client_socket);
+        post_client_num(zappy, client_socket, is_gui);
 
         usleep(100);
 

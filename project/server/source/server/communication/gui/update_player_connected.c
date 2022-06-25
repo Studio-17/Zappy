@@ -20,7 +20,7 @@ void gui_update_player_connected(zappy_t *zappy, int updated_data)
     // char *team_name = "not implemented";
 
     post_response_player_connected(zappy->server->gui, (response_payload_player_connected_t){
-        .id = updated_data,
+        .id = zappy->client[updated_data].id,
         .level = zappy->client[updated_data].player.level,
         .orientation = zappy->client[updated_data].player.orientation,
         .position = zappy->client[updated_data].player.position,

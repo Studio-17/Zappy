@@ -9,6 +9,7 @@
 
 #include "server.h"
 #include "ai_request.h"
+#include "gui_update.h"
 #include "list.h"
 #include "request.h"
 
@@ -48,7 +49,7 @@ static void consume_time_unit(zappy_t *zappy, int player_index)
     clock_t current_time = clock();
     float elapsed_time = (current_time - zappy->client[player_index].clock) / 1000;
 
-    float time_unit_mark = (126.0f / zappy->options->freq) * 100;
+    float time_unit_mark = (126.0f / (float)zappy->options->freq) * 100.0f;
 
     if ( time_unit_mark - elapsed_time <= 0 ) {
 
@@ -58,11 +59,20 @@ static void consume_time_unit(zappy_t *zappy, int player_index)
     }
 }
 
+static void update_food(zappy_t *zappy, int player_index)
+{
+    if (zappy->client[player_index].player.units == 0) {
+        zappy->client[player_index].player.units = 126;
+        zappy->client[player_index].player.resource_inventory[FOOD].quantity -= 1;
+        gui_update_player_inventory(zappy, player_index);
+    }
+}
+
 bool listen_clients(zappy_t *zappy)
 {
-    for (int index = 0; index < zappy->server->clients; index += 1) {
-        if (FD_ISSET(zappy->client[index].socket, &zappy->server->socket_descriptor->readfd)) {
-            ai_request_t request = ai_handle_request(zappy, index);
+    for (int player_index = 0; player_index < zappy->server->clients; player_index += 1) {
+        if (FD_ISSET(zappy->client[player_index].socket, &zappy->server->socket_descriptor->readfd)) {
+            ai_request_t request = ai_handle_request(zappy, player_index);
 
             if (request.command == ERROR)
                 return false;
@@ -73,18 +83,18 @@ bool listen_clients(zappy_t *zappy)
                 .clock = 0,
             };
 
-            queue_push_back(&zappy->client[index].list, &new_data, sizeof(data_t));
+            queue_push_back(&zappy->client[player_index].list, &new_data, sizeof(data_t));
 
-            // printf("queue size %d\n", queue_get_size(zappy->client[index].list));
-
-            if (check_death(zappy, index))
-                death_protocol(zappy, index);
+            if (check_death(zappy, player_index))
+                death_protocol(zappy, player_index);
 
         }
 
-        consume_time_unit(zappy, index);
+        update_food(zappy, player_index);
 
-        execute_task(&zappy->client[index].list, zappy, index);
+        consume_time_unit(zappy, player_index);
+
+        execute_task(&zappy->client[player_index].list, zappy, player_index);
     }
     return true;
 }

@@ -18,7 +18,7 @@ void gui_update_player_orientation(zappy_t *zappy, int player_index)
     });
 
     post_response_player_orientation(zappy->server->gui, (response_payload_player_orientation_t){
-        .player_id = player_index,
+        .player_id = zappy->client[player_index].id,
         .orientation = zappy->client[player_index].player.orientation,
     });
 }

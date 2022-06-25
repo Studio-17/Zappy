@@ -18,7 +18,7 @@ void gui_update_player_inventory(zappy_t *zappy, int player_index)
     });
 
     post_response_player_inventory(zappy->server->gui, (response_payload_player_inventory_t){
-        .player_id = zappy->client[player_index].client_nb,
+        .player_id = zappy->client[player_index].id,
         .food = zappy->client[player_index].player.resource_inventory[FOOD].quantity,
         .linemate = zappy->client[player_index].player.resource_inventory[LINEMATE].quantity,
         .deraumere = zappy->client[player_index].player.resource_inventory[DERAUMERE].quantity,

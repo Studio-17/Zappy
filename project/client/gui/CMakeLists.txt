@@ -60,6 +60,7 @@ include_directories(
     Source/App/Events/
     Source/App/Scenes/
     Source/App/Scenes/Menu
+    Source/App/Clock/
 )
 
 add_executable(zappy_gui ${SOURCES})

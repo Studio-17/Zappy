@@ -21,8 +21,8 @@
 
 bool connect_client(zappy_t *zappy)
 {
-    int client_socket;
-    int saved_index = 0;
+    int client_socket = 0;
+    int client_id = 0;
 
     if (FD_ISSET(zappy->server->server_socket->server, &zappy->server->socket_descriptor->readfd))
     {
@@ -32,15 +32,13 @@ bool connect_client(zappy_t *zappy)
             exit(EXIT_FAILURE);
         }
 
-        if (!greeting_protocol(zappy, client_socket)) {
+        if (greeting_protocol(zappy, client_socket)) {
 
-            if (zappy->server->is_gui_connected)
-                gui_update_player_connected(zappy, saved_index);
-
-        } else {
             if (zappy->server->is_gui_connected)
                 gui_update_map_content(zappy);
+
         }
+
 
     }
     return (listen_clients(zappy));
@@ -78,7 +76,7 @@ void wait_for_connections(server_t *server)
     tv.tv_usec = 5;
     if ((select(server->socket_descriptor->max_socket_descriptor + 1, &server->socket_descriptor->readfd, NULL, NULL, &tv) < 0))
     {
-        perror("select");
+        perror("select"); // error with select on ^C (client-side)
     }
 }
 

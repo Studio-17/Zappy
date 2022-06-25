@@ -15,6 +15,8 @@ void create_server(zappy_t *zappy)
 
     configure_socket_type(zappy->server);
     bind_socket_to_server(zappy->server);
+
+    printf("Port : %d\n", zappy->options->port);
 }
 
 bool server_loop(zappy_t *zappy)
