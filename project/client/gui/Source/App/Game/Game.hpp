@@ -38,6 +38,10 @@ enum COMMANDS_GUI {
     TIME_UNIT,
     TIME_UNIT_MODIFICATION,
     PLAYER_ORIENTATION,
+    PLAYER_DEAD,
+    SERVER_OFFLINE,
+    PLAYER_STARTED_INCANTATION,
+    PLAYER_ENDED_INCANTATION,
     NB_COMMANDS_GUI,
 };
 
@@ -66,6 +70,7 @@ class Game : public AScene {
         void updatePlayerDead(int playerId);
         void updateServerDisconnected();
         void updatePlayerStartIncantation(int playerId);
+        void updatePlayerStopIncantation(int playerId, int level);
 
         void handleAddPlayer(char *data);
         void handleUpdatePlayerPosition(char *data);
@@ -75,6 +80,8 @@ class Game : public AScene {
         void handleUpdateContentTile(char *data);
         void handleUpdateContentMap(char *data);
         void handlePlayerDead(char *data);
+        void handlePlayerStartIcantation(char *data);
+        void handlePlayerStopIncantation(char *data);
 
         std::shared_ptr<Object::Tile> getTileByPosition(Position const &position);
 

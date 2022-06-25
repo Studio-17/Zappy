@@ -15,6 +15,9 @@
 
 void death_protocol(zappy_t *zappy, int index)
 {
+    if (zappy->server->is_gui_connected)
+        gui_update_player_dead(zappy, index);
+
     dprintf(zappy->client[index].socket, "dead\n");
 
     // disconnect the player
@@ -27,8 +30,15 @@ int execute_task(list_t *list, zappy_t *zappy, int player_index)
 
     data_t *request = (data_t *)queue_get_front(*list);
 
-    if (!request->clock)
+    if (!request->clock) {
         request->clock = clock();
+        if (request->request.command == INCANTATION)
+            if (!start_incantation(zappy, player_index)) {
+                free(request->request.data);
+                queue_pop_front(list);
+                return;
+            }
+    }
 
     clock_t end = clock();
 

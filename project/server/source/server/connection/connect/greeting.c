@@ -32,11 +32,11 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
 {
     bool valid_team_name = false;
     char *team_name = read_in_socket(socket);
+    enum STATUS player_status;
 
     if (!team_name)
         perror("get_team_name read");
 
-    printf("there is %d player(s) connected\n", zappy->server->clients);
     if (strcmp(team_name, "GRAPHIC\n") == 0) {
         initialize_gui(zappy, socket);
         *is_gui = true;
@@ -45,17 +45,24 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
     }
     for (int index = 0; zappy->options->team_names[index]; index += 1) {
         if (strncmp(zappy->options->team_names[index], team_name, strlen(zappy->options->team_names[index])) == 0) {
-            if (!create_player(zappy, socket, team_name)) {
+            player_status = create_player(zappy, socket, team_name);
+            if (!player_status) {
                 dprintf(socket, "ko: create player\n");
                 return false;
+            } else if (player_status == SPECIAL_STATUS) {
+                printf("it is\n");
+                free(team_name);
+                return get_team_name(zappy, socket, is_gui);
             }
             valid_team_name = true;
             break;
         }
     }
-    if (!valid_team_name)
-        dprintf(socket, "ko\n");
     free(team_name);
+    if (!valid_team_name) {
+        dprintf(socket, "ko\n");
+        return get_team_name(zappy, socket, is_gui);
+    }
     return (valid_team_name);
 }
 
@@ -92,7 +99,6 @@ bool greeting_protocol(zappy_t *zappy, int client_socket)
         usleep(100);
 
         post_map_dimensions(zappy, client_socket);
-
     }
     return is_gui;
 }

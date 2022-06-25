@@ -116,7 +116,7 @@ void Game::addPlayer(int playerId, int x, int y, Object::ORIENTATION orientation
 {
     Position playerPos((float)x, 0, (float)y);
 
-    _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation, teamName, _camera));
+    _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation, teamName, _camera, _mapWidth, _mapHeight));
     addPlayerToTeam(teamName, playerId);
     std::cout << "player " << playerId << " was added with position of " << playerPos << " and orientation of " << (int)orientation << " and team name: " << teamName << std::endl;
 }
@@ -126,7 +126,7 @@ void Game::updatePlayerPosition(int playerId, int x, int y, int orientation)
     Position playerPosition(x, 0, y);
     for (auto &player : _players) {
         if (player->getPlayerId() == playerId) {
-            player->setPosition(playerPosition * 10);
+            player->move(playerPosition * 10);
         }
     }
     std::cout << "player " << playerId << " moved " << x << " " << y << " with orientation: " << orientation << std::endl;
@@ -212,7 +212,15 @@ void Game::updatePlayerStartIncantation(int playerId)
     for (auto &player : _players) {
         if (player->getPlayerId() == playerId) {
             player->startIncantation();
-            getTileByPosition(player->getPosition())->incanteTile();
+        }
+    }
+}
+
+void Game::updatePlayerStopIncantation(int playerId, int level)
+{
+    for (auto &player : _players) {
+        if (player->getPlayerId() == playerId) {
+            player->stopIncantation(level);
         }
     }
 }
@@ -302,9 +310,23 @@ void Game::handleUpdateContentMap(char *data)
 
 void Game::handlePlayerDead(char *data)
 {
-    // response_payload_player_dead_t *playerDead = (response_payload_player_dead_t *)data;
-    // this->updatePlayerDead(playerDead->player_id);
+    response_payload_player_dead_t *playerDead = (response_payload_player_dead_t *)data;
+    this->updatePlayerDead(playerDead->player_id);
 }
+
+void Game::handlePlayerStartIcantation(char *data)
+{
+    response_payload_player_start_incantation_t *playerIncantation = (response_payload_player_start_incantation_t *)data;
+    this->updatePlayerStartIncantation(playerIncantation->player_id);
+}
+
+void Game::handlePlayerStopIncantation(char *data)
+{
+    response_payload_player_end_incantation_t *playerIncantation = (response_payload_player_end_incantation_t *)data;
+    this->updatePlayerStopIncantation(playerIncantation->player_id, playerIncantation->player_level);
+}
+
+
 
 void Game::handleTileClicked()
 {
@@ -332,7 +354,6 @@ void Game::handlePlayerClicked()
         if (player->isClicked()) {
             _playerInfoToPrint = player->getPlayerInfo();
             _shouldPrintPlayerInfos = true;
-            player->startIncantation();
         }
     }
 }
