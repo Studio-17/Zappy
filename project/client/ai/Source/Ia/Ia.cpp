@@ -422,10 +422,10 @@ void Ia::look(std::string const &serverResponse)
 {
     std::cout << "Look response->" << serverResponse << std::endl;
     // if (isBracketsInString(serverResponse)) {
-        parseLook(serverResponse);
-        _requestListReceived.pop();
-        _requestListSent.pop();
+        // parseLook(serverResponse);
     // }
+    _requestListReceived.pop();
+    _requestListSent.pop();
 }
 
 void Ia::inventory(std::string const &serverResponse)
