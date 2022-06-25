@@ -90,6 +90,7 @@ class Ia {
         std::pair<int, std::string> _objectToTake; //!< Object to take
         bool _isDead; //!< bool to know if the ia dead
 
+        std::queue<ACTIONS> _requestTmp;
         std::queue<ACTIONS> _requestListToSend; //!< Queue of the requests to send
         std::queue<ACTIONS> _requestListSent; //!< Queue of the requests sent
         std::queue<std::string> _requestListReceived; //!< Queue of the requests received

@@ -402,13 +402,14 @@ void Ia::turnLeft(std::string const &serverResponse)
     if (serverResponse == "ok") {
         changeDirection(DIRECTION::LEFT);
     }
+    _requestListReceived.pop();
+    _requestListSent.pop();
+}
+
+void Ia::turnRight(std::string const &serverResponse)
+{
     if (serverResponse == "ok") {
         changeDirection(DIRECTION::RIGHT);
-    }
-    if (serverResponse == "ok\n") {
-        changeDirection(DIRECTION::RIGHT);
-        _requestListReceived.pop();
-        _requestListSent.pop();
     }
     _requestListReceived.pop();
     _requestListSent.pop();
@@ -416,9 +417,9 @@ void Ia::turnLeft(std::string const &serverResponse)
 
 void Ia::look(std::string const &serverResponse)
 {
-        parseLook(serverResponse);
-        _requestListReceived.pop();
-        _requestListSent.pop();
+    parseLook(serverResponse);
+    _requestListReceived.pop();
+    _requestListSent.pop();
 }
 
 void Ia::inventory(std::string const &serverResponse)
@@ -438,9 +439,9 @@ void Ia::handleEvent(ACTIONS action, std::string const &response)
         case ACTIONS::LEFT:
             turnLeft(response);
             break;
-        // case ACTIONS::RIGHT:
-        //     turnRight(response);
-        //     break;
+        case ACTIONS::RIGHT:
+            turnRight(response);
+            break;
         case ACTIONS::LOOK:
             look(response);
             break;
@@ -454,12 +455,12 @@ void Ia::handleEvent(ACTIONS action, std::string const &response)
 
 void Ia::addActionToQueue(ACTIONS action)
 {
-    _requestListToSend.emplace(action);
+    _requestTmp.emplace(action);
 
-    if (_requestListSent.size() < MAX_ACTION_LIST) {
-        ACTIONS tmp = _requestListToSend.front();
-        _requestListToSend.pop();
-        _requestListSent.emplace(tmp);
+    if (_requestListToSend.size() < MAX_ACTION_LIST) {
+        ACTIONS tmp = _requestTmp.front();
+        _requestTmp.pop();
+        _requestListToSend.emplace(tmp);
     }
 }
 
@@ -473,17 +474,19 @@ void Ia::mainLoop()
     std::string message;
 
     while (!_isDead) {
-        if (!_requestListSent.empty()) {
-            _client.postRequest(_client.getSocket(), _requestListSent.front());
+        if (!_requestListToSend.empty()) {
+            _client.postRequest(_client.getSocket(), _requestListToSend.front());
+            _requestListSent.emplace(_requestListToSend.front());
+            _requestListToSend.pop();
         }
 
         // add action to queue here
         addActionToQueue(ACTIONS::LOOK);
 
-        _client.postRequest(_client.getSocket(), _requestListSent.front());
         message = _client.getRequest(_client.getSocket());
         if (parseReceiveResponse(message)) {
-            handleEvent(_requestListSent.front(), _requestListReceived.front());
+            if (!_requestListSent.empty() && !_requestListReceived.empty())
+                handleEvent(_requestListSent.front(), _requestListReceived.front());
         }
     }
 }
