@@ -490,7 +490,6 @@ void Ia::mainLoop()
 
         // add action to queue here
 
-        _client.postRequest(_client.getSocket(), _requestListSent.front());
         message = _client.getRequest(_client.getSocket());
         if (parseReceiveResponse(message)) {
             if (!_requestListSent.empty() && !_requestListReceived.empty())
