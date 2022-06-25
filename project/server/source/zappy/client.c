@@ -34,13 +34,15 @@ static int count_team_members(zappy_t *zappy, char const *team_name)
     return (team_members);
 }
 
-bool create_player(zappy_t *zappy, int socket, char *team_name)
+int create_player(zappy_t *zappy, int socket, char *team_name)
 {
     int id = zappy->options->max_clients - zappy->server->clients;
     int client_nb = zappy->options->clients_nb - count_team_members(zappy, team_name) - 1;
 
-    if (client_nb < 0 || id < 0)
-        return (false);
+    if (id < 0)
+        return FAILURE;
+    if (client_nb < 0)
+        return SPECIAL_STATUS;
 
     player_t player = {
         .id = zappy->server->clients,
@@ -74,7 +76,7 @@ bool create_player(zappy_t *zappy, int socket, char *team_name)
         gui_update_player_connected(zappy, zappy->server->clients);
     zappy->server->clients += 1;
 
-    return (true);
+    return (SUCCESS);
 }
 
 
