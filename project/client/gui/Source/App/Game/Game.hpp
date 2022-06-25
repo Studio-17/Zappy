@@ -66,6 +66,7 @@ class Game : public AScene {
         void updatePlayerDead(int playerId);
         void updateServerDisconnected();
         void updatePlayerStartIncantation(int playerId);
+        void updatePlayerStopIncantation(int playerId, int level);
 
         void handleAddPlayer(char *data);
         void handleUpdatePlayerPosition(char *data);
