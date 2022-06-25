@@ -20,8 +20,8 @@ extern "C" {
 App::App(std::string const &name, int width, int height) : _window(width, height, name), _client(std::make_shared<Client>())
 {
     _camera = std::make_shared<RayLib::CinematicCamera>();
-    _camera->setPosition(Position(65, 230, 266));
-    _camera->setTarget(Position(35, 0, 55));
+    _camera->setPosition(Position(47, 230, 266));
+    _camera->setTarget(Position(37, 0, 55));
     _camera->setFovy(20.0f);
     _camera->setUp(Position(0, 1, 0));
     _camera->setProjection(CAMERA_PERSPECTIVE);

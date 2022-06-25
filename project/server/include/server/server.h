@@ -45,6 +45,12 @@ enum ITEM {
     NB_ITEMS,
 };
 
+enum STATUS {
+    FAILURE = 0,
+    SUCCESS = 1,
+    SPECIAL_STATUS
+};
+
 #define LEVEL_MAX 4
 
 typedef struct elevation_resources_s {
@@ -186,7 +192,7 @@ void free_elevation(elevations_t *elevation);
 void debug_elevation(elevations_t *elevation);
 
 bool setup_client(zappy_t *zappy, int max_clients);
-bool create_player(zappy_t *zappy, int socket, char *team_name);
+int create_player(zappy_t *zappy, int socket, char *team_name);
 void free_clients(ai_client_t *clients, int max_clients);
 
 #endif /* !SERVER_H_ */

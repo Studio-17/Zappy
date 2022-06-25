@@ -44,6 +44,9 @@ SOURCE	=	source/server/communication/communication.c					\
 			source/server/communication/gui/update_player_level.c		\
 			source/server/communication/gui/update_player_connected.c	\
 			source/server/communication/gui/update_player_orientation.c	\
+			source/server/communication/gui/update_incantation.c		\
+			source/server/communication/gui/update_player_dead.c		\
+			source/server/communication/gui/update_server_offline.c		\
 			source/server/server.c										\
 			source/server/connection/connect/client.c					\
 			source/server/connection/connect/greeting.c					\
