@@ -38,8 +38,6 @@ bool connect_client(zappy_t *zappy)
                 gui_update_map_content(zappy);
 
         }
-
-
     }
     return (listen_clients(zappy));
 }

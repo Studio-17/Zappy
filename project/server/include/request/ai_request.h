@@ -25,6 +25,7 @@
     void ai_take_request(zappy_t *zappy, void *data, int player_index);
     void ai_set_request(zappy_t *zappy, void *data, int player_index);
     void ai_incantation_request(zappy_t *zappy, void *data, int player_index);
+    bool start_incantation(zappy_t *zappy, int player_index);
 
     void ai_invalid_request(zappy_t *zappy, void *data, int player_index);
 
