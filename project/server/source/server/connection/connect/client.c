@@ -19,9 +19,26 @@
 #include "server/server.h"
 #include "server/communication/request/request.h"
 
+// static int gui_update_client_id(zappy_t *zappy)
+// {
+//     int id = zappy->options->max_clients - zappy->server->clients;
+
+//     if (id < 0)
+//         return (-1);
+
+//     zappy->client[zappy->server->clients].id = id;
+
+//     printf("client-id: %d\n", zappy->client[zappy->server->clients].id);
+
+//     zappy->server->clients += 1;
+
+//     return (id);
+// }
+
 bool connect_client(zappy_t *zappy)
 {
-    int client_socket;
+    int client_socket = 0;
+    int client_id = 0;
 
     if (FD_ISSET(zappy->server->server_socket->server, &zappy->server->socket_descriptor->readfd))
     {
@@ -31,17 +48,27 @@ bool connect_client(zappy_t *zappy)
             exit(EXIT_FAILURE);
         }
 
-        if (!greeting_protocol(zappy, client_socket)) {
+        // if (!greeting_protocol(zappy, client_socket)) {
 
-            if (zappy->server->is_gui_connected) {
-                // printf("client-id: %d\n", zappy->client[zappy->server->clients].id);
-                gui_update_player_connected(zappy, zappy->client[zappy->server->clients].id);
-            }
+            // client_id = gui_update_client_id(zappy);
+            // if (client_id == -1)
+            //     return (false);
 
-        } else {
+            // if (zappy->server->is_gui_connected)
+            //     gui_update_player_connected(zappy, zappy->server->clients);
+
+        // } else {
+        //     if (zappy->server->is_gui_connected)
+        //         gui_update_map_content(zappy);
+        // }
+
+        if (greeting_protocol(zappy, client_socket)) {
+
             if (zappy->server->is_gui_connected)
                 gui_update_map_content(zappy);
+
         }
+
 
     }
     return (listen_clients(zappy));

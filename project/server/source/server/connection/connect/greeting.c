@@ -89,7 +89,10 @@ static bool create_player(zappy_t *zappy, int socket, char *team_name)
     zappy->client[zappy->server->clients].team_members = team_members_connected;
     zappy->client[zappy->server->clients].client_nb = client_nb;
 
-    // printf("client-id(server-side): %d\n", zappy->client[zappy->server->clients].id);
+    printf("client-id(server-side): %d\n", zappy->client[zappy->server->clients].id);
+
+    if (zappy->server->is_gui_connected)
+        gui_update_player_connected(zappy, zappy->server->clients);
 
     zappy->server->clients += 1;
 
