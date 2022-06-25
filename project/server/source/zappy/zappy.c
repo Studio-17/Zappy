@@ -32,14 +32,8 @@ bool setup_zappy_content(zappy_t *zappy)
         return false;
     zappy->options->max_teams = my_arrlen(zappy->options->team_names);
     zappy->options->max_clients = zappy->options->max_teams * zappy->options->clients_nb;
-    zappy->client = malloc(sizeof(ai_client_t) * zappy->options->max_clients);
-    if (!zappy->client)
+    if (!setup_client(zappy, zappy->options->max_clients))
         return false;
-    for (int index = 0; index != zappy->options->max_clients; index++) {
-        zappy->client[index].player.resource_inventory = NULL;
-        zappy->client[index].list = NULL;
-        zappy->client[index].socket = 0;
-    }
     zappy->server = malloc(sizeof(server_t));
     if (!zappy->server)
         return false;
@@ -47,6 +41,8 @@ bool setup_zappy_content(zappy_t *zappy)
         return false;
     zappy->map = create_map(zappy->options->width, zappy->options->height);
     zappy->resources = setup_resources(zappy->options->width, zappy->options->height);
+    if (!zappy->map || !zappy->resources)
+        return false;
     if (!setup_server(zappy->server, zappy->options))
         return false;
     return true;
@@ -57,7 +53,6 @@ void free_zappy(zappy_t *zappy)
     if (zappy->client)
         free_clients(zappy->client, zappy->options->max_clients);
     free_options(zappy->options);
-    // free(zappy->client);
     free_map(zappy->map);
     free_resources(zappy->resources);
     free_elevation(zappy->elevation);

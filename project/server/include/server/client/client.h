@@ -11,12 +11,6 @@
     #include "minilib.h"
     #include "netlib.h"
 
-enum CLIENT_TYPE {
-    AI,
-    GRAPH,
-    NB_TYPES,
-};
-
 enum ORIENTATION {
     DEFAULT = -1,
     NORTH = 0,
@@ -29,7 +23,6 @@ enum ORIENTATION {
 typedef struct gui_client_s {
     int socket;
     int client_nb;
-    enum CLIENT_TYPE type;
 } gui_client_t;
 
 #endif /* !CLIENT_H_ */

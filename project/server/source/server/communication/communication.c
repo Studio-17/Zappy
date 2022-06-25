@@ -83,7 +83,7 @@ bool listen_clients(zappy_t *zappy)
 
             if (request.command == ERROR)
                 return false;
-            else if (request.command == OUT_OF_RANGE)
+            else if (request.command == OUT_OF_RANGE || request.command == EMPTY)
                 continue;
             data_t new_data = {
                 .request = request,
