@@ -23,7 +23,7 @@
 static void remove_elevation_stones(zappy_t *zappy, int player_index)
 {
     for (int index = 0; index < NB_ITEMS; index += 1)
-        zappy->map->tiles[zappy->client[player_index].player.position.x][zappy->client[player_index].player.position.y].resources[index].quantity = 0;
+        zappy->map->tiles[zappy->client[player_index].player.position.y][zappy->client[player_index].player.position.x].resources[index].quantity = 0;
 }
 
 static bool check_elevation(zappy_t *zappy, int elevation_index, int player_level, int player_index)
@@ -31,8 +31,10 @@ static bool check_elevation(zappy_t *zappy, int elevation_index, int player_leve
     // PRELIMINARIES
     position_t player_position = zappy->client[player_index].player.position;
 
+
     // PRE FOR TILE CHECKS
-    int player_needed = zappy->elevation[elevation_index].elevation_step->player_needed;
+    // int player_needed = zappy->elevation[elevation_index].elevation_step->player_needed;
+    int player_needed = (zappy->client[player_index].player.level == 1) ? 1 : 2;
     // CHECK PLAYERS ON TILE
     int players_on_tile = 0;
     for (int index = 0; index != zappy->server->clients; index += 1) {
@@ -41,7 +43,7 @@ static bool check_elevation(zappy_t *zappy, int elevation_index, int player_leve
             players_on_tile += 1;
         }
     }
-    if (players_on_tile != zappy->elevation[elevation_index].elevation_step->player_needed)
+    if (players_on_tile != player_needed)
         return (false);
 
     // PRE FOR RESOURCE CHECKS
@@ -50,7 +52,7 @@ static bool check_elevation(zappy_t *zappy, int elevation_index, int player_leve
 
     // CHECK RESOURCES ON TILE
     for (int index = 0; index != NB_ITEMS; index += 1) {
-        if (resources_need[index].quantity_needed != tile_resources[index].quantity) {
+        if (resources_need[index].quantity_needed != tile_resources[index].quantity) { // Conditional jump or move depends on uninitialised value(s)
             return (false);
         }
     }
