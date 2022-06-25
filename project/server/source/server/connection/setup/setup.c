@@ -22,12 +22,6 @@ bool setup_server(server_t *server, options_t *options)
     return true;
 }
 
-void initialise_all_clients_sockets(server_t *server)
-{
-    // for (int index = 0; index < server->server_socket->max_client; index++)
-        // server->server_socket->client[index] = 0;
-}
-
 void create_server_socket(server_t *server)
 {
     if ((server->server_socket->server = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
