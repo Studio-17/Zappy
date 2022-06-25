@@ -168,9 +168,7 @@ bool connect_client(zappy_t *zappy);
 void clear_socket_set(server_t *server);
 void add_server_socket_to_set(server_t *server);
 void add_client_socket_to_set(zappy_t *zappy);
-// void add_client_socket_to_set(server_t *server);
 void wait_for_connections(server_t *server);
-// void add_client_to_server(server_t *server, int client_socket);
 void add_client_to_server(zappy_t *zappy, int client_socket);
 
 

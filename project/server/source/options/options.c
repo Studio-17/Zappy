@@ -35,6 +35,9 @@ bool get_options(int ac, char * const *av, options_t *options)
         {0, 0, 0, 0}};
     int long_index = 0;
 
+    int index = 0;
+    char *team_names = NULL;
+
     while ((opt = getopt_long(ac, av, "hp:x:y:n:c:f:",
                               long_options, &long_index)) != -1)
     {
@@ -53,7 +56,24 @@ bool get_options(int ac, char * const *av, options_t *options)
             options->height = my_atoi(optarg);
             break;
         case 'n':
-            options->names = optarg;
+            for (index = optind -1; index < ac; index += 1){
+                if (av[index][0] != '-') {
+
+                    if (!team_names)
+                        team_names = strdup(av[index]);
+                    else {
+                        team_names = realloc(team_names, strlen(team_names) + strlen(av[index]) + 2);
+                        team_names = strcat(team_names, " ");
+                        team_names = strcat(team_names, av[index]);
+                    }
+
+                } else {
+                    break;
+                }
+            }
+            optind = index;
+            options->names = strdup(team_names);
+            free(team_names);
             break;
         case 'c':
             options->clients_nb = my_atoi(optarg);
