@@ -9,11 +9,13 @@
     #define PLAYER_HPP_
 
     #include <utility>
+    #include <unordered_map>
 
     #include "AThreeDimensionObject.hpp"
     #include "Text.hpp"
     #include "Camera.hpp"
     #include "clock.hpp"
+    #include "Texture.hpp"
 
 namespace Object {
     /**
@@ -161,6 +163,7 @@ namespace Object {
             int getCurrentAnimation() const { return _currentAnimation; };
             void setCurrentAnimation(int animation) { _currentAnimation = animation; };
             void startIncantation();
+            void stopIncantation(int level);
 
         private:
 
@@ -188,6 +191,10 @@ namespace Object {
 
             PlayerInfo _playerInfo;
             Clock _movementClock;
+            Texture2D _levelTwoTexture;
+            Texture2D _levelThreeTexture;
+
+            std::unordered_map<int, Texture2D> _texturePlayersLevel;
     };
 }
 

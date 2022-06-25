@@ -217,6 +217,15 @@ void Game::updatePlayerStartIncantation(int playerId)
     }
 }
 
+void Game::updatePlayerStopIncantation(int playerId, int level)
+{
+    for (auto &player : _players) {
+        if (player->getPlayerId() == playerId) {
+            player->stopIncantation(level);
+        }
+    }
+}
+
 void Game::updateInformations(char *data, int type)
 {
     std::cout << type << std::endl;
@@ -332,7 +341,7 @@ void Game::handlePlayerClicked()
         if (player->isClicked()) {
             _playerInfoToPrint = player->getPlayerInfo();
             _shouldPrintPlayerInfos = true;
-            player->startIncantation();
+            player->stopIncantation(2);
         }
     }
 }
