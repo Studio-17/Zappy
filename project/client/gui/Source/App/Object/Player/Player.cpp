@@ -15,7 +15,7 @@ Object::Player::Player(std::pair<std::string, std::string> const &pathToResource
     _level = 1;
 }
 
-Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation, std::string teamName, std::shared_ptr<RayLib::CinematicCamera> camera) :
+Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation, std::string teamName, std::shared_ptr<RayLib::CinematicCamera> camera, int mapWidth, int mapHeight) :
     AThreeDimensionObject(pathToModel, pathToResources, pathToAnimation, numberOfAnimations, position, type)
 {
     _scale = 5.0f;
@@ -35,6 +35,8 @@ Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyT
                 {1, _levelTwoTexture},
                 {2, _levelThreeTexture}
     };
+    _mapWidth = mapWidth;
+    _mapHeight = mapHeight;
     setOrientation(_playerOrientation);
 }
 
@@ -52,33 +54,72 @@ void Object::Player::animation(std::size_t animNb)
 
 void Object::Player::move(Position const &position)
 {
-    Position tmp = _position - position;
-    Position currentPos = _position;
-    std::cout << "tmp: " << tmp << std::endl;
-    std::cout << "new position: " << position << std::endl;
-    int index = 1;
+    _currentAnimation = 0;
+    _directionToMove = _position - position;
+    _currentPositionMove = position;
+    if (!_isMoving)
+        _isMoving = true;
+    _replacedPlayer = false;
+}
 
+void Object::Player::continueMoving()
+{
+    if (getPosition() == _currentPositionMove || _replacedPlayer == true) {
+        _isMoving = false;
+        _currentAnimation = 1;
+        return;
+    }
 
-    _movementClock.start();
-    if (tmp.getX() != 0) {
-        std::cout << "first if x" << std::endl;
-        while (_position.getX() != position.getX()) {
-            if (_movementClock.getElapsedTime() > 1000) {
-                setPosition(Position(_position.getX() + 1, _position.getY(), _position.getZ()));
-                _movementClock.restart();
-            }
+    if (_directionToMove.getX() != 0 && _playerOrientation == Object::ORIENTATION::EAST) {
+        if (_position.getX() + 10 == _mapWidth * 10) {
+            setPosition(Position(0, _position.getY(), _position.getZ()));
+            _replacedPlayer = true;
+        }
+        setPosition(Position(_position.getX() + 0.5, _position.getY(), _position.getZ()));
+        if (getPosition().getX() >= _currentPositionMove.getX() || _replacedPlayer == true) {
+            _isMoving = false;
+            _currentAnimation = 1;
+            setPosition(_currentPositionMove);
+            return;
         }
     }
-    if (tmp.getZ() != 0) {
-        std::cout << "first if z" << std::endl;
-        while (_position.getZ() != position.getZ()) {
-            animation(0);
-            if (_movementClock.getElapsedTime() > 1000) {
-                std::cout << "second if z" << std::endl;
-                setPosition(Position(currentPos.getX(), currentPos.getY(), currentPos.getY() + index));
-                _movementClock.restart();
-                index++;
-            }
+    if (_directionToMove.getX() != 0 && _playerOrientation == Object::ORIENTATION::WEST) {
+        if (_position.getX() - 10 == -10) {
+            setPosition(Position((_mapWidth - 1) * 10, _position.getY(), _position.getZ()));
+            _replacedPlayer = true;
+        }
+        setPosition(Position(_position.getX() - 0.5, _position.getY(), _position.getZ()));
+        if (getPosition().getX() <= _currentPositionMove.getX() || _replacedPlayer == true) {
+            _isMoving = false;
+            _currentAnimation = 1;
+            setPosition(_currentPositionMove);
+            return;
+        }
+    }
+    if (_directionToMove.getZ() != 0 && _playerOrientation == Object::ORIENTATION::NORTH) {
+        if (_position.getZ() - 10 == -10) {
+            setPosition(Position(_position.getX(), _position.getY(), (_mapHeight - 1) * 10));
+            _replacedPlayer = true;
+        }
+        setPosition(Position(_position.getX(), _position.getY(), _position.getZ() - 0.5));
+        if (getPosition().getZ() <= _currentPositionMove.getZ() || _replacedPlayer == true) {
+            _isMoving = false;
+            _currentAnimation = 1;
+            setPosition(_currentPositionMove);
+            return;
+        }
+    }
+    if (_directionToMove.getZ() != 0 && _playerOrientation == Object::ORIENTATION::SOUTH) {
+        if (_position.getZ() + 10 == _mapHeight * 10) {
+            setPosition(_position.getX(), _position.getY(), 0);
+            _replacedPlayer = true;
+        }
+        setPosition(Position(_position.getX(), _position.getY(), _position.getZ() + 0.5));
+        if (getPosition().getZ() >= _currentPositionMove.getZ() || _replacedPlayer == true) {
+            _isMoving = false;
+            _currentAnimation = 1;
+            setPosition(_currentPositionMove);
+            return;
         }
     }
 }
@@ -96,6 +137,7 @@ void Object::Player::setOrientation(Object::ORIENTATION orientation)
         tmp = {0, 0, 0};
 
     _model.transform = MatrixRotateXYZ((Vector3){ DEG2RAD * tmp.x, DEG2RAD * tmp.y, DEG2RAD * tmp.z});
+    _playerOrientation = orientation;
 }
 
 void Object::Player::handleEvent()
@@ -114,16 +156,18 @@ void Object::Player::handleEvent()
         }
 
     }
+    if (_isMoving)
+        continueMoving();
 }
 
 void Object::Player::draw()
 {
     Vector2 textPosition = GetWorldToScreen((Vector3){_position.getX(), _position.getY() + 30, _position.getZ()}, _camera->getCamera());
+    DrawText(_teamName.c_str(), (int)textPosition.x - MeasureText(_teamName.c_str(), 20)/2, (int)textPosition.y, 20, BLACK);
     _camera->startMode3D();
     if (_isEnable)
         DrawModel(_model, getPosition().getVector3(), _scale, WHITE);
     _camera->endMode3D();
-    DrawText(_teamName.c_str(), (int)textPosition.x - MeasureText(_teamName.c_str(), 20)/2, (int)textPosition.y, 20, BLACK);
 }
 
 void Object::Player::setSpeed(bool addSpeed)
