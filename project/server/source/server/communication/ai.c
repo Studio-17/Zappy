@@ -121,7 +121,6 @@ char *ai_get_generic_request(int client_socket, zappy_t *zappy, int player_index
         perror("ai_get_generic_request read");
     else if (read_value == 0) {
         close(client_socket);
-        zappy->server->server_socket->client[player_index] = 0;
     }
 
     char *buffer = malloc(sizeof(data));
@@ -147,6 +146,7 @@ ai_request_t ai_handle_request(zappy_t *zappy, int player_index)
         if (strncmp(request_data, ai_request_to_handle[index].request, strlen(ai_request_to_handle[index].request)) == 0) {
             tmp = ai_request_to_handle[index];
             tmp.data = strdup(request_data);
+            free(request_data);
             return tmp;
         }
     }

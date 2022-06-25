@@ -26,7 +26,7 @@ bool server_loop(zappy_t *zappy)
         clear_socket_set(zappy->server);
 
         add_server_socket_to_set(zappy->server);
-        add_client_socket_to_set(zappy->server);
+        add_client_socket_to_set(zappy);
 
         wait_for_connections(zappy->server);
 
@@ -38,8 +38,8 @@ bool server_loop(zappy_t *zappy)
 
 void client_deconnected(zappy_t *zappy, int client_socket)
 {
-    close(zappy->server->socket_descriptor->socket_descriptor);
-    zappy->server->server_socket->client[client_socket] = 0;
+    // close(zappy->server->socket_descriptor->socket_descriptor);
+    // zappy->server->server_socket->client[client_socket] = 0;
 }
 
 void debug_server(server_t *server)
@@ -48,8 +48,6 @@ void debug_server(server_t *server)
     printf("[DEBUG] server->address_length = %d\n", server->address_length);
 
     printf("[DEBUG] server->server_socket->server = %d\n", server->server_socket->server);
-    for (int index = 0; index < server->server_socket->max_client; index += 1)
-        printf("[DEBUG] server->server_socket->client[%d] = %d\n", index, server->server_socket->client[index]);
     printf("[DEBUG] server->server_socket->max_client = %d\n", server->server_socket->max_client);
 
     printf("[DEBUG] server->socket_descriptor->socket_descriptor = %d\n", server->socket_descriptor->socket_descriptor);
@@ -59,7 +57,6 @@ void debug_server(server_t *server)
 void free_server(server_t *server)
 {
     free(server->socket_descriptor);
-    free(server->server_socket->client);
     free(server->server_socket);
     free(server);
 }

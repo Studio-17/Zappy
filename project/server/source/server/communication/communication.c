@@ -49,12 +49,16 @@ static void consume_time_unit(zappy_t *zappy, int player_index)
     clock_t current_time = clock();
     float elapsed_time = (current_time - zappy->client[player_index].clock) / 1000;
 
-    float time_unit_mark = (126.0f / zappy->options->freq) * 100;
+    float time_unit_mark = (126.0f / (float)zappy->options->freq) * 100.0f;
+
+    // printf("%f / %f\n", time_unit_mark, elapsed_time);
 
     if ( time_unit_mark - elapsed_time <= 0 ) {
 
         zappy->client[player_index].player.units -= 1;
         zappy->client[player_index].clock = current_time;
+
+        // printf("Lost one unit, remaining: %d\n", zappy->client[player_index].player.units);
 
     }
 }
@@ -71,21 +75,13 @@ static void update_food(zappy_t *zappy, int player_index)
 bool listen_clients(zappy_t *zappy)
 {
     for (int player_index = 0; player_index < zappy->server->clients; player_index += 1) {
-
-        if (FD_ISSET(zappy->server->server_socket->client[player_index], &zappy->server->socket_descriptor->readfd)) {
-
-            if (!zappy->server->server_socket->client[player_index])
-                continue;
-
-            zappy->server->socket_descriptor->socket_descriptor = zappy->server->server_socket->client[player_index];
-
+        if (FD_ISSET(zappy->client[player_index].socket, &zappy->server->socket_descriptor->readfd)) {
             ai_request_t request = ai_handle_request(zappy, player_index);
 
             if (request.command == ERROR)
                 return false;
             else if (request.command == OUT_OF_RANGE)
                 continue;
-
             data_t new_data = {
                 .request = request,
                 .clock = 0,

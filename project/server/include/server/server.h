@@ -161,9 +161,12 @@ void bind_socket_to_server(server_t *server);
 bool connect_client(zappy_t *zappy);
 void clear_socket_set(server_t *server);
 void add_server_socket_to_set(server_t *server);
-void add_client_socket_to_set(server_t *server);
+void add_client_socket_to_set(zappy_t *zappy);
+// void add_client_socket_to_set(server_t *server);
 void wait_for_connections(server_t *server);
-void add_client_to_server(server_t *server, int client_socket);
+// void add_client_to_server(server_t *server, int client_socket);
+void add_client_to_server(zappy_t *zappy, int client_socket);
+
 
 bool greeting_protocol(zappy_t *zappy, int client_socket);
 void setup_non_blocking_sockets(int client_socket);
@@ -180,5 +183,7 @@ void free_server(server_t *server);
 bool setup_elevation_processus(zappy_t *zappy);
 void free_elevation(elevations_t *elevation);
 void debug_elevation(elevations_t *elevation);
+
+void free_clients(ai_client_t *clients, int max_clients);
 
 #endif /* !SERVER_H_ */

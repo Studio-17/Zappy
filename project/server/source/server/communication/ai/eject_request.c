@@ -23,7 +23,8 @@ void ai_eject_request(zappy_t *zappy, void *data, int player_index)
 
             move(zappy, player_movement, index);
 
-            gui_update_player_position(zappy, index);
+            if (zappy->server->is_gui_connected)
+                gui_update_player_position(zappy, index);
 
             player_on_tile += 1;
 

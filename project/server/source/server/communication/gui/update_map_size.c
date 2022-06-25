@@ -13,13 +13,11 @@
 void gui_update_map_size(zappy_t *zappy)
 {
     post_header(zappy->server->gui, (payload_header_t){
-        .id = SERVER,
         .size = sizeof(response_payload_map_t),
         .type = MAP_SIZE
     });
 
     post_response_map(zappy->server->gui, (response_payload_map_t) {
-        .status = true,
         .width = zappy->map->width,
         .height = zappy->map->height,
     });

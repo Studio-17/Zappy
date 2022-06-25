@@ -5,6 +5,7 @@
 ** Resource
 */
 
+// #include "raymath.h"
 #include "Resource.hpp"
 
 Object::Resource::Resource(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Position const &position, Object::MAP_OBJECTS type, int quantity) : AThreeDimensionObject(pathToModel, pathToResources, position, type), _quantity(quantity)
@@ -13,7 +14,14 @@ Object::Resource::Resource(Object::Render::MyModel &pathToModel, Object::Render:
 
 Object::Resource::Resource(Object::Render::MyModel &pathToModel, Position const &position, Object::MAP_OBJECTS type, int quantity) : AThreeDimensionObject(pathToModel, position, type), _quantity(quantity)
 {
-    type == MAP_OBJECTS::FOOD ? _scale = 0.1 : _scale = 4;
+    if (type == MAP_OBJECTS::FOOD) {
+        _scale = 0.1;
+    } else {
+        setPosition(Position(_position.getX(), _position.getY() + 3, _position.getZ()));
+        _scale = 3.5;
+        _model.transform = MatrixRotateXYZ((Vector3){ DEG2RAD * 90, DEG2RAD * 0, DEG2RAD * 0});
+    }
+
 }
 
 Object::Resource::~Resource()
