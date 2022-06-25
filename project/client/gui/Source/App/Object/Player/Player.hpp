@@ -58,7 +58,7 @@ namespace Object {
              * @param position 3 dimensional Position
              * @param type map object type
              */
-            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation, std::string teamName, std::shared_ptr<RayLib::CinematicCamera> camera);
+            Player(Object::Render::MyModel &pathToModel, Object::Render::MyTexture &pathToResources, Object::Render::MyAnimation &pathToAnimation, unsigned int numberOfAnimations, Position const &position, Object::MAP_OBJECTS type, int playerId, ORIENTATION playerOrientation, std::string teamName, std::shared_ptr<RayLib::CinematicCamera> camera, int mapWidth, int mapHeight);
             /**
              * @brief Destroy the Player object
              */
@@ -164,6 +164,7 @@ namespace Object {
             void setCurrentAnimation(int animation) { _currentAnimation = animation; };
             void startIncantation();
             void stopIncantation(int level);
+            void continueMoving();
 
         private:
 
@@ -195,6 +196,13 @@ namespace Object {
             Texture2D _levelThreeTexture;
 
             std::unordered_map<int, Texture2D> _texturePlayersLevel;
+            Position _currentPositionMove;
+            Position _directionToMove;
+
+            int _mapWidth;
+            int _mapHeight;
+
+            bool _replacedPlayer = false;
     };
 }
 

@@ -116,7 +116,7 @@ void Game::addPlayer(int playerId, int x, int y, Object::ORIENTATION orientation
 {
     Position playerPos((float)x, 0, (float)y);
 
-    _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation, teamName, _camera));
+    _players.emplace_back(std::make_shared<Object::Player>(_playersModel, _playersTextures.at(0), _playersAnimation, 1, playerPos * 10, Object::MAP_OBJECTS::PLAYER, playerId, orientation, teamName, _camera, _mapWidth, _mapHeight));
     addPlayerToTeam(teamName, playerId);
     std::cout << "player " << playerId << " was added with position of " << playerPos << " and orientation of " << (int)orientation << " and team name: " << teamName << std::endl;
 }
@@ -126,7 +126,7 @@ void Game::updatePlayerPosition(int playerId, int x, int y, int orientation)
     Position playerPosition(x, 0, y);
     for (auto &player : _players) {
         if (player->getPlayerId() == playerId) {
-            player->setPosition(playerPosition * 10);
+            player->move(playerPosition * 10);
         }
     }
     std::cout << "player " << playerId << " moved " << x << " " << y << " with orientation: " << orientation << std::endl;
