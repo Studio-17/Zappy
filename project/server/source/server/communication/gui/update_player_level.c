@@ -18,7 +18,7 @@ void gui_update_player_level(zappy_t *zappy, int player_index)
     });
 
     post_response_player_level(zappy->server->gui, (response_payload_player_level_t){
-        .player_id = player_index,
+        .player_id = zappy->client[player_index].id,
         .level = zappy->client[player_index].player.level,
     });
 }
