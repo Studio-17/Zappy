@@ -10,7 +10,6 @@
 
 void create_server(zappy_t *zappy)
 {
-    initialise_all_clients_sockets(zappy->server);
     create_server_socket(zappy->server);
     allow_multiple_connections(zappy->server);
 
@@ -50,7 +49,6 @@ void debug_server(server_t *server)
     printf("[DEBUG] server->server_socket->server = %d\n", server->server_socket->server);
     printf("[DEBUG] server->server_socket->max_client = %d\n", server->server_socket->max_client);
 
-    printf("[DEBUG] server->socket_descriptor->socket_descriptor = %d\n", server->socket_descriptor->socket_descriptor);
     printf("[DEBUG] server->socket_descriptor->max_socket_descriptor = %d\n", server->socket_descriptor->max_socket_descriptor);
 }
 
