@@ -49,6 +49,8 @@ Game::Game(std::shared_ptr<Client> client, std::shared_ptr<RayLib::CinematicCame
 
     _images.push_back(std::make_unique<Object::Image>("Resources/Images/background_sky.png", Position(0, 0)));
     _images.push_back(std::make_unique<Object::Image>("Resources/Images/title_background.png", Position(0, 980)));
+    _cameraPosition = Position(47, 230, 266);
+    _cameraTarget = Position(37, 0, 55);
 }
 
 Game::~Game()
@@ -326,6 +328,26 @@ void Game::handlePlayerStopIncantation(char *data)
     this->updatePlayerStopIncantation(playerIncantation->player_id, playerIncantation->player_level);
 }
 
+void Game::handleCameraMovement()
+{
+    if (IsKeyDown(KEY_Q))
+        _cameraPosition = _camera->getPosition() + Position(0, 0, 5);
+    if (IsKeyDown(KEY_W))
+        _cameraPosition = _camera->getPosition() + Position(0, 0, -5);
+    if (IsKeyDown(KEY_E))
+        _cameraPosition = _camera->getPosition() + Position(5, 0, 0);
+    if (IsKeyDown(KEY_R))
+        _cameraPosition = _camera->getPosition() + Position(-5, 0, 0);
+    if (IsKeyDown(KEY_UP))
+        _cameraTarget = _camera->getTarget() + Position(0, 0, 5);
+    if (IsKeyDown(KEY_DOWN))
+        _cameraTarget = _camera->getTarget() + Position(0, 0, -5);
+    if (IsKeyDown(KEY_LEFT))
+        _cameraTarget = _camera->getTarget() + Position(5, 0, 0);
+    if (IsKeyDown(KEY_RIGHT))
+        _cameraTarget = _camera->getTarget() + Position(-5, 0, 0);
+
+}
 
 
 void Game::handleTileClicked()
@@ -353,6 +375,7 @@ void Game::handlePlayerClicked()
     for (auto &player : _players) {
         if (player->isClicked()) {
             _playerInfoToPrint = player->getPlayerInfo();
+            player->startIncantation();
             _shouldPrintPlayerInfos = true;
         }
     }
@@ -404,6 +427,9 @@ Scenes Game::handleEvent()
 {
     _nextScene = Scenes::GAME;
     _client->listen();
+    _camera->updateCamera();
+    _camera->setPosition(_cameraPosition);
+    _camera->setTarget(_cameraTarget);
     for (auto &tile : _tiles)
         tile->handleEvent();
     for (auto &player : _players) {
@@ -413,5 +439,6 @@ Scenes Game::handleEvent()
     handleTileClicked();
     handleTileResources();
     handlePlayerClicked();
+    handleCameraMovement();
     return _nextScene;
 }

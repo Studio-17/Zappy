@@ -37,6 +37,9 @@ namespace RayLib
             void setFovy(float fovy);
             void setProjection(int projection);
 
+            Position getPosition() const { return Position(_camera.position.x, _camera.position.y, _camera.position.z); };
+            Position getTarget() const { return Position(_camera.target.x, _camera.target.y, _camera.target.z); };
+
         protected:
         private:
             Camera _camera;
