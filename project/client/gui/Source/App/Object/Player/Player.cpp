@@ -28,6 +28,13 @@ Object::Player::Player(Object::Render::MyModel &pathToModel, Object::Render::MyT
     _playerInfo._playerLevel = 1;
     _playerInfo._teamName = teamName;
     _playerInfo._inventory = {10, 0, 0, 0, 0, 0, 0};
+    _levelTwoTexture = LoadTexture("Resources/Players/white.png");
+    _levelThreeTexture = LoadTexture("Resources/Players/purple.png");
+    _texturePlayersLevel = {
+                {0, _texture},
+                {1, _levelTwoTexture},
+                {2, _levelThreeTexture}
+    };
     setOrientation(_playerOrientation);
 }
 
@@ -74,9 +81,6 @@ void Object::Player::move(Position const &position)
             }
         }
     }
-
-
-
 }
 
 void Object::Player::setOrientation(Object::ORIENTATION orientation)
@@ -101,14 +105,12 @@ void Object::Player::handleEvent()
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         if (!_playerCollision.hit) {
             _mouseRay = GetMouseRay(GetMousePosition(), _camera->getCamera());
-            _playerCollision = GetRayCollisionBox(_mouseRay,
-            (BoundingBox){(Vector3){ getPosition().getX() - 5, getPosition().getY(), getPosition().getZ() - 5 },
-                                              (Vector3){ getPosition().getX() + 10, getPosition().getY() + 5, getPosition().getZ() + 5 }});
-            _isClicked = true;
+            _playerCollision = GetRayCollisionBox(_mouseRay, _boundingBox);
+            _isClicked = false;
         }
         else {
+            _isClicked = true;
             _playerCollision.hit = false;
-            _isClicked = false;
         }
 
     }
@@ -117,11 +119,11 @@ void Object::Player::handleEvent()
 void Object::Player::draw()
 {
     Vector2 textPosition = GetWorldToScreen((Vector3){_position.getX(), _position.getY() + 30, _position.getZ()}, _camera->getCamera());
+    _camera->startMode3D();
     if (_isEnable)
         DrawModel(_model, getPosition().getVector3(), _scale, WHITE);
     _camera->endMode3D();
     DrawText(_teamName.c_str(), (int)textPosition.x - MeasureText(_teamName.c_str(), 20)/2, (int)textPosition.y, 20, BLACK);
-    _camera->startMode3D();
 }
 
 void Object::Player::setSpeed(bool addSpeed)
@@ -149,4 +151,11 @@ void Object::Player::setInventory(std::vector<int> const &inventory)
 void Object::Player::startIncantation()
 {
     _currentAnimation = 5;
+}
+
+void Object::Player::stopIncantation(int level)
+{
+    _currentAnimation = 1;
+    _level = level;
+    _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texturePlayersLevel.at(level - 1);
 }
