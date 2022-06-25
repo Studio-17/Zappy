@@ -67,6 +67,7 @@ class Ia {
         void addActionToQueue(ACTIONS action);
         void addMessageToQueue(std::string const &serverResponse);
         void mainLoop();
+        std::string parseReceiveResponse(std::string message);
 
     protected:
     private:

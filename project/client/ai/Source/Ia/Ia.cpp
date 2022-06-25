@@ -154,6 +154,24 @@ std::map<std::string, bool> Ia::createTile()
     return tile;
 }
 
+std::string Ia::parseReceiveResponse(std::string message)
+{
+    std::size_t pos = 0;
+    std::string backline = "\n";
+    std::string token;
+    std::vector<std::string> contentMessage;
+
+    while ((pos = message.find(backline)) != std::string::npos) {
+        token = message.substr(0, pos);
+        contentMessage.push_back(token);
+        message.erase(0, pos + backline.length());
+    }
+    contentMessage.push_back(message);
+    for (auto &str : contentMessage)
+        std::cout << str.c_str() << std::endl;
+    return contentMessage.at(0);
+}
+
 void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> position, DIRECTION direction)
 {
 
@@ -313,6 +331,13 @@ void Ia::turnRight(std::string const &serverResponse)
     }
 }
 
+void Ia::look(std::string const &serverResponse)
+{
+    parseLook(serverResponse);
+    _requestListReceived.pop();
+    _requestListSent.pop();
+}
+
 void Ia::handleEvent(ACTIONS action, std::string const &response)
 {
     switch (action) {
@@ -326,7 +351,7 @@ void Ia::handleEvent(ACTIONS action, std::string const &response)
             turnRight(response);
             break;
         case ACTIONS::LOOK:
-            parseLook(response);
+            look(response);
             break;
         case ACTIONS::INVENTORY:
             break;
@@ -363,6 +388,7 @@ void Ia::mainLoop()
         // movePlayer();
         // changeDirection(DIRECTION::RIGHT);
 
+        _client.postRequest(_client.getSocket(), _requestListSent.front());
         message = _client.getRequest(_client.getSocket());
         addMessageToQueue(message);
     }
