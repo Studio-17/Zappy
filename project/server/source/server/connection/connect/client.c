@@ -35,7 +35,7 @@ bool connect_client(zappy_t *zappy)
 
             if (zappy->server->is_gui_connected) {
                 // printf("client-id: %d\n", zappy->client[zappy->server->clients].id);
-                gui_update_player_connected(zappy, zappy->client[zappy->server->clients].id);
+                gui_update_player_connected(zappy, 0);
             }
 
         } else {
