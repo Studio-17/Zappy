@@ -78,7 +78,7 @@ void wait_for_connections(server_t *server)
     tv.tv_usec = 5;
     if ((select(server->socket_descriptor->max_socket_descriptor + 1, &server->socket_descriptor->readfd, NULL, NULL, &tv) < 0))
     {
-        perror("select");
+        perror("select"); // error with select on ^C (client-side)
     }
 }
 

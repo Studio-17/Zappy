@@ -86,8 +86,6 @@ static bool create_player(zappy_t *zappy, int socket, char *team_name)
 
     zappy->server->clients += 1;
 
-    printf("there is now %d player(s) connected\n", zappy->server->clients);
-
     return (true);
 }
 
@@ -101,8 +99,6 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
 
     if (read(socket, &team_name, sizeof(team_name)) < 0)
         perror("get_team_name read");
-
-    printf("there is %d player(s) connected\n", zappy->server->clients);
 
     for (int index = 0; zappy->options->team_names[index]; index += 1) {
 
@@ -139,12 +135,15 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
     return (valid_team_name);
 }
 
-static void post_client_num(zappy_t *zappy, int socket)
+static void post_client_num(zappy_t *zappy, int socket, bool is_gui)
 {
+    if (is_gui) {
+        dprintf(socket, "%d\n", 0);
+        return;
+    }
+
     for (int index = 0; index <= zappy->server->clients; index += 1) {
         zappy->client[index].socket;
-        printf("done\n");
-        printf("socket %d\n", zappy->client[index].socket);
         if (zappy->client[index].socket == socket) {
             dprintf(socket, "%d\n", zappy->client[index].client_nb);
             return;
@@ -165,7 +164,7 @@ bool greeting_protocol(zappy_t *zappy, int client_socket)
 
     if (get_team_name(zappy, client_socket, &is_gui)) {
 
-        post_client_num(zappy, client_socket);
+        post_client_num(zappy, client_socket, is_gui);
 
         usleep(100);
 
