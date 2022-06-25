@@ -341,7 +341,6 @@ void Game::handlePlayerClicked()
         if (player->isClicked()) {
             _playerInfoToPrint = player->getPlayerInfo();
             _shouldPrintPlayerInfos = true;
-            player->stopIncantation(2);
         }
     }
 }
