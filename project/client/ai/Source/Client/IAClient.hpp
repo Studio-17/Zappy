@@ -25,7 +25,6 @@
     #include "Options/IAOptions.hpp"
 
 enum class ACTIONS {
-    NONE,
     FORWARD,
     RIGHT,
     LEFT,

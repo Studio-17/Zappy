@@ -39,7 +39,6 @@ IAClient::IAClient()
     //     {"Incantation", 300},
     // };
     _actionCommands = {
-        {ACTIONS::NONE, "\n"},
         {ACTIONS::FORWARD, "Forward\n"},
         {ACTIONS::RIGHT, "Right\n"},
         {ACTIONS::LEFT, "Left\n"},
@@ -70,13 +69,12 @@ void IAClient::setMapSize(std::string str)
 
 void IAClient::postRequest(int socketId, std::string const &request)
 {
-    dprintf(socketId, "%s\n", request.c_str());
+    dprintf(socketId, "%s", request.c_str());
 }
 
 void IAClient::postRequest(int socketId, ACTIONS request)
 {
-    // std::cout << _actionCommands.at(request) << std::endl;
-    dprintf(socketId, "%s\n", _actionCommands.at(request).c_str());
+    dprintf(socketId, "%s", _actionCommands.at(request).c_str());
 }
 
 std::string IAClient::getRequest(int socketId)

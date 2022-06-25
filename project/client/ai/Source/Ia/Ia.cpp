@@ -316,22 +316,24 @@ void Ia::turnLeft(std::string const &serverResponse)
 {
     if (serverResponse == "ok") {
         changeDirection(DIRECTION::LEFT);
-        _requestListReceived.pop();
-        _requestListSent.pop();
     }
+    _requestListReceived.pop();
+    _requestListSent.pop();
 }
 void Ia::turnRight(std::string const &serverResponse)
 {
     if (serverResponse == "ok") {
-        _requestListReceived.pop();
-        _requestListSent.pop();
         changeDirection(DIRECTION::RIGHT);
     }
+    _requestListReceived.pop();
+    _requestListSent.pop();
 }
 
 void Ia::look(std::string const &serverResponse)
 {
     parseLook(serverResponse);
+    _requestListReceived.pop();
+    _requestListSent.pop();
 }
 
 void Ia::handleEvent(ACTIONS action, std::string const &response)
@@ -377,7 +379,6 @@ void Ia::mainLoop()
     std::string message;
 
     while (!_isDead) {
-        sleep(1);
         if (!_requestListSent.empty()) {
             _client.postRequest(_client.getSocket(), _requestListSent.front());
         }
