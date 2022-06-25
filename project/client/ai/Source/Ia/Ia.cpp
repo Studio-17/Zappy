@@ -405,21 +405,15 @@ void Ia::turnLeft(std::string const &serverResponse)
     if (serverResponse == "ok") {
         changeDirection(DIRECTION::LEFT);
     }
-    if (serverResponse == "ok") {
-        changeDirection(DIRECTION::RIGHT);
-    }
-    if (serverResponse == "ok\n") {
-        changeDirection(DIRECTION::RIGHT);
-        _requestListReceived.pop();
-        _requestListSent.pop();
-    }
     _requestListReceived.pop();
     _requestListSent.pop();
 }
 
-void Ia::look(std::string const &serverResponse)
+void Ia::turnRight(std::string const &serverResponse)
 {
-    parseLook(serverResponse);
+    if (serverResponse == "ok") {
+        changeDirection(DIRECTION::RIGHT);
+    }
     _requestListReceived.pop();
     _requestListSent.pop();
 }
@@ -469,12 +463,12 @@ void Ia::handleEvent(ACTIONS action, std::string const &response)
 
 void Ia::addActionToQueue(ACTIONS action)
 {
-    _requestListToSend.emplace(action);
+    _requestTmp.emplace(action);
 
-    if (_requestListSent.size() < MAX_ACTION_LIST) {
-        ACTIONS tmp = _requestListToSend.front();
-        _requestListToSend.pop();
-        _requestListSent.emplace(tmp);
+    if (_requestListToSend.size() < MAX_ACTION_LIST) {
+        ACTIONS tmp = _requestTmp.front();
+        _requestTmp.pop();
+        _requestListToSend.emplace(tmp);
     }
 }
 
@@ -488,8 +482,10 @@ void Ia::mainLoop()
     std::string message;
 
     while (!_isDead) {
-        if (!_requestListSent.empty()) {
-            _client.postRequest(_client.getSocket(), _requestListSent.front());
+        if (!_requestListToSend.empty()) {
+            _client.postRequest(_client.getSocket(), _requestListToSend.front());
+            _requestListSent.emplace(_requestListToSend.front());
+            _requestListToSend.pop();
         }
 
         // add action to queue here
@@ -497,7 +493,8 @@ void Ia::mainLoop()
         _client.postRequest(_client.getSocket(), _requestListSent.front());
         message = _client.getRequest(_client.getSocket());
         if (parseReceiveResponse(message)) {
-            handleEvent(_requestListSent.front(), _requestListReceived.front());
+            if (!_requestListSent.empty() && !_requestListReceived.empty())
+                handleEvent(_requestListSent.front(), _requestListReceived.front());
         }
     }
 }
