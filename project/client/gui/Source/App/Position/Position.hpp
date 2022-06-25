@@ -52,6 +52,8 @@ class Position {
          */
         bool operator ==(Position const &position);
 
+        bool operator != (Position const &position);
+
         /**
          * @brief Set x, y, z from other float array
          *

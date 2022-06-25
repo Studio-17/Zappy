@@ -21,8 +21,8 @@
 
 bool connect_client(zappy_t *zappy)
 {
-    int client_socket;
-    int saved_index = 0;
+    int client_socket = 0;
+    int client_id = 0;
 
     if (FD_ISSET(zappy->server->server_socket->server, &zappy->server->socket_descriptor->readfd))
     {
@@ -32,26 +32,13 @@ bool connect_client(zappy_t *zappy)
             exit(EXIT_FAILURE);
         }
 
-        if (!greeting_protocol(zappy, client_socket)) {
-
-            for (int index = 0; index < zappy->server->server_socket->max_client; index += 1) {
-
-                if (zappy->server->server_socket->client[index] == 0) {
-                    saved_index = index;
-                    // zappy->client[index].socket = client_socket;
-                    zappy->server->server_socket->client[index] = client_socket;
-                    break;
-
-                }
-            }
+        if (greeting_protocol(zappy, client_socket)) {
 
             if (zappy->server->is_gui_connected)
-                gui_update_player_connected(zappy, saved_index);
+                gui_update_map_content(zappy);
 
-        } else {
-
-            gui_update_map_content(zappy);
         }
+
 
     }
     return (listen_clients(zappy));
@@ -68,17 +55,15 @@ void add_server_socket_to_set(server_t *server)
     server->socket_descriptor->max_socket_descriptor = server->server_socket->server;
 }
 
-void add_client_socket_to_set(server_t *server)
+void add_client_socket_to_set(zappy_t *zappy)
 {
-    for (int index = 0; index < server->server_socket->max_client; index += 1)
-    {
-        server->socket_descriptor->socket_descriptor = server->server_socket->client[index];
+    for (int index = 0; index < zappy->server->clients; index += 1) {
 
-        if (server->socket_descriptor->socket_descriptor > 0)
-            FD_SET(server->socket_descriptor->socket_descriptor, &server->socket_descriptor->readfd);
+        if (zappy->client[index].socket > 0)
+            FD_SET(zappy->client[index].socket, &zappy->server->socket_descriptor->readfd);
 
-        if (server->socket_descriptor->socket_descriptor > server->socket_descriptor->max_socket_descriptor)
-            server->socket_descriptor->max_socket_descriptor = server->socket_descriptor->socket_descriptor;
+        if (zappy->client[index].socket > zappy->server->socket_descriptor->max_socket_descriptor)
+            zappy->server->socket_descriptor->max_socket_descriptor = zappy->client[index].socket;
     }
 }
 
@@ -91,17 +76,16 @@ void wait_for_connections(server_t *server)
     tv.tv_usec = 5;
     if ((select(server->socket_descriptor->max_socket_descriptor + 1, &server->socket_descriptor->readfd, NULL, NULL, &tv) < 0))
     {
-        perror("select");
+        perror("select"); // error with select on ^C (client-side)
     }
 }
 
-void add_client_to_server(server_t *server, int client_socket)
+void add_client_to_server(zappy_t *zappy, int client_socket)
 {
-    for (int index = 0; index < server->server_socket->max_client; index += 1)
-    {
-        if (server->server_socket->client[index] == 0)
-        {
-            server->server_socket->client[index] = client_socket;
+    for (int index = 0; index < zappy->server->clients; index += 1) {
+
+        if (zappy->client[index].socket == 0) {
+            zappy->client[index].socket = client_socket;
             break;
         }
     }

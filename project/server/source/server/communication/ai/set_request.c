@@ -22,8 +22,10 @@ void ai_set_request(zappy_t *zappy, void *data, int player_index)
             x = zappy->client[player_index].player.position.x;
             y = zappy->client[player_index].player.position.y;
             zappy->map->tiles[y][x].resources[resource].quantity += 1;
-            gui_update_player_inventory(zappy, player_index);
-            gui_update_tile_content(zappy, (position_t){y, x});
+            if (zappy->server->is_gui_connected) {
+                gui_update_player_inventory(zappy, player_index);
+                gui_update_tile_content(zappy, (position_t){x, y});
+            }
             ai_response_ok_ko(zappy->client[player_index].socket, true);
         } else
             ai_response_ok_ko(zappy->client[player_index].socket, false);

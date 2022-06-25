@@ -77,24 +77,32 @@ enum ELEVATION_STEP {
 
 typedef struct player_t {
     int id;
-    int level;
+
     position_t position;
     enum ORIENTATION orientation;
+
+    int level;
     enum ELEVATION_STEP elevation_status;
+
     inventory_resource_t *resource_inventory;
+
+    int units;
 } player_t;
 
 typedef struct ai_client_s {
     int socket;
+    int id;
 
     int client_nb;
-    enum CLIENT_TYPE type;
 
     player_t player;
     list_t list;
 
-    char team_name[50];
+    char *team_name;
     int team_members;
+    char *buffer;
+
+    clock_t clock;
 } ai_client_t;
 
 typedef struct resources_s {
@@ -154,9 +162,12 @@ void bind_socket_to_server(server_t *server);
 bool connect_client(zappy_t *zappy);
 void clear_socket_set(server_t *server);
 void add_server_socket_to_set(server_t *server);
-void add_client_socket_to_set(server_t *server);
+void add_client_socket_to_set(zappy_t *zappy);
+// void add_client_socket_to_set(server_t *server);
 void wait_for_connections(server_t *server);
-void add_client_to_server(server_t *server, int client_socket);
+// void add_client_to_server(server_t *server, int client_socket);
+void add_client_to_server(zappy_t *zappy, int client_socket);
+
 
 bool greeting_protocol(zappy_t *zappy, int client_socket);
 void setup_non_blocking_sockets(int client_socket);
@@ -173,5 +184,9 @@ void free_server(server_t *server);
 bool setup_elevation_processus(zappy_t *zappy);
 void free_elevation(elevations_t *elevation);
 void debug_elevation(elevations_t *elevation);
+
+bool setup_client(zappy_t *zappy, int max_clients);
+bool create_player(zappy_t *zappy, int socket, char *team_name);
+void free_clients(ai_client_t *clients, int max_clients);
 
 #endif /* !SERVER_H_ */

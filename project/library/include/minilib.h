@@ -20,4 +20,6 @@ char **my_strtok(char *str, char sep);
 void free_arr(char **arr);
 int my_arrlen(char **arr);
 
+char *read_in_socket(int socket);
+
 #endif /* !MINILIB_H_ */
