@@ -36,7 +36,6 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
     if (!team_name)
         perror("get_team_name read");
 
-    printf("there is %d player(s) connected\n", zappy->server->clients);
     if (strcmp(team_name, "GRAPHIC\n") == 0) {
         initialize_gui(zappy, socket);
         *is_gui = true;
