@@ -13,14 +13,12 @@
 void gui_update_player_inventory(zappy_t *zappy, int player_index)
 {
     post_header(zappy->server->gui, (payload_header_t){
-        .id = SERVER,
         .size = sizeof(response_payload_player_inventory_t),
         .type = PLAYER_INVENTORY
     });
 
     post_response_player_inventory(zappy->server->gui, (response_payload_player_inventory_t){
-        .status = true,
-        .player_id = zappy->client[player_index].client_nb,
+        .player_id = zappy->client[player_index].id,
         .food = zappy->client[player_index].player.resource_inventory[FOOD].quantity,
         .linemate = zappy->client[player_index].player.resource_inventory[LINEMATE].quantity,
         .deraumere = zappy->client[player_index].player.resource_inventory[DERAUMERE].quantity,

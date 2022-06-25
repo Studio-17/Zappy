@@ -121,7 +121,6 @@ char *ai_get_generic_request(int client_socket, zappy_t *zappy, int player_index
         perror("ai_get_generic_request read");
     else if (read_value == 0) {
         close(client_socket);
-        zappy->server->server_socket->client[player_index] = 0;
     }
 
     char *buffer = malloc(sizeof(data));
@@ -141,13 +140,13 @@ ai_request_t ai_handle_request(zappy_t *zappy, int player_index)
     if (!request_data)
         return (error_request);
     if (queue_get_size(zappy->client[player_index].list) >= 10) {
-        printf("out of range\n");
         return (out_of_range_request);
     }
     for (int index = 0; index < NB_COMMANDS_AI; index += 1) {
         if (strncmp(request_data, ai_request_to_handle[index].request, strlen(ai_request_to_handle[index].request)) == 0) {
             tmp = ai_request_to_handle[index];
             tmp.data = strdup(request_data);
+            free(request_data);
             return tmp;
         }
     }

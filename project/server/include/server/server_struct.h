@@ -13,7 +13,6 @@
 
 typedef struct server_socket_s {
     int server;
-    int *client;
     int max_client;
 } server_socket_t;
 

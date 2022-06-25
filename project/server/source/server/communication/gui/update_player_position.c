@@ -13,14 +13,12 @@
 void gui_update_player_position(zappy_t *zappy, int player_index)
 {
     post_header(zappy->server->gui, (payload_header_t){
-        .id = SERVER,
         .size = sizeof(response_payload_player_position_t),
         .type = PLAYER_POSITION
     });
 
     post_response_player_position(zappy->server->gui, (response_payload_player_position_t){
-        .status = true,
-        .player_id = player_index,
+        .player_id = zappy->client[player_index].id,
         .position = zappy->client[player_index].player.position,
         .orientation = zappy->client[player_index].player.orientation,
     });

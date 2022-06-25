@@ -16,7 +16,6 @@ typedef struct request_payload_player_connected_s {
 } request_payload_player_connected_t;
 
 typedef struct response_payload_player_connected_s {
-    bool status;
     int id;
     int level;
     int orientation;
@@ -37,7 +36,6 @@ typedef struct request_payload_player_position_s {
 } request_payload_player_position_t;
 
 typedef struct response_payload_player_position_s {
-    bool status;
     int player_id;
     // int orientation;
     position_t position;
@@ -56,7 +54,6 @@ typedef struct request_payload_player_level_s {
 } request_payload_player_level_t;
 
 typedef struct response_payload_player_level_s {
-    bool status;
     int player_id;
     int level;
 } response_payload_player_level_t;
@@ -73,7 +70,6 @@ typedef struct request_payload_player_inventory_s {
 } request_payload_player_inventory_t;
 
 typedef struct response_payload_player_inventory_s {
-    bool status;
     int player_id;
     int linemate;
     int deraumere;
