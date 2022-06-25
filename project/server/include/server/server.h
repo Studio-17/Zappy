@@ -160,7 +160,6 @@ void free_zappy(zappy_t *zappy);
 
 void create_server(zappy_t *zappy);
 bool server_loop(zappy_t *zappy);
-void client_deconnected(zappy_t *zappy, int client_socketn);
 
 void configure_socket_type(server_t *server);
 void bind_socket_to_server(server_t *server);

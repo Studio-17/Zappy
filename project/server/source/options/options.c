@@ -78,13 +78,32 @@ bool handle_options(options_t *options)
         print_usage(MISSING_OPTION);
         return false;
     }
-    if (options->port == 0 || options->width == 0 ||
+    else if (options->port == 0 || options->width == 0 ||
         options->height == 0 || options->names == NULL ||
         options->clients_nb == 0)
     {
         print_usage(INVALID_OPTION);
         return false;
     }
+    else if (options->width < 10 || options->width > 30)
+    {
+        printf("\n%s\n\n", "-x option only accepts integer values between 10 and 30");
+        print_usage(OPTIONS_ERROR_NONE);
+        return false;
+    }
+    else if (options->height < 10 || options->height > 30)
+    {
+        printf("\n%s\n\n", "-y option only accepts integer values between 10 and 30");
+        print_usage(OPTIONS_ERROR_NONE);
+        return false;
+    }
+    else if (options->freq <= 1 || options->freq >= 10000)
+    {
+        printf("\n%s\n\n", "-f option only accepts integer values between 2 and 10000");
+        print_usage(OPTIONS_ERROR_NONE);
+        return false;
+    }
+
     return true;
 }
 
