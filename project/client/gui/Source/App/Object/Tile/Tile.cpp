@@ -47,16 +47,20 @@ void Object::Tile::draw()
         getPosition().getY(),
         getPosition().getZ()
     };
-    if (_isEnable)
-        DrawModel(_model, modelPosition, _scale, WHITE);
     for (auto &ressources : _resources)
         ressources->draw();
+    if (_isIncanted) {
+        DrawModel(_model, modelPosition, _scale, BLUE);
+        return;
+    }
 
     if (_tilesCollision.hit) {
         DrawBoundingBox(_boundingBox, RED);
+        DrawModel(_model, modelPosition, _scale, DARKGRAY);
         _isClicked = true;
     } else {
         DrawBoundingBox(_boundingBox, ORANGE);
+        DrawModel(_model, modelPosition, _scale, WHITE);
         _isClicked = false;
     }
 }

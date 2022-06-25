@@ -94,13 +94,13 @@ typedef struct ai_client_s {
     int id;
 
     int client_nb;
-    enum CLIENT_TYPE type;
 
     player_t player;
     list_t list;
 
-    char team_name[50];
+    char *team_name;
     int team_members;
+    char *buffer;
 
     clock_t clock;
 } ai_client_t;
@@ -185,6 +185,8 @@ bool setup_elevation_processus(zappy_t *zappy);
 void free_elevation(elevations_t *elevation);
 void debug_elevation(elevations_t *elevation);
 
+bool setup_client(zappy_t *zappy, int max_clients);
+bool create_player(zappy_t *zappy, int socket, char *team_name);
 void free_clients(ai_client_t *clients, int max_clients);
 
 #endif /* !SERVER_H_ */

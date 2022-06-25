@@ -67,6 +67,9 @@ class Game : public AScene {
         void updatePlayerInventory(int playerId, std::vector<int> const &inventory);
         void updateContentTile(Position const &tilePosition, std::vector<std::pair<Object::PLAYER_RESOURCES, int>> const &resources);
         void updateContentMap(response_payload_content_tile_t *content);
+        void updatePlayerDead(int playerId);
+        void updateServerDisconnected();
+        void updatePlayerStartIncantation(int playerId);
 
         void handleAddPlayer(char *data);
         void handleUpdatePlayerPosition(char *data);
@@ -75,6 +78,7 @@ class Game : public AScene {
         void handleUpdatePlayerInventory(char *data);
         void handleUpdateContentTile(char *data);
         void handleUpdateContentMap(char *data);
+        void handlePlayerDead(char *data);
 
         std::shared_ptr<Object::Tile> getTileByPosition(Position const &position);
 
@@ -116,6 +120,8 @@ class Game : public AScene {
 
         bool _shouldPrintPlayerInfos = false;
         Object::PlayerInfo _playerInfoToPrint;
+
+        bool _isServerConnected = true;
 };
 
 #endif /* !GAME_HPP_ */

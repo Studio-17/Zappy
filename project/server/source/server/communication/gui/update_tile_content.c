@@ -15,6 +15,8 @@ void gui_update_tile_content(zappy_t *zappy, position_t tile)
     int x = tile.x;
     int y = tile.y;
 
+    printf("modified tile: y:%d x:%d\n", y, x);
+
     post_header(zappy->server->gui, (payload_header_t){
         .size = sizeof(response_payload_content_tile_t),
         .type = CONTENT_TILE,

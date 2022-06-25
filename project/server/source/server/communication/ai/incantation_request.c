@@ -60,6 +60,11 @@ static bool check_elevation(zappy_t *zappy, int elevation_index, int player_leve
     return (true);
 }
 
+bool start_incantation(zappy_t *zappy, int player_index)
+{
+    return true;
+}
+
 void ai_incantation_request(zappy_t *zappy, void *data, int player_index)
 {
     int elevation_processus_index = zappy->client[player_index].player.level - 1;

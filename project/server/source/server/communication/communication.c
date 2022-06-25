@@ -29,8 +29,15 @@ int execute_task(list_t *list, zappy_t *zappy, int player_index)
 
     data_t *request = (data_t *)queue_get_front(*list);
 
-    if (!request->clock)
+    if (!request->clock) {
         request->clock = clock();
+        if (request->request.command == INCANTATION)
+            if (!start_incantation(zappy, player_index)) {
+                free(request->request.data);
+                queue_pop_front(list);
+                return;
+            }
+    }
 
     clock_t end = clock();
 
@@ -78,7 +85,7 @@ bool listen_clients(zappy_t *zappy)
 
             if (request.command == ERROR)
                 return false;
-            else if (request.command == OUT_OF_RANGE)
+            else if (request.command == OUT_OF_RANGE || request.command == EMPTY)
                 continue;
             data_t new_data = {
                 .request = request,

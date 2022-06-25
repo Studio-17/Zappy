@@ -60,6 +60,5 @@ int main(int ac, char * const *av)
     store_zappy(zappy);
     if (!server_loop(zappy))
         return 84;
-    // free_zappy(zappy);
     return (EXIT_SUCCESS);
 }
