@@ -40,8 +40,20 @@ IAClient::IAClient()
         {ACTIONS::FORK, "Fork\n"},
         {ACTIONS::EJECT, "Eject\n"},
         {ACTIONS::INCANTATION, "Incantation\n"},
-        {ACTIONS::SET_OBJECT, "Set "},
-        {ACTIONS::TAKE_OBJECT, "Take "},
+        {ACTIONS::SET_FOOD, "Set "},
+        {ACTIONS::SET_LINEMATE, "Set Food\n"},
+        {ACTIONS::SET_DERAUMERE, "Set Linemate\n"},
+        {ACTIONS::SET_SIBUR, "Set Sibur\n"},
+        {ACTIONS::SET_MENDIANE, "Set Mendiane\n"},
+        {ACTIONS::SET_PHIRAS, "Set Phiras\n"},
+        {ACTIONS::SET_THYSTAME, "Set Thystame\n"},
+        {ACTIONS::TAKE_FOOD, "Take Food\n"},
+        {ACTIONS::TAKE_LINEMATE, "Take Linemate\n"},
+        {ACTIONS::TAKE_DERAUMERE, "Take Deraumere\n"},
+        {ACTIONS::TAKE_SIBUR, "Take Sibur\n"},
+        {ACTIONS::TAKE_MENDIANE, "Take Mendiane\n"},
+        {ACTIONS::TAKE_PHIRAS, "Take Phiras\n"},
+        {ACTIONS::TAKE_THYSTAME, "Take Thystame\n"},
     };
 }
 

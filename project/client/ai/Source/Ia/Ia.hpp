@@ -32,6 +32,8 @@ class Ia {
 
         std::string takeObject(std::string object) { return ("Take " + transformRessourceToAction(object) + "\n"); }; //!< Take object
         std::string setObject(std::string object) { return ("Set " + transformRessourceToAction(object) + "\n"); }; //!< Set object
+        void checkTakeObject(std::string response);
+        void checkSetObject(std::string response);
 
         std::string replaceCharacters(std::string str, const std::string& from, const std::string& to); //!< change all strings to another string in a string
 

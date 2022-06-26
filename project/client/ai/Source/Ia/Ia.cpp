@@ -439,6 +439,8 @@ void Ia::inventory(std::string const &serverResponse)
 
 void Ia::handleEvent(ACTIONS action, std::string const &response)
 {
+    checkTakeObject(response);
+    checkSetObject(response);
     switch (action) {
         case ACTIONS::FORWARD:
             forward(response);
@@ -480,8 +482,6 @@ void Ia::sendResquestServer()
 {
     if (!_requestListToSend.empty()) {
         _client.postRequest(_client.getSocket(), _requestListToSend.front());
-        if (_requestListToSend.front() == ACTIONS::SET_OBJECT || _requestListToSend.front() == ACTIONS::TAKE_OBJECT)
-            _client.postRequest(_client.getSocket(), _objectToTake);
         _requestListSent.emplace(_requestListToSend.front());
         _requestListToSend.pop();
     }
