@@ -754,6 +754,9 @@ void Ia::mainLoop()
                     searchElement();
                 }
             }
+        } else {
+            addActionToQueue(ACTIONS::SET_LINEMATE);
+            addActionToQueue(ACTIONS::INCANTATION);
         }
     }
 }
