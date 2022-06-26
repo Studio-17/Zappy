@@ -35,12 +35,6 @@ bool server_loop(zappy_t *zappy)
     return true;
 }
 
-void client_deconnected(zappy_t *zappy, int client_socket)
-{
-    // close(zappy->server->socket_descriptor->socket_descriptor);
-    // zappy->server->server_socket->client[client_socket] = 0;
-}
-
 void debug_server(server_t *server)
 {
     printf("[DEBUG] server->port = %d\n", server->port);

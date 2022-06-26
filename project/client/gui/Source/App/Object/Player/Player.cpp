@@ -194,6 +194,7 @@ void Object::Player::setInventory(std::vector<int> const &inventory)
 
 void Object::Player::startIncantation()
 {
+    _startedIncantation = true;
     _currentAnimation = 5;
 }
 
@@ -202,4 +203,5 @@ void Object::Player::stopIncantation(int level)
     _currentAnimation = 1;
     _level = level;
     _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texturePlayersLevel.at(level - 1);
+    _startedIncantation = false;
 }

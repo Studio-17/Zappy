@@ -57,7 +57,7 @@ int create_player(zappy_t *zappy, int socket, char *team_name)
     if (!player.resource_inventory)
         return false;
     player.resource_inventory[FOOD].resource = FOOD;
-    player.resource_inventory[FOOD].quantity = 10;
+    player.resource_inventory[FOOD].quantity = 1;
     for (int index = 1; index < NB_ITEMS; index += 1) {
         player.resource_inventory[index].resource = (enum ITEM)index;
         player.resource_inventory[index].quantity = 0;

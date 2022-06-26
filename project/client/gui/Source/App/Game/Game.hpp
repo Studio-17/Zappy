@@ -96,6 +96,8 @@ class Game : public AScene {
         void getAndSetUpMapTiles();
 
         void addPlayerToTeam(std::string const &teamName, int playerId);
+
+        void handleCameraMovement();
     protected:
     private:
         int _mapWidth;
@@ -125,6 +127,8 @@ class Game : public AScene {
         Object::PlayerInfo _playerInfoToPrint;
 
         bool _isServerConnected = true;
+        Position _cameraPosition;
+        Position _cameraTarget;
 };
 
 #endif /* !GAME_HPP_ */

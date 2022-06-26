@@ -191,7 +191,7 @@ namespace Object {
             bool _isClicked = false;
 
             PlayerInfo _playerInfo;
-            Clock _movementClock;
+            Clock _incantationClock;
             Texture2D _levelTwoTexture;
             Texture2D _levelThreeTexture;
 

@@ -10,7 +10,7 @@
 
     #include <stdio.h>
 
-    #define USAGE_MESSAGE "./zappy_server --help\n \
+    #define USAGE_MESSAGE "./zappy_server --help\n\n \
 USAGE: ./zappy_server -p port -x width -y height -n name1 name2 ... -c clientsNb -f freq\n \
     port      is the port number\n \
     width     is the width of the world\n \
