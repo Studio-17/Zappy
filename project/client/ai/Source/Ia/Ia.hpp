@@ -63,6 +63,7 @@ class Ia {
         void changeDirection(DIRECTION direction); //!< Change the direction of the player
 
 
+        bool parseReceiveResponse(std::string message); //!< Parse the response of the server
         void forward(std::string const &serverResponse); //!< Move the player forward
         void turnLeft(std::string const &serverResponse); //!< Turn the player left
         void turnRight(std::string const &serverResponse); //!< Turn the player right
@@ -71,8 +72,9 @@ class Ia {
         void handleEvent(ACTIONS action, std::string const &response); //!< Handle the response of the server
         void addActionToQueue(ACTIONS action); //!< Add an action to the queue
         void addMessageToQueue(std::string const &serverResponse); //!< Add a message to the queue
+        void sendResquestServer(); //!< Send request from queue to server
+        void analyzeResponseServer(); //!< Analyze response from server
         void mainLoop(); //!< Main loop of the IA
-        bool parseReceiveResponse(std::string message); //!< Parse the response of the server
 
     protected:
     private:
@@ -91,7 +93,7 @@ class Ia {
         std::pair<int, std::string> _objectToTake; //!< Object to take
         bool _isDead; //!< bool to know if the ia dead
 
-        std::queue<ACTIONS> _requestTmp;
+        std::queue<ACTIONS> _requestTmp; //!< Queue of request store before pushing them into _requestListToSend
         std::queue<ACTIONS> _requestListToSend; //!< Queue of the requests to send
         std::queue<ACTIONS> _requestListSent; //!< Queue of the requests sent
         std::queue<std::string> _requestListReceived; //!< Queue of the requests received
@@ -99,7 +101,7 @@ class Ia {
         std::pair<int, int> _mapSize; //!< Map size
         std::vector<std::vector<std::map<std::string, bool>>> _contentOfMap; //!< Content of the map
 
-        std::string _bufferServerResponse;
+        std::string _bufferServerResponse; //!< Store all server responses before analysing them
 };
 
 #endif /* !IA_HPP_ */

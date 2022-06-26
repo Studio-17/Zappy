@@ -479,24 +479,32 @@ void Ia::addMessageToQueue(std::string const &serverResponse)
     _requestListReceived.emplace(serverResponse);
 }
 
-void Ia::mainLoop()
+void Ia::sendResquestServer()
+{
+    if (!_requestListToSend.empty()) {
+        _client.postRequest(_client.getSocket(), _requestListToSend.front());
+        _requestListSent.emplace(_requestListToSend.front());
+        _requestListToSend.pop();
+    }
+}
+
+void Ia::analyzeResponseServer()
 {
     std::string message;
 
+    message = _client.getRequest(_client.getSocket());
+    if (parseReceiveResponse(message)) {
+        if (!_requestListSent.empty() && !_requestListReceived.empty())
+            handleEvent(_requestListSent.front(), _requestListReceived.front());
+    }
+}
+
+void Ia::mainLoop()
+{
     while (!_isDead) {
-        if (!_requestListToSend.empty()) {
-            _client.postRequest(_client.getSocket(), _requestListToSend.front());
-            _requestListSent.emplace(_requestListToSend.front());
-            _requestListToSend.pop();
-        }
-
         // add action to queue here
-        addActionToQueue(ACTIONS::LOOK);
 
-        message = _client.getRequest(_client.getSocket());
-        if (parseReceiveResponse(message)) {
-            if (!_requestListSent.empty() && !_requestListReceived.empty())
-                handleEvent(_requestListSent.front(), _requestListReceived.front());
-        }
+        sendResquestServer();
+        analyzeResponseServer();
     }
 }
