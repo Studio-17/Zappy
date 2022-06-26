@@ -54,9 +54,9 @@ static const ai_request_t ai_request_to_handle[] = {
         .data = NULL,
     },
     {
-        .request = "Broadcast text\n",
+        .request = "Broadcast",
         .command = BROADCAST_TEXT,
-        .handler = &ai_base_request,
+        .handler = &ai_broadcast_request,
         .time_limit = 7,
         .data = NULL,
     },
@@ -220,6 +220,8 @@ ai_request_t ai_handle_request(zappy_t *zappy, int player_index)
             if (is_valid_object(request)) {
                 return (push_handler(request, TAKE_OBJECT));
             }
+        } else if (strncmp(request, "Broadcast ", 10) == 0) {
+                return (push_handler(request, BROADCAST_TEXT));
         } else if (strcmp(request, ai_request_to_handle[index].request) == 0) {
             return (push_handler(request, index));
         }
