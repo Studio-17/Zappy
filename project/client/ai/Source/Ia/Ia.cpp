@@ -29,6 +29,26 @@ Ia::Ia() : _client()
     _actualIaDirection = DIRECTION::DOWN;
     _actualLevel = 1;
     _isDead = false;
+    _stop = false;
+
+    _takeMap = {
+        {"food", ACTIONS::TAKE_FOOD},
+        {"linemate", ACTIONS::TAKE_LINEMATE},
+        {"deraumere", ACTIONS::TAKE_DERAUMERE},
+        {"sibur", ACTIONS::TAKE_SIBUR},
+        {"mendiane", ACTIONS::TAKE_MENDIANE},
+        {"phiras", ACTIONS::TAKE_PHIRAS},
+        {"thystame", ACTIONS::TAKE_THYSTAME},
+    };
+    _setMap = {
+        {"food", ACTIONS::SET_FOOD},
+        {"linemate", ACTIONS::SET_LINEMATE},
+        {"deraumere", ACTIONS::SET_DERAUMERE},
+        {"sibur", ACTIONS::SET_SIBUR},
+        {"mendiane", ACTIONS::SET_MENDIANE},
+        {"phiras", ACTIONS::SET_PHIRAS},
+        {"thystame", ACTIONS::SET_THYSTAME},
+    };
 
     _inventory = {
         {"food", 0},
@@ -112,6 +132,8 @@ Ia::Ia() : _client()
             {"player", 6},}
         }
     };
+
+    _stringElementInMap = {"food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"};
 }
 
 Ia::~Ia()
@@ -182,6 +204,8 @@ void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<i
     int nbTiles = 0;
     int nbTilesToFill = 0;
 
+    std::cout << "In fillInTheMap" << std::endl;
+
     for (int i = 0; i <= _actualLevel; i++)
         nbTiles += 1 + (i * 2);
     bool first = true;
@@ -208,6 +232,8 @@ void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<i
                 first = false;
         }
     }
+
+    std::cout << "finished fillInTheMap" << std::endl;
 }
 
 void Ia::clearContentTile(int x, int y)
@@ -224,10 +250,12 @@ void Ia::clearContentTile(int x, int y)
 
 void Ia::setContentTile(std::vector<std::string> contentOfTile, int x, int y)
 {
+    std::cout << "In setContentTile" << std::endl;
     clearContentTile(x, y);
     for (auto &resource : contentOfTile)
-        if (!resource.empty())
+        if (!resource.empty() && resource[0] != ' ')
             _contentOfMap.at(y).at(x).at(resource) = true;
+    std::cout << "finished setContentTile" << std::endl;
 }
 
 void Ia::parseLook(std::string response)
@@ -239,7 +267,7 @@ void Ia::parseLook(std::string response)
     std::vector<std::string> contentOfTile;
     std::vector<std::vector<std::string>> contentOfMap;
 
-    response = replaceCharacters(response, "[ ", "");
+    response = replaceCharacters(response, "[", "");
     response = replaceCharacters(response, " ]", "");
 
     while ((pos = response.find(comaDelimiter)) != std::string::npos) {
@@ -249,6 +277,13 @@ void Ia::parseLook(std::string response)
     }
     contentOfTile.push_back(response);
 
+    std::cout << contentOfTile.size() << std::endl;
+    for (auto &tile : contentOfTile)
+    {
+        if (tile[0] == ' ')
+            tile.erase(0, 1);
+        std::cout << tile << std::endl;
+    }
 
     for (std::size_t index = 0; index < contentOfTile.size(); index ++) {
         contentOfMap.push_back({});
@@ -287,8 +322,6 @@ void Ia::parseInventory(std::string response)
         token = resource.substr(0, pos);
         inventory.emplace(token, std::stoi(resource.substr(pos + spaceDelimiter.length())));
     }
-    for (auto &resource : inventory)
-        std::cout << resource.first << " : " << resource.second << std::endl;
     fillInTheInventory(inventory);
 }
 
@@ -327,21 +360,6 @@ std::string Ia::transformRessourceToAction(std::string object)
     return object;
 }
 
-void Ia::moveToTile()
-{
-    std::pair<int, int> tmpPos = _actualIaPosition;
-
-    while (tmpPos.first != _destTile.first || tmpPos.second != _destTile.second) {
-        addActionToQueue(ACTIONS::FORWARD);
-        tmpPos = movePlayer(tmpPos);
-    }
-    addActionToQueue(ACTIONS::RIGHT);
-    while (tmpPos != _destTile) {
-        addActionToQueue(ACTIONS::FORWARD);
-        tmpPos = movePlayer(tmpPos);
-    }
-}
-
 std::pair<int, int> Ia::movePlayer(std::pair<int, int> iaPosition)
 {
     std::pair<int, int> position;
@@ -354,6 +372,7 @@ std::pair<int, int> Ia::movePlayer(std::pair<int, int> iaPosition)
         position.second += _mapSize.second;
     iaPosition = position;
     return iaPosition;
+    std::cout << "x : " << iaPosition.first << " y : " << iaPosition.second << std::endl;
 }
 
 void Ia::changeDirection(DIRECTION direction)
@@ -366,38 +385,24 @@ void Ia::changeDirection(DIRECTION direction)
         _actualIaDirection = static_cast<DIRECTION>(tmp + 1 > 3 ? 0 : tmp + 1);
 }
 
-bool Ia::actuallyNeededItem(std::string const &item)
+std::string Ia::getNeededItem()
 {
+    std::cout << "getNeededItem" << std::endl;
     for (auto &[gemInLevelToObtain, quantity] : _levelsToObtain.at(_actualLevel + 1))
-        if (_inventory.at(item) <= quantity && item != "player")
-            return true;
-    return false;
-}
-
-bool Ia::wantToTakeAnyObject()
-{
-    int i = 0;
-    int j = 0;
-
-    for (auto &tiles : _contentOfMap) {
-        j = 0;
-        for (auto &oneTile : tiles) {
-            for (auto &[item, status] : oneTile) {
-                if (status == true && actuallyNeededItem(item)) {
-                    _objectToTake = transformRessourceToAction(item);
-                    _destTile = {i, j};
-                    return true;
-                }
-            }
-            j++;
+    {
+        if (gemInLevelToObtain != "player") {
+            if (_inventory.at(gemInLevelToObtain) < quantity)
+                return gemInLevelToObtain;
         }
-        i++;
     }
-    return false;
+    std::cout << "finish get Needed Item" << std::endl;
+    return "elevation";
 }
 
 void Ia::forward(std::string const &serverResponse)
 {
+    std::cout << "Ia::forward" << std::endl;
+
     if (serverResponse == "ok") {
         _actualIaPosition = movePlayer(_actualIaPosition);
     }
@@ -406,6 +411,8 @@ void Ia::forward(std::string const &serverResponse)
 }
 void Ia::turnLeft(std::string const &serverResponse)
 {
+    std::cout << "Ia::turnLeft" << std::endl;
+
     if (serverResponse == "ok") {
         changeDirection(DIRECTION::LEFT);
     }
@@ -415,6 +422,8 @@ void Ia::turnLeft(std::string const &serverResponse)
 
 void Ia::turnRight(std::string const &serverResponse)
 {
+    std::cout << "Ia::turnRight" << std::endl;
+
     if (serverResponse == "ok") {
         changeDirection(DIRECTION::RIGHT);
     }
@@ -424,39 +433,135 @@ void Ia::turnRight(std::string const &serverResponse)
 
 void Ia::look(std::string const &serverResponse)
 {
+    std::cout << "Ia::look" << std::endl;
+
     parseLook(serverResponse);
     _requestListReceived.pop();
     _requestListSent.pop();
 }
 
+void Ia::parseTake(std::string const &resource)
+{
+    std::cout << "Take : " << resource << std::endl;
+    std::cout << "Before Ressource in the map is " << _contentOfMap.at(_actualIaPosition.second).at(_actualIaPosition.first).at(resource) << std::endl;
+    _contentOfMap.at(_actualIaPosition.second).at(_actualIaPosition.first).at(resource) = false;
+    std::cout << "Now Ressource in the map is " << _contentOfMap.at(_actualIaPosition.second).at(_actualIaPosition.first).at(resource) << std::endl;
+    std::cout << "Before nb of it in Inventory : " << _inventory.at(resource) << std::endl;
+    _inventory.at(resource)++;
+    std::cout << "Now nb of it in Inventory : " << _inventory.at(resource) << std::endl;
+}
+
+void Ia::parseSet(std::string const &resource)
+{
+    std::cout << "Set : " << resource << std::endl;
+    std::cout << "Before Ressource in the map is " << _contentOfMap.at(_actualIaPosition.second).at(_actualIaPosition.first).at(resource) << std::endl;
+    _contentOfMap.at(_actualIaPosition.second).at(_actualIaPosition.first).at(resource) = true;
+    std::cout << "Now Ressource in the map is " << _contentOfMap.at(_actualIaPosition.second).at(_actualIaPosition.first).at(resource) << std::endl;
+    std::cout << "Before nb of it in Inventory : " << _inventory.at(resource) << std::endl;
+    _inventory.at(resource)--;
+    std::cout << "Now nb of it in Inventory : " << _inventory.at(resource) << std::endl;
+}
+
 void Ia::inventory(std::string const &serverResponse)
 {
-    std::cout << "Inventory response->" << serverResponse << std::endl;
-        parseInventory(serverResponse);
-        _requestListReceived.pop();
-        _requestListSent.pop();
+    std::cout << "Ia::inventory" << std::endl;
+    parseInventory(serverResponse);
+    _requestListReceived.pop();
+    _requestListSent.pop();
 }
+
+void Ia::take(std::string const &serverResponse, std::string resource)
+{
+    std::cout << "Ia::take" << std::endl;
+
+    if (serverResponse == "ok")
+    {
+        parseTake(resource);
+    }
+    _requestListReceived.pop();
+    _requestListSent.pop();
+}
+
+void Ia::set(std::string const &serverResponse, std::string resource)
+{
+    std::cout << "Ia::set" << std::endl;
+
+    if (serverResponse == "ok")
+    {
+        parseSet(resource);
+    }
+    _requestListReceived.pop();
+    _requestListSent.pop();
+}
+
+// void Ia::elevation(std::string const &serverResponse, std::string resource)
+// {
+
+// }
 
 void Ia::handleEvent(ACTIONS action, std::string const &response)
 {
-    switch (action) {
-        case ACTIONS::FORWARD:
-            forward(response);
-            break;
-        case ACTIONS::LEFT:
-            turnLeft(response);
-            break;
-        case ACTIONS::RIGHT:
-            turnRight(response);
-            break;
-        case ACTIONS::LOOK:
-            look(response);
-            break;
-        case ACTIONS::INVENTORY:
-            inventory(response);
-            break;
-        default:
-            break;
+    switch (action)
+    {
+    case ACTIONS::FORWARD:
+        forward(response);
+        break;
+    case ACTIONS::LEFT:
+        turnLeft(response);
+        break;
+    case ACTIONS::RIGHT:
+        turnRight(response);
+        break;
+    case ACTIONS::LOOK:
+        look(response);
+        break;
+    case ACTIONS::INVENTORY:
+        inventory(response);
+        break;
+    case ACTIONS::TAKE_FOOD:
+        take(response, "food");
+        break;
+    case ACTIONS::SET_FOOD:
+        set(response, "food");
+        break;
+    case ACTIONS::TAKE_LINEMATE:
+        take(response, "linemate");
+        break;
+    case ACTIONS::SET_LINEMATE:
+        set(response, "linemate");
+        break;
+    case ACTIONS::TAKE_DERAUMERE:
+        take(response, "deraumere");
+        break;
+    case ACTIONS::SET_DERAUMERE:
+        set(response, "deraumere");
+        break;
+    case ACTIONS::TAKE_SIBUR:
+        take(response, "sibur");
+        break;
+    case ACTIONS::SET_SIBUR:
+        set(response, "sibur");
+        break;
+    case ACTIONS::TAKE_MENDIANE:
+        take(response, "mendiane");
+        break;
+    case ACTIONS::SET_MENDIANE:
+        set(response, "mendiane");
+        break;
+    case ACTIONS::TAKE_PHIRAS:
+        take(response, "phiras");
+        break;
+    case ACTIONS::SET_PHIRAS:
+        set(response, "phiras");
+        break;
+    case ACTIONS::TAKE_THYSTAME:
+        take(response, "thystame");
+        break;
+    case ACTIONS::SET_THYSTAME:
+        set(response, "thystame");
+        break;
+    default:
+        break;
     }
 }
 
@@ -464,7 +569,8 @@ void Ia::addActionToQueue(ACTIONS action)
 {
     _requestTmp.emplace(action);
 
-    if (_requestListToSend.size() < MAX_ACTION_LIST) {
+    if (_requestListToSend.size() < MAX_ACTION_LIST)
+    {
         ACTIONS tmp = _requestTmp.front();
         _requestTmp.pop();
         _requestListToSend.emplace(tmp);
@@ -478,10 +584,9 @@ void Ia::addMessageToQueue(std::string const &serverResponse)
 
 void Ia::sendResquestServer()
 {
-    if (!_requestListToSend.empty()) {
+    while (!_requestListToSend.empty())
+    {
         _client.postRequest(_client.getSocket(), _requestListToSend.front());
-        if (_requestListToSend.front() == ACTIONS::SET_OBJECT || _requestListToSend.front() == ACTIONS::TAKE_OBJECT)
-            _client.postRequest(_client.getSocket(), _objectToTake);
         _requestListSent.emplace(_requestListToSend.front());
         _requestListToSend.pop();
     }
@@ -492,19 +597,163 @@ void Ia::analyzeResponseServer()
     std::string message;
 
     message = _client.getRequest(_client.getSocket());
-    if (parseReceiveResponse(message)) {
+    if (parseReceiveResponse(message))
+    {
         if (!_requestListSent.empty() && !_requestListReceived.empty())
+        {
+            std::cout << "parseReceivedResponse: " << _requestListReceived.front() << std::endl;
             handleEvent(_requestListSent.front(), _requestListReceived.front());
+        }
     }
+}
+
+bool Ia::isElementInMap(std::string const &element)
+{
+    std::cout << "Ia::isElementInMap" << std::endl;
+    int x = 0;
+    int y = 0;
+
+    for (auto const &map : _contentOfMap)
+    {
+        x = 0;
+        for (auto const &line : map)
+        {
+            for (auto const &elementInLine : line)
+            {
+                if (elementInLine.first == element && elementInLine.second == true)
+                {
+                    _currentTileToGo = {x, y};
+                    return true;
+                }
+            }
+            x++;
+        }
+        y++;
+    }
+    return false;
+}
+
+void Ia::goToTile(int x, int y)
+{
+    std::cout << "Ia::goToTile x: " << x << " y: " << y << std::endl;
+    while (_actualIaPosition.second != y)
+    {
+        addActionToQueue(ACTIONS::FORWARD);
+        sendResquestServer();
+        analyzeResponseServer();
+    }
+    if (_actualIaPosition.first != x || _actualIaPosition.second != y)
+    {
+        std::cout << "Want to turn" << std::endl;
+        if (_actualIaPosition.second < x)
+        {
+            addActionToQueue(ACTIONS::RIGHT);
+            sendResquestServer();
+            analyzeResponseServer();
+        }
+        else
+        {
+            addActionToQueue(ACTIONS::LEFT);
+            sendResquestServer();
+            analyzeResponseServer();
+        }
+        while (_actualIaPosition.first != x)
+        {
+            addActionToQueue(ACTIONS::FORWARD);
+            sendResquestServer();
+            analyzeResponseServer();
+        }
+    }
+    std::cout << "IA is in the good tile!" << std::endl;
+    emptyTileAndSetGoodElement(x, y);
+}
+
+void Ia::searchElement()
+{
+    std::cout << "Ia::searchElement" << std::endl;
+    int x = rand() % 1;
+    if (x == 0)
+        addActionToQueue(ACTIONS::LEFT);
+    else
+    {
+        addActionToQueue(ACTIONS::RIGHT);
+        addActionToQueue(ACTIONS::FORWARD);
+    }
+}
+
+bool Ia::isTileEmpty(int x, int y)
+{
+    for (auto &resource : _stringElementInMap)
+    {
+        if (_contentOfMap.at(y).at(x).at(resource) == true)
+            return false;
+    }
+    return true;
+}
+
+bool Ia::isElementInTile(int x, int y, std::string element)
+{
+    if (_contentOfMap.at(y).at(x).at(element) == true)
+        return true;
+    return false;
+}
+
+void Ia::emptyTileAndSetGoodElement(int x, int y)
+{
+    std::cout << "Ia::emptyTileAndSetGoodElement" << std::endl;
+    while (!isTileEmpty(x, y))
+    {
+        std::cout << "isTileEmpty" << std::endl;
+        for (auto &resource : _stringElementInMap)
+        {
+            std::cout << "resources: " << resource << std::endl;
+            if (isElementInTile(x, y, resource))
+            {
+                addActionToQueue(ACTIONS::LOOK);
+                addActionToQueue(_takeMap.at(resource));
+                sendResquestServer();
+                analyzeResponseServer();
+                std::cout << "EmptyTileAndSetGoodElement: Took " << resource << std::endl;
+            }
+        }
+    }
+    std::cout << "FINISHED TO CLEAR THE MAP" << std::endl;
+    // addActionToQueue(ACTIONS::SET_LINEMATE);
+    // sendResquestServer();
+    // analyzeResponseServer();
 }
 
 void Ia::mainLoop()
 {
+    srand(time(NULL));
     addActionToQueue(ACTIONS::INVENTORY);
-    while (!_isDead) {
-        // add action to queue here
+    addActionToQueue(ACTIONS::LOOK);
 
+    while (!_isDead)
+    {
+        // add action to queue here
         sendResquestServer();
         analyzeResponseServer();
+        std::string neededElement = getNeededItem();
+        std::cout << "neededElement: " << neededElement << std::endl;
+        if (neededElement != "elevation")
+        {
+            std::cout << "getNeededItem" << std::endl;
+            if (_requestListSent.empty())
+            {
+                std::cout << "Queue size ->" << _requestListSent.size() << std::endl;
+                // attendre que le serveur nous renvoie toutes les reponses
+                if (isElementInMap(neededElement))
+                {
+                    goToTile(_currentTileToGo.first, _currentTileToGo.second);
+                    std::cout << "Finished to go to tile" << std::endl;
+                }
+                else
+                {
+                    addActionToQueue(ACTIONS::LOOK);
+                    searchElement();
+                }
+            }
+        }
     }
 }
