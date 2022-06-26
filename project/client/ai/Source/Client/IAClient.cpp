@@ -40,20 +40,20 @@ IAClient::IAClient()
         {ACTIONS::FORK, "Fork\n"},
         {ACTIONS::EJECT, "Eject\n"},
         {ACTIONS::INCANTATION, "Incantation\n"},
-        {ACTIONS::SET_FOOD, "Set "},
-        {ACTIONS::SET_LINEMATE, "Set Food\n"},
-        {ACTIONS::SET_DERAUMERE, "Set Linemate\n"},
-        {ACTIONS::SET_SIBUR, "Set Sibur\n"},
-        {ACTIONS::SET_MENDIANE, "Set Mendiane\n"},
-        {ACTIONS::SET_PHIRAS, "Set Phiras\n"},
-        {ACTIONS::SET_THYSTAME, "Set Thystame\n"},
-        {ACTIONS::TAKE_FOOD, "Take Food\n"},
-        {ACTIONS::TAKE_LINEMATE, "Take Linemate\n"},
-        {ACTIONS::TAKE_DERAUMERE, "Take Deraumere\n"},
-        {ACTIONS::TAKE_SIBUR, "Take Sibur\n"},
-        {ACTIONS::TAKE_MENDIANE, "Take Mendiane\n"},
-        {ACTIONS::TAKE_PHIRAS, "Take Phiras\n"},
-        {ACTIONS::TAKE_THYSTAME, "Take Thystame\n"},
+        {ACTIONS::SET_FOOD, "Set food\n"},
+        {ACTIONS::SET_LINEMATE, "Set linemate\n"},
+        {ACTIONS::SET_DERAUMERE, "Set deraumere\n"},
+        {ACTIONS::SET_SIBUR, "Set sibur\n"},
+        {ACTIONS::SET_MENDIANE, "Set mendiane\n"},
+        {ACTIONS::SET_PHIRAS, "Set phiras\n"},
+        {ACTIONS::SET_THYSTAME, "Set thystame\n"},
+        {ACTIONS::TAKE_FOOD, "Take food\n"},
+        {ACTIONS::TAKE_LINEMATE, "Take linemate\n"},
+        {ACTIONS::TAKE_DERAUMERE, "Take deraumere\n"},
+        {ACTIONS::TAKE_SIBUR, "Take sibur\n"},
+        {ACTIONS::TAKE_MENDIANE, "Take mendiane\n"},
+        {ACTIONS::TAKE_PHIRAS, "Take phiras\n"},
+        {ACTIONS::TAKE_THYSTAME, "Take thystame\n"},
     };
 }
 
@@ -79,6 +79,7 @@ void IAClient::postRequest(int socketId, std::string const &request)
 
 void IAClient::postRequest(int socketId, ACTIONS request)
 {
+    std::cout << "Ia post request: " << _actionCommands.at(request) << std::endl;
     dprintf(socketId, "%s", _actionCommands.at(request).c_str());
 }
 
