@@ -147,6 +147,8 @@ void Ia::createMap(int mapHeight, int mapWidth)
 std::map<std::string, bool> Ia::createTile()
 {
     std::map<std::string, bool> tile;
+
+    tile.emplace("player", false);
     tile.emplace("food", false);
     tile.emplace("linemate", false);
     tile.emplace("deraumere", false);
@@ -208,24 +210,24 @@ void Ia::fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<i
     }
 }
 
+void Ia::clearContentTile(int x, int y)
+{
+    _contentOfMap.at(y).at(x).at("food") = false;
+    _contentOfMap.at(y).at(x).at("linemate") = false;
+    _contentOfMap.at(y).at(x).at("deraumere") = false;
+    _contentOfMap.at(y).at(x).at("sibur") = false;
+    _contentOfMap.at(y).at(x).at("mendiane") = false;
+    _contentOfMap.at(y).at(x).at("phiras") = false;
+    _contentOfMap.at(y).at(x).at("thystame") = false;
+    _contentOfMap.at(y).at(x).at("player") = false;
+}
+
 void Ia::setContentTile(std::vector<std::string> contentOfTile, int x, int y)
 {
-    for (auto &resource : contentOfTile) {
-        if (resource == "food")
-            _contentOfMap.at(y).at(x).at("food") = true;
-        else if (resource == "linemate")
-            _contentOfMap.at(y).at(x).at("linemate") = true;
-        else if (resource == "deraumere")
-            _contentOfMap.at(y).at(x).at("deraumere") = true;
-        else if (resource == "sibur")
-            _contentOfMap.at(y).at(x).at("sibur") = true;
-        else if (resource == "mendiane")
-            _contentOfMap.at(y).at(x).at("mendiane") = true;
-        else if (resource == "phiras")
-            _contentOfMap.at(y).at(x).at("phiras") = true;
-        else if (resource == "thystame")
-            _contentOfMap.at(y).at(x).at("thystame") = true;
-    }
+    clearContentTile(x, y);
+    for (auto &resource : contentOfTile)
+        if (!resource.empty())
+            _contentOfMap.at(y).at(x).at(resource) = true;
 }
 
 void Ia::parseLook(std::string response)
@@ -239,8 +241,6 @@ void Ia::parseLook(std::string response)
 
     response = replaceCharacters(response, "[ ", "");
     response = replaceCharacters(response, " ]", "");
-
-    std::cout << response << std::endl;
 
     while ((pos = response.find(comaDelimiter)) != std::string::npos) {
         token = response.substr(0, pos);
@@ -260,7 +260,6 @@ void Ia::parseLook(std::string response)
         }
         contentOfMap.at(index).push_back(tmp);
     }
-    std::cout << "contentOfMap size : " << contentOfMap.size() << std::endl;
     fillInTheMap(contentOfMap, _actualIaPosition, _actualIaDirection);
 }
 
@@ -390,13 +389,6 @@ void Ia::changeDirection(DIRECTION direction)
 //     return false;
 // }
 
-bool Ia::isBracketsInString(std::string str)
-{
-    if (str.find("[ ") != std::string::npos && str.find(" ]") != std::string::npos && str.find("\n") != std::string::npos && str.find("[ ") < str.find(" ]"))
-        return true;
-    return false;
-}
-
 void Ia::forward(std::string const &serverResponse)
 {
     if (serverResponse == "ok") {
@@ -433,11 +425,9 @@ void Ia::look(std::string const &serverResponse)
 void Ia::inventory(std::string const &serverResponse)
 {
     std::cout << "Inventory response->" << serverResponse << std::endl;
-    // if (isBracketsInString(serverResponse)) {
     //     parseInventory(serverResponse);
     //     _requestListReceived.pop();
     //     _requestListSent.pop();
-    // }
 }
 
 void Ia::handleEvent(ACTIONS action, std::string const &response)
