@@ -15,7 +15,12 @@ static std::vector<std::pair<COMMANDS_GUI, void(Game::*)(char *)>> _commandsMap 
     std::make_pair(PLAYER_LEVEL, &Game::handleUpdatePlayerLevel),
     std::make_pair(PLAYER_INVENTORY, &Game::handleUpdatePlayerInventory),
     std::make_pair(CONTENT_TILE, &Game::handleUpdateContentTile),
-    std::make_pair(CONTENT_MAP, &Game::handleUpdateContentMap)
+    std::make_pair(CONTENT_MAP, &Game::handleUpdateContentMap),
+    std::make_pair(PLAYER_DEAD, &Game::handlePlayerDead),
+    std::make_pair(PLAYER_STARTED_INCANTATION, &Game::handlePlayerStartIcantation),
+    std::make_pair(PLAYER_ENDED_INCANTATION, &Game::handlePlayerStopIncantation),
+
+
 };
 
 Game::Game(std::shared_ptr<Client> client, std::shared_ptr<RayLib::CinematicCamera> camera) : _tilesModel("Resources/Tiles/wall_side.obj"), _playersModel("Resources/Players/player.iqm"), _tilesTexture("Resources/Tiles/wall_side.png"), _playersAnimation("Resources/Players/player.iqm", 1), AScene()
@@ -211,6 +216,7 @@ void Game::updateServerDisconnected()
 
 void Game::updatePlayerStartIncantation(int playerId)
 {
+    std::cout << "incantation !!!!!" << std::endl;
     for (auto &player : _players) {
         if (player->getPlayerId() == playerId) {
             player->startIncantation();
@@ -318,6 +324,7 @@ void Game::handlePlayerDead(char *data)
 
 void Game::handlePlayerStartIcantation(char *data)
 {
+    std::cout << "started incantation" << std::endl;
     response_payload_player_start_incantation_t *playerIncantation = (response_payload_player_start_incantation_t *)data;
     this->updatePlayerStartIncantation(playerIncantation->player_id);
 }
