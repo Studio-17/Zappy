@@ -32,7 +32,6 @@ static void gui_post_player_connected(zappy_t *zappy)
 bool connect_client(zappy_t *zappy)
 {
     int client_socket = 0;
-    int client_id = 0;
 
     if (FD_ISSET(zappy->server->server_socket->server, &zappy->server->socket_descriptor->readfd))
     {

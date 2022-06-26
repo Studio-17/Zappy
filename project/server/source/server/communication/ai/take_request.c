@@ -14,7 +14,7 @@ void ai_take_request(zappy_t *zappy, void *data, int player_index)
     enum ITEM resource = (enum ITEM)get_resource_from_request(request);
     int x, y = 0;
 
-    if (resource == -1)
+    if ((int)resource == -1)
         ai_response_ok_ko(zappy->client[player_index].socket, false);
     else {
         x = zappy->client[player_index].player.position.x;
