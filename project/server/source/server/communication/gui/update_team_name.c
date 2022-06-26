@@ -7,7 +7,7 @@
 
 #include "gui_update.h"
 
-void gui_update_team_names(zappy_t *zappy)
+void gui_update_team_names(__attribute((unused)) zappy_t *zappy)
 {
     return;
 }

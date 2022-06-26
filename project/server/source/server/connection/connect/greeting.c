@@ -47,10 +47,9 @@ static bool get_team_name(zappy_t *zappy, int socket, bool *is_gui)
         if (strncmp(zappy->options->team_names[index], team_name, strlen(zappy->options->team_names[index])) == 0) {
             player_status = create_player(zappy, socket, team_name);
             if (!player_status) {
-                dprintf(socket, "ko: create player\n");
+                dprintf(socket, "ko\n");
                 return false;
             } else if (player_status == SPECIAL_STATUS) {
-                printf("it is\n");
                 free(team_name);
                 return get_team_name(zappy, socket, is_gui);
             }

@@ -1,0 +1,284 @@
+B4 - Year-End-Project - Zappy                                  M. Vanaud
+Request for Comments: 20210626                              C. Fernandes
+                                                                V. Palle
+                                                             G. Le Letty
+                                                             M. Carabina
+
+
+RFC 20210626                ZAPPY PROTOCOL                     June 2021
+
+This RFC consists of the following sections:
+
+    1. Introduction
+        1.1 - Abstract
+        1.2 - Context
+        1.3 - Status of This memo
+
+    2. Protocols
+        2.1 - Greeting Protocol
+        2.2 - AI Protocol
+        2.3 - GUI Protocol
+
+    3. Connection
+        3.1 - Establishing a connection
+        3.2 - Client-Initiated Closure
+        3.3 - Server-Initiated Closure
+
+
+
+                            1.  INTRODUCTION
+
+1.1.    Abstract
+    This document describes the fundamentals of the zappy protocol, for
+    Artificial Intelligences capable of playing the game, as well as
+    Graphical User Interfaces. Both have a different protocol, which
+    will we detailed here.
+
+1.2.    Context
+    Zappy is a game that consists of managing a world and its inhabitants.
+    This world, Trantor is geographically made up of zero-relief planes:
+    no craters, no valleys, no mountains.
+    The game board represents the entirety of this world’s surface, like
+    a world map.
+
+1.3.    Status of This memo
+    This memo is the official specification of the zappy protocol.
+    Distribution of this memo is unlimited.
+
+
+
+                            2.  PROTOCOLS
+
+2.1.    Greeting Protocol
+    In the beginning, a team is made up of n players.
+    Each player is driven by a client.
+    The clients cannot communicate or exchange data outside of the game.
+    The team name is the first thing a connected user should say,
+    before starting to play. Once the AI has a team assigned, it will
+    receive a welcome message, its client-number and the map's width and height.
+
+    The exchange happens as follows (client - server) :
+        <-- WELCOME
+        --> TEAM-NAME
+        <-- CLIENT-NUM
+        <-- X Y
+
+2.2.    AI Protocol
+    All commands are transmitted through a character string that ends
+    with a new line.
+
+    The AI should be a member of any team that is present in-game.
+
+    Each player responds to the following actions and only to these ones,
+    with the following syntax:
+
+        * Forward: Moves the player up one tile in the direction he
+        is facing
+
+        * Left: Turns 90 degrees to the left
+
+        * Right: Turns 90 degrees to the right
+
+        * Look: Looks around, depends on the level of the player. The
+        AI will receive a character string detailing what is in every
+        case in front of them, as follows:
+
+            [case 0, case 1, ... ]
+
+        * Inventory: This command allows you to see what object the drone has
+        and how much time it has left to live.
+        The server will send a line similar to the following one:
+
+            [ food 345 , sibur 3 , phiras 5 , ... , deraumere 0]
+
+        * Broadcast [text]: Sends a message to every player in
+        the server.
+
+        * Connect_nbr: sends back the number of connections that are underway
+        and authorized for this its team.
+
+        * Fork: The execution of this command leads to the production of an egg.
+        Once it’s layed, the player who has layed it can take care of his/her
+        business and wait for it to hatch.
+        Once the egg has hatched, a new player comes out, and is given a
+        random direction.
+
+        * Eject: The drone can eject all of the drones from a shared unit of
+        terrain by pushing them in the direction it is looking.
+
+        * Take [object]: Takes an object from the current tile the
+        player is on and puts it in the player's inventory.
+
+        * Set [object]: Takes an object from the inventory and puts
+        it in the current tile the player is on.
+
+        * Incantation: Starts the leveling up process. The AI init-
+        iating the Incantation should receive "Elevation Underway",
+        and once the process is done: "Current level: n"
+
+    If the response is not specified, the answer should be "ok". If
+    the command has failed, the AI should receive "ko".
+    If the player has died, the AI should receive "dead".
+
+
+2.3.    GUI Protocol
+
+    To specify, the GUI is a Grpahical User Interface, it should join the team
+    GRAPHIC, which is enabled by default.
+    The GUI cannot send request to the server, instead it can only read updates
+    that are sent when the ai, or the server operates changes on the map or the
+    player.
+
+    The GUI protocol is built around a header/body system. For each update it
+    get, there will be first a header that looks as follows:
+
+    struct header {
+        int size;
+        int type;
+    };
+
+    The `size` represents the body size that has to be allocated in order to
+    read the contents update.
+    The `type` represents the body update type that will be interprated by the
+    GUI. The `type` is based on an enum that lists all the updates that can be
+    sent by the server, here is the list
+
+    enum COMMANDS_GUI {
+        MAP_SIZE,
+        CONTENT_TILE,
+        CONTENT_MAP,
+        PLAYER_CONNECTED,
+        PLAYER_POSITION,
+        PLAYER_LEVEL,
+        PLAYER_INVENTORY,
+        TIME_UNIT,
+        TIME_UNIT_MODIFICATION,
+        PLAYER_ORIENTATION,
+        PLAYER_DEAD,
+        SERVER_OFFLINE,
+        PLAYER_STARTED_INCANTATION,
+        PLAYER_ENDED_INCANTATION,
+    };
+
+    We will now describe each of the updates, their content and relations
+    between the server and client.
+    The GUI client sends no reponse to these updates.
+
+    - MAP_SIZE
+
+    struct map_size {
+        int width;
+        int height;
+    };
+
+    - CONTENT_TILE
+
+    struct content_tile {
+        position_t tile_position;
+        int food;
+        int linemate;
+        int deraumere;
+        int sibur;
+        int mendiane;
+        int phiras;
+        int thystame;
+    };
+
+    - CONTENT_MAP
+
+    struct content_map {
+        content_tile *content;
+    };
+
+    - PLAYER_CONNECTED
+
+    struct player_connected {
+        int id;
+        int level;
+        int orientation;
+        position_t position;
+        char team_name[50];
+    };
+
+    - PLAYER_POSITION
+
+    struct player_position {
+        int player_id;
+        position_t position;
+    };
+
+    - PLAYER_LEVEL
+
+    struct player_level {
+        int player_id;
+        int level;
+    };
+
+    - PLAYER_INVENTORY
+
+    struct player_inventory {
+        int player_id;
+        int linemate;
+        int deraumere;
+        int sibur;
+        int mendiane;
+        int phiras;
+        int thystame;
+        int food;
+    };
+
+    - PLAYER_ORIENTATION
+
+    struct player_orientation {
+        int player_id;
+        int orientation;
+    };
+
+    - PLAYER_STARTED_INCANTATION
+
+    struct player_starte_incantation {
+        int player_id;
+    };
+
+    - PLAYER_ENDED_INCANTATION
+
+    struct player_ended_incantation {
+        bool success;
+        int player_id;
+        int player_level;
+    };
+
+    - PLAYER_DEAD
+
+    struct player_dead {
+        int player_id;
+    };
+
+    - SERVER_OFFLINE
+
+    struct server_offline {
+        bool offline;
+    };
+
+
+
+                            3.  CONNECTION
+
+3.1.    Establishing a Connection
+    The connection is established via Linux TCP Sockets, while multiplexing is
+    implemented using select(2): synchronous I/O multiplexing.
+
+
+3.2.    Client-Initiated Closure
+    3.2.1. AI
+    The AI can initiate closure using the SIGINT signal
+
+    3.2.2. GUI
+    The GUI can initiate closure using the `escape` default key of components
+    in its graphicals interfaces.
+
+
+3.3.    Server-Initiated Closure
+    The server cannot stop at all time except for the SIGINT signal to be caught
+    The program while then attempt to free previously allocated memory and exit.
+

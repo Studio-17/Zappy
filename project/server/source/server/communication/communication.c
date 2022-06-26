@@ -23,10 +23,10 @@ void death_protocol(zappy_t *zappy, int index)
     close(zappy->client[index].socket);
 }
 
-int execute_task(list_t *list, zappy_t *zappy, int player_index)
+void execute_task(list_t *list, zappy_t *zappy, int player_index)
 {
     if (queue_is_empty(*list))
-        return 0;
+        return;
 
     data_t *request = (data_t *)queue_get_front(*list);
 
@@ -42,7 +42,7 @@ int execute_task(list_t *list, zappy_t *zappy, int player_index)
 
     clock_t end = clock();
 
-    unsigned long millis = (end - request->clock) / 1000;
+    int millis = (end - request->clock) / 1000;
 
     if (millis >= (request->request.time_limit * 100 / zappy->options->freq)) {
 

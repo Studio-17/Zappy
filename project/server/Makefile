@@ -28,7 +28,9 @@ SOURCE	=	source/server/communication/communication.c					\
 			source/server/communication/ai/connect_nbr_request.c		\
 			source/server/communication/ai/take_request.c				\
 			source/server/communication/ai/set_request.c				\
+			source/server/communication/ai/fork_request.c				\
 			source/server/communication/ai/incantation_request.c		\
+			source/server/communication/ai/broadcast_request.c			\
 			source/server/communication/ai/invalid_request.c			\
 			source/server/communication/ai/tools/check_death.c			\
 			source/server/communication/ai/tools/move.c					\
