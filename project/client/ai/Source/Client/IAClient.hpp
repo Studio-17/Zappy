@@ -6,51 +6,74 @@
 */
 
 #ifndef IACLIENT_HPP_
-#define IACLIENT_HPP_
+    #define IACLIENT_HPP_
 
-#include <cstring>
+    #include <cstring>
 
-#include <memory>
+    #include <memory>
 
-#include <netdb.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
+    #include <netdb.h>
+    #include <sys/socket.h>
+    #include <arpa/inet.h>
+    #include <map>
+    #include <vector>
+    #include <iostream>
+    #include <algorithm>
 
-#include "Errors/ErrorsModules/Client/ClientErrors.hpp"
+    #include "Errors/ErrorsModules/Client/ClientErrors.hpp"
 
-#include "Options/IAOptions.hpp"
+    #include "Options/IAOptions.hpp"
 
-    class IAClient {
-        public:
-            IAClient();
-            ~IAClient();
+enum class ACTIONS {
+    FORWARD,
+    RIGHT,
+    LEFT,
+    LOOK,
+    INVENTORY,
+    BROADCAST_TEXT,
+    CONNECT_NBR,
+    FORK,
+    EJECT,
+    TAKE_OBJECT,
+    SET_OBJECT,
+    INCANTATION,
+};
 
-            void setup();
-            void connection();
+class IAClient {
+    public:
+        IAClient();
+        ~IAClient();
 
-            void handle();
+        // Methods
+        std::pair<int, int> getMapSize() { return _mapSize; };
+        void setMapSize(std::string str);
+        int getSocket() const { return _socket; };
 
-            void serverSentResponse();
 
-            void setupOptions(int ac, char **av);
-            void handleOptions();
+        // Post & Get a request from server
+        void postRequest(int socketId, std::string const &request);
+        void postRequest(int socketId, ACTIONS request);
+        std::string getRequest(int socketId);
+        void serverSentResponse();
 
-            void postRequest(int socketId, std::string const &request);
-            std::string getRequest(int socketId);
+        // Setup connection IA
+        void setup();
+        void connection();
+        void handle();
 
-            std::string getMapSize() const;
+        void setupOptions(int ac, char **av);
+        void handleOptions();
+        // void handleAction(ACTIONS action);
 
-            int getSocket() const;
+    protected:
+    private:
+        int _socket;
+        sockaddr_in _server;
+        std::unique_ptr<IAOptions> _options;
+        std::pair<int, int> _mapSize; //!< Map size
 
-            std::string handleAction(std::string const &action);
-
-        protected:
-        private:
-            int _socket;
-            sockaddr_in _server;
-
-            std::unique_ptr<IAOptions> _options;
-            std::string _mapSize;
-    };
+        std::map<std::string, int> _timeLimit;
+        std::map<ACTIONS, std::string> _actionCommands; //!< Map of the action commands
+};
 
 #endif /* !IACLIENT_HPP_ */

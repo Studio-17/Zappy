@@ -15,10 +15,78 @@ extern "C" {
 IAClient::IAClient()
 {
     _options = std::make_unique<IAOptions>();
+    _timeLimit = {
+        {"Forward", 7},
+        {"Right", 7},
+        {"Left", 7},
+        {"Look", 7},
+        {"Inventory", 1},
+        {"Broadcast text", 7},
+        {"Connect_nbr", 0},
+        {"Fork", 42},
+        {"Eject", 7},
+        {"Take ", 7},
+        {"Set ", 7},
+        {"Incantation", 300},
+    };
+    _actionCommands = {
+        {ACTIONS::FORWARD, "Forward\n"},
+        {ACTIONS::RIGHT, "Right\n"},
+        {ACTIONS::LEFT, "Left\n"},
+        {ACTIONS::LOOK, "Look\n"},
+        {ACTIONS::INVENTORY, "Inventory\n"},
+        {ACTIONS::BROADCAST_TEXT, "Broadcast text\n"},
+        {ACTIONS::CONNECT_NBR, "Connect_nbr\n"},
+        {ACTIONS::FORK, "Fork\n"},
+        {ACTIONS::EJECT, "Eject\n"},
+        {ACTIONS::INCANTATION, "Incantation\n"},
+        {ACTIONS::SET_OBJECT, "Set "},
+        {ACTIONS::TAKE_OBJECT, "Take "},
+    };
 }
 
 IAClient::~IAClient()
 {
+}
+
+void IAClient::setMapSize(std::string str)
+{
+    std::string delimiter = " ";
+    size_t pos = str.find(delimiter);
+    std::string token = str.substr(0, pos);
+
+    _mapSize.first = std::stoi(token);
+    str.erase(0, pos + delimiter.length());
+    _mapSize.second = std::stoi(str);
+}
+
+void IAClient::postRequest(int socketId, std::string const &request)
+{
+    dprintf(socketId, "%s\n", request.c_str());
+}
+
+void IAClient::postRequest(int socketId, ACTIONS request)
+{
+    dprintf(socketId, "%s", _actionCommands.at(request).c_str());
+}
+
+std::string IAClient::getRequest(int socketId)
+{
+    std::string response;
+    response.resize(100);
+    int result = 0;
+
+    if ((result = read(socketId, (void *)response.c_str(), 100)) < 0)
+        perror("AIClient: getRequest");
+    response.resize(result);
+    return (response);
+}
+
+void IAClient::serverSentResponse()
+{
+    // CODE HERE ALL RESPONSES RELATED FUNCTIONS
+
+    return;
 }
 
 void IAClient::setup()
@@ -63,33 +131,9 @@ void IAClient::handle()
         std::cout << clientNumString;
 
     coordString = getRequest(_socket);
-    std::cout << coordString;
-    _mapSize = coordString;
+    setMapSize(coordString);
 }
 
-void IAClient::serverSentResponse()
-{
-    // CODE HERE ALL RESPONSES RELATED FUNCTIONS
-
-    return;
-}
-
-void IAClient::postRequest(int socketId, std::string const &request)
-{
-    dprintf(socketId, "%s\n", request.c_str());
-}
-
-std::string IAClient::getRequest(int socketId)
-{
-    std::string response;
-    response.resize(100);
-    int result = 0;
-
-    if ((result = read(socketId, (void *)response.c_str(), 100)) < 0)
-        perror("AIClient: getRequest");
-    response.resize(result);
-    return (response);
-}
 
 void IAClient::setupOptions(int ac, char **av)
 {
@@ -101,21 +145,13 @@ void IAClient::handleOptions()
     _options->handleOptions();
 }
 
-std::string IAClient::getMapSize() const
-{
-    return _mapSize;
-}
 
-int IAClient::getSocket() const
-{
-    return _socket;
-}
+// void IAClient::handleAction(ACTIONS action)
+// {
+    // std::pair<ACTIONS, std::string> response;
 
-std::string IAClient::handleAction(std::string const &action)
-{
-    std::string string;
-
-    postRequest(_socket, action);
-    string = getRequest(_socket);
-    return string;
-}
+    // response.first = action;
+    // postRequest(_socket, _actionCommands.at(action));
+    // response.second = getRequest(_socket);
+    // return response;
+// }

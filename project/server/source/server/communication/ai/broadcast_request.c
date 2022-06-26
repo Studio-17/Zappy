@@ -11,7 +11,7 @@
 
 void ai_response_broadcast(int socket, char const *message, int orientation)
 {
-    dprintf(socket, "message %d, %s\n", orientation, message);
+    dprintf(socket, "message %d, %s", orientation, message);
 }
 
 int handle_broadcast(zappy_t *zappy, int player_index, position_t origin)

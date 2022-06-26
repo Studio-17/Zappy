@@ -19,6 +19,16 @@
 #include "server/server.h"
 #include "server/communication/request/request.h"
 
+static void gui_post_player_connected(zappy_t *zappy)
+{
+    for (int index = 0; index < zappy->server->clients; index += 1) {
+        if (zappy->client[index].socket != zappy->server->gui
+        && zappy->client[index].socket > 0) {
+            gui_update_player_connected(zappy, index);
+        }
+    }
+}
+
 bool connect_client(zappy_t *zappy)
 {
     int client_socket = 0;
@@ -32,10 +42,14 @@ bool connect_client(zappy_t *zappy)
             exit(EXIT_FAILURE);
         }
 
+        printf("client connected on socket %d\n", client_socket);
+
         if (greeting_protocol(zappy, client_socket)) {
 
-            if (zappy->server->is_gui_connected)
+            if (zappy->server->is_gui_connected) {
                 gui_update_map_content(zappy);
+                gui_post_player_connected(zappy);
+            }
 
         }
     }
@@ -62,19 +76,19 @@ void add_client_socket_to_set(zappy_t *zappy)
 
         if (zappy->client[index].socket > zappy->server->socket_descriptor->max_socket_descriptor)
             zappy->server->socket_descriptor->max_socket_descriptor = zappy->client[index].socket;
+
     }
 }
 
 void wait_for_connections(server_t *server)
 {
-    struct timeval tv;
+    struct timeval tv = {
+        .tv_sec = 0,
+        .tv_usec = 5,
+    };
 
-    /* Pendant 5 secondes maxi */
-    tv.tv_sec = 0;
-    tv.tv_usec = 5;
-    if ((select(server->socket_descriptor->max_socket_descriptor + 1, &server->socket_descriptor->readfd, NULL, NULL, &tv) < 0))
-    {
-        perror("select"); // error with select on ^C (client-side)
+    if ((select(server->socket_descriptor->max_socket_descriptor + 1, &server->socket_descriptor->readfd, NULL, NULL, &tv) < 0)) {
+        close(server->socket_descriptor->max_socket_descriptor + 1);
     }
 }
 
