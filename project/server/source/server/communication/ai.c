@@ -54,9 +54,9 @@ static const ai_request_t ai_request_to_handle[] = {
         .data = NULL,
     },
     {
-        .request = "Broadcast text",
+        .request = "Broadcast",
         .command = BROADCAST_TEXT,
-        .handler = &ai_base_request,
+        .handler = &ai_broadcast_request,
         .time_limit = 7,
         .data = NULL,
     },
