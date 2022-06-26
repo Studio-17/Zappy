@@ -10,7 +10,7 @@
 #include "ai_request.h"
 #include "gui_update.h"
 
-void ai_forward_request(zappy_t *zappy, void *data, int player_index)
+void ai_forward_request(zappy_t *zappy, __attribute((unused)) void *data, int player_index)
 {
     const position_t direction[] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
     position_t movement = direction[zappy->client[player_index].player.orientation];

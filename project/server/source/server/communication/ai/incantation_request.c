@@ -26,7 +26,7 @@ static void remove_elevation_stones(zappy_t *zappy, int player_index)
         zappy->map->tiles[zappy->client[player_index].player.position.y][zappy->client[player_index].player.position.x].resources[index].quantity = 0;
 }
 
-static bool check_elevation(zappy_t *zappy, int elevation_index, int player_level, int player_index)
+static bool check_elevation(zappy_t *zappy, int elevation_index, int player_index)
 {
     // PRELIMINARIES
     position_t player_position = zappy->client[player_index].player.position;
@@ -64,7 +64,7 @@ bool start_incantation(zappy_t *zappy, int player_index)
 {
     int elevation_processus_index = zappy->client[player_index].player.level - 1;
 
-    if (check_elevation(zappy, elevation_processus_index, zappy->client[player_index].player.level, player_index)) {
+    if (check_elevation(zappy, elevation_processus_index, player_index)) {
 
         zappy->client[player_index].player.elevation_status = BEGIN;
 
@@ -85,11 +85,11 @@ bool start_incantation(zappy_t *zappy, int player_index)
     return (true);
 }
 
-void ai_incantation_request(zappy_t *zappy, void *data, int player_index)
+void ai_incantation_request(zappy_t *zappy, __attribute((unused)) void *data, int player_index)
 {
     int elevation_processus_index = zappy->client[player_index].player.level - 1;
 
-    if (check_elevation(zappy, elevation_processus_index, zappy->client[player_index].player.level, player_index)) {
+    if (check_elevation(zappy, elevation_processus_index, player_index)) {
 
         zappy->client[player_index].player.elevation_status = END;
         zappy->client[player_index].player.level += 1;

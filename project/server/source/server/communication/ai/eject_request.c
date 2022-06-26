@@ -8,7 +8,7 @@
 #include "ai_request.h"
 #include "gui_update.h"
 
-void ai_eject_request(zappy_t *zappy, void *data, int player_index)
+void ai_eject_request(zappy_t *zappy, __attribute((unused)) void *data, int player_index)
 {
     position_t player_position = zappy->client[player_index].player.position;
 

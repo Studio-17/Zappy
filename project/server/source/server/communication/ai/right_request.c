@@ -8,7 +8,7 @@
 #include "ai_request.h"
 #include "gui_update.h"
 
-void ai_right_request(zappy_t *zappy, void *data, int player_index)
+void ai_right_request(zappy_t *zappy, __attribute((unused)) void *data, int player_index)
 {
     int socket = zappy->client[player_index].socket;
 

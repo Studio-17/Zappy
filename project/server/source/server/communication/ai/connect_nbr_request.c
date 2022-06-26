@@ -23,7 +23,7 @@ static int count_team_members(zappy_t *zappy, char *team_name)
     return (team_members);
 }
 
-void ai_connect_nbr_request(zappy_t *zappy, void *data, int player_index)
+void ai_connect_nbr_request(zappy_t *zappy, __attribute((unused)) void *data, int player_index)
 {
     int client_nbr = zappy->options->clients_nb - count_team_members(zappy, zappy->client[player_index].team_name);
 

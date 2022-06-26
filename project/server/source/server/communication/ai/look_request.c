@@ -48,7 +48,7 @@ static bool is_player_at_postion(zappy_t *zappy, position_t const position)
     return false;
 }
 
-void ai_look_request(zappy_t *zappy, void *data, int player_index)
+void ai_look_request(zappy_t *zappy, __attribute((unused)) void *data, int player_index)
 {
     int socket = zappy->client[player_index].socket;
     position_t player_orientation = direction[zappy->client[player_index].player.orientation];
