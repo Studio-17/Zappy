@@ -27,6 +27,20 @@ zappy_t *store_zappy(zappy_t *zappy)
     return stored_zappy;
 }
 
+void sigsegv_handler(__attribute__((unused)) int sig)
+{
+    zappy_t *zappy = store_zappy(NULL);
+
+    if (zappy->server->is_gui_connected)
+        gui_update_server_offline(zappy);
+
+    free_zappy(zappy);
+
+    printf("Server is shutting down (an error happend)...\n");
+
+    exit(EXIT_SUCCESS);
+}
+
 void sigint_handler(__attribute__((unused)) int sig)
 {
     zappy_t *zappy = store_zappy(NULL);
@@ -48,6 +62,7 @@ int main(int ac, char * const *av)
 
     srand(time(NULL));
     signal(SIGINT, sigint_handler);
+    signal(SIGSEGV, sigsegv_handler);
 
     if (!zappy)
         return 84;

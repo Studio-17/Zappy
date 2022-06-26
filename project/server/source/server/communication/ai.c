@@ -82,14 +82,14 @@ static const ai_request_t ai_request_to_handle[] = {
         .data = NULL,
     },
     {
-        .request = "Take\n",
+        .request = "Take object\n",
         .command = TAKE_OBJECT,
         .handler = &ai_take_request,
         .time_limit = 7,
         .data = NULL,
     },
     {
-        .request = "Set\n",
+        .request = "Set object\n",
         .command = SET_OBJECT,
         .handler = &ai_set_request,
         .time_limit = 7,
@@ -220,7 +220,7 @@ ai_request_t ai_handle_request(zappy_t *zappy, int player_index)
             if (is_valid_object(request)) {
                 return (push_handler(request, TAKE_OBJECT));
             }
-        } else if (strncmp(request, ai_request_to_handle[index].request, strlen(ai_request_to_handle[index].request)) == 0) {
+        } else if (strcmp(request, ai_request_to_handle[index].request) == 0) {
             return (push_handler(request, index));
         }
     }
