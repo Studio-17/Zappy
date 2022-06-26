@@ -284,24 +284,9 @@ void Ia::parseInventory(std::string response)
 
 void Ia::fillInTheInventory(std::map<std::string, int> content)
 {
-    for (auto &item : content) {
-        if (item.first == "food")
-            _inventory.at("food") = item.second;
-        else if (item.first == "linemate")
-            _inventory.at("linemate") = item.second;
-        else if (item.first == "deraumere")
-            _inventory.at("deraumere") = item.second;
-        else if (item.first == "sibur")
-            _inventory.at("sibur") = item.second;
-        else if (item.first == "mendiane")
-            _inventory.at("mendiane") = item.second;
-        else if (item.first == "phiras")
-            _inventory.at("phiras") = item.second;
-        else if (item.first == "thystame")
-            _inventory.at("thystame") = item.second;
-    }
+    for (auto &[item, quantity] : content)
+        _inventory.at(item) = quantity;
 }
-
 
 std::string Ia::replaceCharacters(std::string str, const std::string& from, const std::string& to)
 {
