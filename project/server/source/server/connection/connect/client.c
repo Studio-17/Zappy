@@ -19,6 +19,16 @@
 #include "server/server.h"
 #include "server/communication/request/request.h"
 
+static void gui_post_player_connected(zappy_t *zappy)
+{
+    for (int index = 0; index < zappy->server->clients; index += 1) {
+        if (zappy->client[index].socket != zappy->server->gui
+        && zappy->client[index].socket > 0) {
+            gui_update_player_connected(zappy, index);
+        }
+    }
+}
+
 bool connect_client(zappy_t *zappy)
 {
     int client_socket = 0;
@@ -36,8 +46,10 @@ bool connect_client(zappy_t *zappy)
 
         if (greeting_protocol(zappy, client_socket)) {
 
-            if (zappy->server->is_gui_connected)
+            if (zappy->server->is_gui_connected) {
                 gui_update_map_content(zappy);
+                gui_post_player_connected(zappy);
+            }
 
         }
     }
