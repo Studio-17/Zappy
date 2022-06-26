@@ -43,10 +43,10 @@ class Ia {
         void fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> playerPosition, DIRECTION direction); //!< Fill the map with the content of the look
         void fillInTheInventory(std::map<std::string, int> content); // a verifier
 
-        bool searchGem(std::string const &gem); // a modifier
-        bool wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objects); // a modifier
+        bool actuallyNeededItem(std::string const &item); // Function to store object to take in tile
+        bool wantToTakeAnyObject(); //!< Function to see if you want to take an object in a tile
 
-        std::vector<ACTIONS> moveToTile(int tile); // a modifier
+        void moveToTile(); // Function to add action for move ia to a specify tile
 
         void createMap(int mapHeight, int mapWidth); //!< Create the map of the game
         std::map<std::string, bool> createTile(); //!< Create a tile of the map
@@ -58,7 +58,7 @@ class Ia {
         void PutAResourceDown(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource) = true; }; //!< Put a resource down in the map
         void GrabAResource(std::string resource, int x, int y) { _contentOfMap.at(y).at(x).at(resource) = false; }; //!< Grab a resource in the map
 
-        void movePlayer(); //!< Move the player only forward
+        std::pair<int, int> movePlayer(std::pair<int, int> iaPosition); //!< Move the player only forward
         void changeDirection(DIRECTION direction); //!< Change the direction of the player
 
 
@@ -89,7 +89,8 @@ class Ia {
         std::map<std::string, int> _inventory; // a passer dans le IaClient
         std::string _action; //!< Action to do
 
-        std::pair<int, std::string> _objectToTake; //!< Object to take
+        std::string _objectToTake; //!< Object to take
+        std::pair<int, int> _destTile;
         bool _isDead; //!< bool to know if the ia dead
 
         std::queue<ACTIONS> _requestTmp; //!< Queue of request store before pushing them into _requestListToSend

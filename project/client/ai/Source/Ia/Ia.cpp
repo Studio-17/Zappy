@@ -305,39 +305,33 @@ std::string Ia::transformRessourceToAction(std::string object)
     return object;
 }
 
-// std::vector<ACTIONS> Ia::moveToTile(int tile)
-// {
-//     std::vector<ACTIONS> actions;
-//     int centeredTile;
-//     bool isInGoodFloor = false;
+void Ia::moveToTile()
+{
+    std::pair<int, int> tmpPos = _actualIaPosition;
 
-//     for (int floor = 0; !isInGoodFloor; floor++) {
-//         centeredTile = getCenteredTile(floor);
-//         if (tile >= centeredTile + floor && tile <= centeredTile + floor)
-//             isInGoodFloor = true;
-//         else
-//             actions.push_back(ACTIONS::FORWARD);
-//     }
-//     while (centeredTile != tile) {
-//         if (centeredTile > tile)
-//             actions.push_back(ACTIONS::LEFT);
-//         else
-//             actions.push_back(ACTIONS::RIGHT);
-//     }
-//     return actions;
-// }
+    while (tmpPos.first != _destTile.first || tmpPos.second != _destTile.second) {
+        addActionToQueue(ACTIONS::FORWARD);
+        tmpPos = movePlayer(tmpPos);
+    }
+    addActionToQueue(ACTIONS::RIGHT);
+    while (tmpPos != _destTile) {
+        addActionToQueue(ACTIONS::FORWARD);
+        tmpPos = movePlayer(tmpPos);
+    }
+}
 
-void Ia::movePlayer()
+std::pair<int, int> Ia::movePlayer(std::pair<int, int> iaPosition)
 {
     std::pair<int, int> position;
 
-    position.first = (_actualIaPosition.first + _possibleDirections.at(static_cast<DIRECTION>(_actualIaDirection)).first) % _mapSize.first;
-    position.second =(_actualIaPosition.second + _possibleDirections.at(static_cast<DIRECTION>(_actualIaDirection)).second) % _mapSize.second;
+    position.first = (iaPosition.first + _possibleDirections.at(static_cast<DIRECTION>(_actualIaDirection)).first) % _mapSize.first;
+    position.second =(iaPosition.second + _possibleDirections.at(static_cast<DIRECTION>(_actualIaDirection)).second) % _mapSize.second;
     if (position.first < 0)
         position.first += _mapSize.first;
     if (position.second < 0)
         position.second += _mapSize.second;
-    _actualIaPosition = position;
+    iaPosition = position;
+    return iaPosition;
 }
 
 void Ia::changeDirection(DIRECTION direction)
@@ -350,34 +344,40 @@ void Ia::changeDirection(DIRECTION direction)
         _actualIaDirection = static_cast<DIRECTION>(tmp + 1 > 3 ? 0 : tmp + 1);
 }
 
-// bool Ia::searchGem(std::string const &gem)
-// {
-//     for (auto &[gemInLevelToObtain, quantity] : _levelsToObtain.at(_actualLevel))
-//         if (_inventory.at(gem) <= quantity)
-//             return true;
-//     return false;
-// }
+bool Ia::actuallyNeededItem(std::string const &item)
+{
+    for (auto &[gemInLevelToObtain, quantity] : _levelsToObtain.at(_actualLevel + 1))
+        if (_inventory.at(item) <= quantity && item != "player")
+            return true;
+    return false;
+}
 
-// bool Ia::wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objectsPerTile)
-// {
-//     int index = 0;
+bool Ia::wantToTakeAnyObject()
+{
+    int i = 0;
+    int j = 0;
 
-//     for (auto &objectsInTile : objectsPerTile) {
-//         for (auto &[gem, status] : objectsInTile) {
-//             if (status == true && searchGem(gem)) {
-//                 _objectToTake = {index, gem};
-//                 return true;
-//             }
-//         }
-//         index++;
-//     }
-//     return false;
-// }
+    for (auto &tiles : _contentOfMap) {
+        j = 0;
+        for (auto &oneTile : tiles) {
+            for (auto &[item, status] : oneTile) {
+                if (status == true && actuallyNeededItem(item)) {
+                    _objectToTake = transformRessourceToAction(item);
+                    _destTile = {i, j};
+                    return true;
+                }
+            }
+            j++;
+        }
+        i++;
+    }
+    return false;
+}
 
 void Ia::forward(std::string const &serverResponse)
 {
     if (serverResponse == "ok") {
-        movePlayer();
+        _actualIaPosition = movePlayer(_actualIaPosition);
     }
     _requestListReceived.pop();
     _requestListSent.pop();
@@ -458,6 +458,8 @@ void Ia::sendResquestServer()
 {
     if (!_requestListToSend.empty()) {
         _client.postRequest(_client.getSocket(), _requestListToSend.front());
+        if (_requestListToSend.front() == ACTIONS::SET_OBJECT || _requestListToSend.front() == ACTIONS::TAKE_OBJECT)
+            _client.postRequest(_client.getSocket(), _objectToTake);
         _requestListSent.emplace(_requestListToSend.front());
         _requestListToSend.pop();
     }

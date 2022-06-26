@@ -40,6 +40,8 @@ IAClient::IAClient()
         {ACTIONS::FORK, "Fork\n"},
         {ACTIONS::EJECT, "Eject\n"},
         {ACTIONS::INCANTATION, "Incantation\n"},
+        {ACTIONS::SET_OBJECT, "Set "},
+        {ACTIONS::TAKE_OBJECT, "Take "},
     };
 }
 
@@ -60,7 +62,7 @@ void IAClient::setMapSize(std::string str)
 
 void IAClient::postRequest(int socketId, std::string const &request)
 {
-    dprintf(socketId, "%s", request.c_str());
+    dprintf(socketId, "%s\n", request.c_str());
 }
 
 void IAClient::postRequest(int socketId, ACTIONS request)
