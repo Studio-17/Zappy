@@ -327,20 +327,20 @@ std::string Ia::transformRessourceToAction(std::string object)
     return object;
 }
 
-void Ia::moveToTile()
-{
-    std::pair<int, int> tmpPos = _actualIaPosition;
+// void Ia::moveToTile(int x, int y)
+// {
+//     std::pair<int, int> tmpPos = _actualIaPosition;
 
-    while (tmpPos.first != _destTile.first || tmpPos.second != _destTile.second) {
-        addActionToQueue(ACTIONS::FORWARD);
-        tmpPos = movePlayer(tmpPos);
-    }
-    addActionToQueue(ACTIONS::RIGHT);
-    while (tmpPos != _destTile) {
-        addActionToQueue(ACTIONS::FORWARD);
-        tmpPos = movePlayer(tmpPos);
-    }
-}
+//     while (tmpPos.first != x || tmpPos.second != y) {
+//         addActionToQueue(ACTIONS::FORWARD);
+//         tmpPos = movePlayer(tmpPos);
+//     }
+//     addActionToQueue(ACTIONS::RIGHT);
+//     while (tmpPos != _destTile) {
+//         addActionToQueue(ACTIONS::FORWARD);
+//         tmpPos = movePlayer(tmpPos);
+//     }
+// }
 
 std::pair<int, int> Ia::movePlayer(std::pair<int, int> iaPosition)
 {
@@ -384,8 +384,8 @@ bool Ia::wantToTakeAnyObject()
         for (auto &oneTile : tiles) {
             for (auto &[item, status] : oneTile) {
                 if (status == true && actuallyNeededItem(item)) {
-                    _objectToTake = transformRessourceToAction(item);
-                    _destTile = {i, j};
+                    // _objectToTake = transformRessourceToAction(item);
+                    // moveToTile(i, j);
                     return true;
                 }
             }

@@ -47,7 +47,7 @@ class Ia {
         bool actuallyNeededItem(std::string const &item); // Function to store object to take in tile
         bool wantToTakeAnyObject(); //!< Function to see if you want to take an object in a tile
 
-        void moveToTile(); // Function to add action for move ia to a specify tile
+        void moveToTile(int x, int y); // Function to add action for move ia to a specify tile
 
         void createMap(int mapHeight, int mapWidth); //!< Create the map of the game
         std::map<std::string, bool> createTile(); //!< Create a tile of the map
@@ -91,7 +91,6 @@ class Ia {
         std::string _action; //!< Action to do
 
         std::string _objectToTake; //!< Object to take
-        std::pair<int, int> _destTile;
         bool _isDead; //!< bool to know if the ia dead
 
         std::queue<ACTIONS> _requestTmp; //!< Queue of request store before pushing them into _requestListToSend
