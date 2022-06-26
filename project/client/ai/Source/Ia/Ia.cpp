@@ -31,7 +31,7 @@ Ia::Ia() : _client()
     _isDead = false;
 
     _inventory = {
-        {"food", 10},
+        {"food", 0},
         {"linemate", 0},
         {"deraumere", 0},
         {"sibur", 0},
@@ -269,21 +269,43 @@ void Ia::parseInventory(std::string response)
     std::string token;
     std::string comaDelimiter = ",";
     std::string spaceDelimiter = " ";
-    std::map<std::string, int> contentOfInventory;
+    std::vector<std::string> contentOfInventory;
+    std::map<std::string, int> inventory;
+
+    response = replaceCharacters(response, "[", "");
+    response = replaceCharacters(response, " ]", "");
+
+    std::cout << response << std::endl;
 
     while ((pos = response.find(comaDelimiter)) != std::string::npos) {
-        token = response.substr(0, pos);
+        token = response.substr(1, pos);
+        contentOfInventory.push_back(token);
         response.erase(0, pos + comaDelimiter.length());
-        pos = token.find(spaceDelimiter);
-        std::string key = token.substr(0, pos);
-        int value = std::stoi(token.substr(pos + spaceDelimiter.length()));
-        contentOfInventory.emplace(key, value);
     }
-    fillInTheInventory(contentOfInventory);
+    for (auto &resource : contentOfInventory) {
+        std::size_t pos = resource.find(spaceDelimiter);
+        token = resource.substr(0, pos);
+        inventory.emplace(token, std::stoi(resource.substr(pos + spaceDelimiter.length())));
+    }
+    for (auto &resource : inventory)
+        std::cout << resource.first << " : " << resource.second << std::endl;
+    fillInTheInventory(inventory);
+}
+
+void Ia::clearTheInventory()
+{
+    _inventory.at("food") = 0;
+    _inventory.at("linemate") = 0;
+    _inventory.at("deraumere") = 0;
+    _inventory.at("sibur") = 0;
+    _inventory.at("mendiane") = 0;
+    _inventory.at("phiras") = 0;
+    _inventory.at("thystame") = 0;
 }
 
 void Ia::fillInTheInventory(std::map<std::string, int> content)
 {
+    clearTheInventory();
     for (auto &[item, quantity] : content)
         _inventory.at(item) = quantity;
 }
@@ -410,9 +432,9 @@ void Ia::look(std::string const &serverResponse)
 void Ia::inventory(std::string const &serverResponse)
 {
     std::cout << "Inventory response->" << serverResponse << std::endl;
-    //     parseInventory(serverResponse);
-    //     _requestListReceived.pop();
-    //     _requestListSent.pop();
+        parseInventory(serverResponse);
+        _requestListReceived.pop();
+        _requestListSent.pop();
 }
 
 void Ia::handleEvent(ACTIONS action, std::string const &response)
@@ -476,6 +498,7 @@ void Ia::analyzeResponseServer()
 
 void Ia::mainLoop()
 {
+    addActionToQueue(ACTIONS::INVENTORY);
     while (!_isDead) {
         // add action to queue here
 

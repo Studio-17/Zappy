@@ -35,13 +35,14 @@ class Ia {
 
         std::string replaceCharacters(std::string str, const std::string& from, const std::string& to); //!< change all strings to another string in a string
 
-        std::string transformRessourceToAction(std::string object); // Utile ?
+        std::string transformRessourceToAction(std::string object); //!< Transform ressource to action
 
         void parseLook(std::string response); //!< Function to parse the look string
         void parseInventory(std::string response); //!< Function to parse the inventory string
+        void clearTheInventory(); //!< Function to clear the inventory
 
         void fillInTheMap(std::vector<std::vector<std::string>> content, std::pair<int, int> playerPosition, DIRECTION direction); //!< Fill the map with the content of the look
-        void fillInTheInventory(std::map<std::string, int> content); // a verifier
+        void fillInTheInventory(std::map<std::string, int> content); //!< Fill the inventory with the content of the inventory
 
         bool searchGem(std::string const &gem); // a modifier
         bool wantToTakeAnyObject(std::vector<std::map<std::string, bool>> objects); // a modifier
