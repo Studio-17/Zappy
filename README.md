@@ -1,9 +1,10 @@
-## Zappy
-
-Epitech Project
+# Zappy
 
 ![CI Epitech Project - Zappy](https://github.com/MyEpitech/B-YEP-410-PAR-4-1-zappy-martin.vanaud/actions/workflows/main.yml/badge.svg?branch=master)
 #
+
+## $\color{green}{Grade: B}$
+
 
 > Setup
 ```
